@@ -1,7 +1,7 @@
 {
   "name": "truffle",
   "version": "1.0.0",
-  "description": "Truffle project with SimpleStorage contract",
+  "description": "Carblocks",
   "main": "truffle-config.js",
   "dependencies": {
     "@truffle/hdwallet-provider": "^2.1.2",
