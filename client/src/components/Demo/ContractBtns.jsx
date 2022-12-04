@@ -2,21 +2,23 @@ import { useState } from "react";
 import useEth from "../../contexts/EthContext/useEth";
 
 function ContractBtns({ setValue }) {
-  const { state: { contract, accounts } } = useEth();
+  const {
+    state: { contract, accounts },
+  } = useEth();
   const [inputValue, setInputValue] = useState("");
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     if (/^\d+$|^$/.test(e.target.value)) {
       setInputValue(e.target.value);
     }
   };
 
   const read = async () => {
-    const value = await contract.methods.read().call({ from: accounts[0] });
+    const value = await contract.methods.test().call({ from: accounts[0] });
     setValue(value);
   };
 
-  const write = async e => {
+  const write = async (e) => {
     if (e.target.tagName === "INPUT") {
       return;
     }
@@ -30,20 +32,7 @@ function ContractBtns({ setValue }) {
 
   return (
     <div className="btns">
-
-      <button onClick={read}>
-        read()
-      </button>
-
-      <div onClick={write} className="input-btn">
-        write(<input
-          type="text"
-          placeholder="uint"
-          value={inputValue}
-          onChange={handleInputChange}
-        />)
-      </div>
-
+      <button onClick={read}>read()</button>
     </div>
   );
 }
