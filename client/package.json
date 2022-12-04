@@ -29,5 +29,8 @@
     ">0.2%",
     "not dead",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "react-error-overlay": "^6.0.9"
+  }
 }
