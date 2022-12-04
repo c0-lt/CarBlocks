@@ -4,6 +4,7 @@
   "description": "Carblocks",
   "main": "truffle-config.js",
   "dependencies": {
+    "@openzeppelin/contracts": "^4.8.0",
     "@truffle/hdwallet-provider": "^2.1.2",
     "dotenv": "^16.0.3"
   },
