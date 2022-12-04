@@ -5,20 +5,20 @@ function ContractBtns({ setValue }) {
   const {
     state: { contract, accounts },
   } = useEth();
-  const [inputValue, setInputValue] = useState("");
+  //const [inputValue, setInputValue] = useState("");
 
-  const handleInputChange = (e) => {
+  /*const handleInputChange = (e) => {
     if (/^\d+$|^$/.test(e.target.value)) {
       setInputValue(e.target.value);
     }
-  };
+  };*/
 
   const read = async () => {
     const value = await contract.methods.test().call({ from: accounts[0] });
     setValue(value);
   };
 
-  const write = async (e) => {
+  /*const write = async (e) => {
     if (e.target.tagName === "INPUT") {
       return;
     }
@@ -28,7 +28,7 @@ function ContractBtns({ setValue }) {
     }
     const newValue = parseInt(inputValue);
     await contract.methods.write(newValue).send({ from: accounts[0] });
-  };
+  };*/
 
   return (
     <div className="btns">
