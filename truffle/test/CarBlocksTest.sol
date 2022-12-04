@@ -1,3 +1,4 @@
+//QCO : for now, we focus on pure JS unit tests
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.17;
 
@@ -7,9 +8,9 @@ import "truffle/Assert.sol";
 import "truffle/DeployedAddresses.sol";
 
 contract CarBlocksTest {
-    function testWriteValue() public {
+    /*function testWriteValue() public {
         CarBlocks carBlocks = CarBlocks(DeployedAddresses.CarBlocks());
 
         Assert.equal(carBlocks.test(), 42, "Contract should have 42 stored");
-    }
+    }*/
 }
