@@ -1,7 +1,6 @@
 import { useState } from "react";
 import useEth from "../../contexts/EthContext/useEth";
 import Title from "./Title";
-import Cta from "./Cta";
 import Contract from "./Contract";
 import ContractBtns from "./ContractBtns";
 import NoticeNoArtifact from "./NoticeNoArtifact";
@@ -13,7 +12,6 @@ function Demo() {
 
   const demo = (
     <>
-      <Cta />
       <div className="contract-container">
         <Contract value={value} />
         <ContractBtns setValue={setValue} />
