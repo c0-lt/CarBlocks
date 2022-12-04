@@ -15,11 +15,11 @@ module.exports = {
     goerli: {
       provider: () =>
         new HDWalletProvider({
-          mnemonic: { phrase: `${process.env.MNEMONIC}` },
+          mnemonic: {phrase: `${process.env.MNEMONIC}`},
           providerOrUrl: `https://goerli.infura.io/v3/${process.env.INFURA_ID}`,
         }),
       network_id: 5, // Goerli's network id
-      // from: "0x8273A917a5092683434ef06eBFCb7C8c1Ca9E468", TODO: QCO we need to update that address when we will deploy on Goerli
+      //from: "0x8273A917a5092683434ef06eBFCb7C8c1Ca9E468", //TODO: QCO we need to update that address when we will deploy on Goerli
       //   chain_id: 5,         // Goerli's chain id
       //   //gas: 5500000,        // Gas limit used for deploys. => LEAVE UNCOMMENTED !
       //   confirmations: 2,    // # of confirmations to wait between deployments. (default: 0)

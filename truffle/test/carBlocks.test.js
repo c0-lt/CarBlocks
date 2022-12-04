@@ -23,7 +23,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should have a name", async () => {
-      expect(await cb.name.call()).to.be.equal("Carblock");
+      expect(await cb.name.call()).to.be.equal("Carblocks");
     });
   });
 

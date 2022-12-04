@@ -40,7 +40,7 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice Holds information linked to a maintenance operation
     struct Maintenance {
         uint256 date;
-        MaintenanceType mtype;
+        MaintenanceType mType;
         string billsUri;
     }
 
@@ -56,7 +56,7 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice This array holds all the minted NFTs
     Carblock[] carblocksNFT;
 
-    constructor() ERC721("Carblock", "CBK") {}
+    constructor() ERC721("Carblocks", "CBK") {}
 
     //TODO : onlyOwner ?
     //TODO : check memory vs calldata
