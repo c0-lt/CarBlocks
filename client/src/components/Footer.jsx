@@ -1,17 +1,13 @@
 function Link({ uri, text }) {
-  return <a href={uri} target="_blank" rel="noreferrer">{text}</a>;
+  return (
+    <a href={uri} target="_blank" rel="noreferrer">
+      {text}
+    </a>
+  );
 }
 
 function Footer() {
-  return (
-    <footer>
-      <h2>More resources</h2>
-      <Link uri={"https://trufflesuite.com"} text={"Truffle"} />
-      <Link uri={"https://reactjs.org"} text={"React"} />
-      <Link uri={"https://soliditylang.org"} text={"Solidity"} />
-      <Link uri={"https://ethereum.org"} text={"Ethereum"} />
-    </footer >
-  );
+  return <footer>Carblocks - All rights reserved</footer>;
 }
 
 export default Footer;
