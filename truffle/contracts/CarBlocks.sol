@@ -48,17 +48,28 @@ contract CarBlocks is ERC721URIStorage {
     struct Carblock {
         CarState carState;
         Car car;
-        // Maintenance[] maintenances; // QCO: this does not work, we need to using mapping instead
+        // Maintenance[] maintenances; // QCO: this does not work, we need to use mapping instead
         mapping(uint256 => Maintenance) maintenances;
         uint256 maintenancesNumber;
     }
 
+    /// @notice This array holds all the minted NFTs
     Carblock[] carblocksNFT;
 
     constructor() ERC721("Carblock", "CBK") {}
 
     //TODO : onlyOwner ?
     //TODO : check memory vs calldata
+    //TODO : payable
+    /// @notice Allow user to mint a new Carblock NFT
+    /// @dev
+    /// @param _user address of the futur owner of minted NFT
+    /// @param _circulationStartDate first circulation date of owner's car
+    /// @param _VIN car serial number
+    /// @param _brand brand of car
+    /// @param _model model of car
+    /// @param _tokenURI URI to json stored on IPFS
+    /// @param _state car's state (ENUM)
     function mintCarblock(
         address _user,
         uint256 _circulationStartDate,
@@ -68,7 +79,9 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _tokenURI,
         CarState _state
     ) external {
-        _tokenIds.increment(); // Increment NFT ID (starts at 0)
+        // Increment NFT ID (starts at 0)
+        _tokenIds.increment(); 
+
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
         Carblock storage carblockNFT = carblocksNFT.push();
         carblockNFT.carState = _state;
@@ -78,9 +91,5 @@ contract CarBlocks is ERC721URIStorage {
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
-    }
-
-    function test() public pure returns (uint256) {
-        return 42;
     }
 }
