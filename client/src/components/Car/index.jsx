@@ -3,9 +3,7 @@ import useEth from "../../contexts/EthContext/useEth";
 
 function Car() {
   return (
-    <div className="demo">
-      Car
-    </div>
+      <p>Car</p>
   );
 }
 

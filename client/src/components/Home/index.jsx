@@ -44,15 +44,7 @@ function Home() {
   );
 
   return (
-    <Container
-      sx={{
-        mt: 5,
-        bgcolor: "background.paper",
-        pt: 8,
-        pb: 6,
-      }}
-      maxWidth="sm"
-    >
+    <>
       <Box
         maxWidth="sm"
         component="img"
@@ -98,7 +90,7 @@ function Home() {
       </Stack>
 
       {isConnected && <Menu />}
-    </Container>
+    </>
   );
 
   /*   return (

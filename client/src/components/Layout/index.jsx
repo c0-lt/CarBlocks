@@ -12,6 +12,8 @@ import Footer from "../Footer";
 import Profile from "../Profile";
 import TopBar from "../TopBar";
 
+import Container from "@mui/material/Container";
+
 function Layout() {
   return (
     <EthProvider>
@@ -22,11 +24,16 @@ function Layout() {
         <TopBar />
       </SnackbarProvider>
       <main>
-        <div id="App">
-          <div className="container">
+      <Container
+      sx={{
+        mt: 6,
+        mb: 6,
+        bgcolor: "background.paper",
+      }}
+      maxWidth="sm"
+    >
           <Outlet />
-          </div>
-        </div>
+          </Container>
       </main>
       <Footer />
     </EthProvider>
