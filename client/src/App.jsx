@@ -20,7 +20,7 @@ import "./App.css";
 
 function App() {
   const client = createClient({
-    autoConnect: false,
+    autoConnect: true,
     provider: getDefaultProvider(),
   });
 

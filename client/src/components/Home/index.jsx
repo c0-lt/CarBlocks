@@ -88,10 +88,10 @@ function Home() {
         ) : (
           <>
             <Button onClick={() => connect()} variant="contained" size="large">
-              Particulier
+              Connexion Particulier
             </Button>
             <Button variant="outlined" size="large">
-              Professionnel
+              Connexion Professionnel
             </Button>
           </>
         )}

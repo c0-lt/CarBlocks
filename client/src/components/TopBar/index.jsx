@@ -10,6 +10,7 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Button from "@mui/material/Button";
+import ButtonBase from '@mui/material/ButtonBase';
 
 import {useAccount} from "wagmi";
 
@@ -40,7 +41,7 @@ function TopBar() {
     setNotifications(++notifCount);
   }, [notifCount]);
 
-  const subscribeEvent = React.useCallback(() => {
+  /* const subscribeEvent = React.useCallback(() => {
     if (contract && !subscribed) {
       contract.events
         .ProposalRegistered(() => {})
@@ -65,19 +66,19 @@ function TopBar() {
         });
       setSubscribed(true);
     }
-  }, [contract, enqueueSnackbar, addNotif, subscribed]);
+  }, [contract, enqueueSnackbar, addNotif, subscribed]); */
 
   /* const addProposalId = (proposalId) => {
     setProposalsId(current => [...current, proposalId]);
   } */
 
-  React.useEffect(() => {
+  /* React.useEffect(() => {
     console.log("Top bar");
     if (contract) {
       subscribeEvent();
     }
   }, [contract, subscribeEvent]); // empty array means nothing to watch, so run once and no more
-
+ */
   return (
     <Box sx={{flexGrow: 1}}>
       <AppBar
@@ -89,6 +90,8 @@ function TopBar() {
         }
       >
         <Toolbar variant="dense">
+          <ButtonBase component={RouterLink}
+              to="/">
           <Box
             component="img"
             src="logo400x120-white.png"
@@ -103,16 +106,17 @@ function TopBar() {
           >
             Carblocks
           </Typography>
+          </ButtonBase>
           <Box sx={{flexGrow: 1}} />
           <Box sx={{display: {xs: "flex", md: "flex"}}}>
-            <Button
+            {/* <Button
               variant="text"
               className="LinkAppBar"
               component={RouterLink}
               to="/"
             >
               Accueil
-            </Button>
+            </Button> */}
             <Button
               variant="text"
               className="LinkAppBar"
