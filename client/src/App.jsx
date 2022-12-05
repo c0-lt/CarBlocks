@@ -19,7 +19,13 @@ import About from "./components/About";
 import "./App.css";
 
 function App() {
+  const client = createClient({
+    autoConnect: false,
+    provider: getDefaultProvider(),
+  });
+
   return (
+    <WagmiConfig client={client}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -29,7 +35,8 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
-    </Routes>
+      </Routes>
+    </WagmiConfig>
   );
 }
 
