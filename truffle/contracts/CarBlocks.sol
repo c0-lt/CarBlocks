@@ -54,7 +54,7 @@ contract CarBlocks is ERC721URIStorage {
     }
 
     /// @notice This array holds all the minted NFTs
-    Carblock[] carblocksNFT;
+    Carblock[] private carblocksNFT;
 
     constructor() ERC721("Carblocks", "CBK") {}
 
@@ -78,7 +78,7 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _model,
         string calldata _tokenURI,
         CarState _state
-    ) external returns (uint256){
+    ) external returns(uint256){
         // Increment NFT ID (starts at 0)
         _tokenIds.increment(); 
 
