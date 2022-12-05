@@ -78,7 +78,7 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _model,
         string calldata _tokenURI,
         CarState _state
-    ) external {
+    ) external returns (uint256){
         // Increment NFT ID (starts at 0)
         _tokenIds.increment(); 
 
@@ -91,5 +91,7 @@ contract CarBlocks is ERC721URIStorage {
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
+
+        return newTokenId;
     }
 }
