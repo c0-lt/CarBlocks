@@ -4,6 +4,9 @@ import { Routes, Route, Outlet, Link } from "react-router-dom";
 import { WagmiConfig, createClient } from "wagmi";
 import { getDefaultProvider } from "ethers";
 
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+
 import { EthProvider } from "./contexts/EthContext";
 import { SnackbarProvider } from 'notistack';
 import Layout from "./components/Layout";
@@ -16,7 +19,13 @@ import About from "./components/About";
 import "./App.css";
 
 function App() {
+  const client = createClient({
+    autoConnect: false,
+    provider: getDefaultProvider(),
+  });
+
   return (
+    <WagmiConfig client={client}>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -26,18 +35,26 @@ function App() {
           <Route path="about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
-    </Routes>
+      </Routes>
+    </WagmiConfig>
   );
 }
 
 function NoMatch() {
   return (
+    <Container sx={{
+      mt: 1,
+      bgcolor: 'background.paper',
+      pt: 8,
+      pb: 6,
+    }} maxWidth="sm">
     <div>
-      <h2>Nothing to see here!</h2>
+      <h2>Erreur 404 - page introuvable</h2>
       <p>
-        <Link to="/">Go to the home page</Link>
+        <Link to="/">Retournez à l'accueil</Link>
       </p>
     </div>
+    </Container>
   );
 }
 
