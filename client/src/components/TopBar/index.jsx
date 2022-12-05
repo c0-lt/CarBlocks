@@ -42,7 +42,7 @@ function TopBar() {
 
   const subscribeEvent = React.useCallback(() => {
     if (contract && !subscribed) {
-      contract.events
+      /*contract.events
         .ProposalRegistered(() => {})
         .on("connected", function (subscriptionId) {
           console.log("SubID: ", subscriptionId);
@@ -64,6 +64,7 @@ function TopBar() {
           console.log("Error:", error, receipt);
         });
       setSubscribed(true);
+      */
     }
   }, [contract, enqueueSnackbar, addNotif, subscribed]);
 
