@@ -44,22 +44,16 @@ function Home() {
   );
 
   return (
-    <Container
-      sx={{
-        mt: 5,
-        bgcolor: "background.paper",
-        pt: 8,
-        pb: 6,
-      }}
-      maxWidth="sm"
-    >
-      <Box
-        maxWidth="sm"
-        component="img"
-        src="logo+title+catchphrase.png"
-        alt="logo"
-        sx={{mb: "30px"}}
-      />
+    <>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <Box
+          maxWidth="sm"
+          component="img"
+          src="logo+title+catchphrase.png"
+          alt="logo"
+          sx={{mb: "30px"}}
+        />
+      </Box>
       {/* <Typography
               component="h1"
               variant="h2"
@@ -88,17 +82,17 @@ function Home() {
         ) : (
           <>
             <Button onClick={() => connect()} variant="contained" size="large">
-              Particulier
+              Connexion Particulier
             </Button>
             <Button variant="outlined" size="large">
-              Professionnel
+              Connexion Professionnel
             </Button>
           </>
         )}
       </Stack>
 
       {isConnected && <Menu />}
-    </Container>
+    </>
   );
 
   /*   return (
