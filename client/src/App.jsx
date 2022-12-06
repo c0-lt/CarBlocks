@@ -1,14 +1,11 @@
 import * as React from "react";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 
 import { WagmiConfig, createClient } from "wagmi";
 import { getDefaultProvider } from "ethers";
 
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 
-import { EthProvider } from "./contexts/EthContext";
-import { SnackbarProvider } from 'notistack';
 import Layout from "./components/Layout";
 import Home from "./components/Home";
 import Social from "./components/Social";

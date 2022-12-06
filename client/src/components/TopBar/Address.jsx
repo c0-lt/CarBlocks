@@ -1,5 +1,4 @@
 import * as React from 'react';
-import useEth from "../../contexts/EthContext/useEth";
 import Tooltip from '@mui/material/Tooltip';
 import Chip from '@mui/material/Chip';
 import AccountCircle from '@mui/icons-material/AccountCircle';
@@ -17,7 +16,6 @@ function Address() {
     connector: new InjectedConnector(),
   });
   const {disconnect} = useDisconnect();
-  // const { state: { accounts } } = useEth();
   const wrapAddress = (text) => {
     return text.slice(0,6)+"..."+text.slice(-4);
   };
