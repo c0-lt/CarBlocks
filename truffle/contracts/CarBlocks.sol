@@ -20,6 +20,7 @@ contract CarBlocks is ERC721URIStorage {
         accident,
         scrapped
     }
+    //TODO : QCO for sale ?
 
     /// @notice Defines the various maintenance types that can occur
     enum MaintenanceType {
@@ -40,23 +41,49 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice Holds information linked to a maintenance operation
     struct Maintenance {
         uint256 date;
+        uint256 kilometers;
         MaintenanceType mType;
-        string billsUri;
+        string maintenanceURI;
     }
 
     /// @notice Defines the carblock NFT structure
     struct Carblock {
         CarState carState;
         Car car;
-        // Maintenance[] maintenances; // QCO: this does not work, we need to use mapping instead
-        mapping(uint256 => Maintenance) maintenances;
-        uint256 maintenancesNumber;
     }
-
-    /// @notice This array holds all the minted NFTs
+         
+    // @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
+    //TODO : QCO si on transfert il faut virer le tokenID dans users
+    mapping(address =>uint256[]) private users;   
+    mapping(uint256 => Maintenance[]) allMaintenances;  // tokenID => [Maintenance1, Maintenance2]  
+
     constructor() ERC721("Carblocks", "CBK") {}
+
+    
+    function getCarblock(uint256 _tokenId)external view returns(Carblock memory) {
+        return carblocksNFT[_tokenId];
+    }
+
+    function getCarblocks(address _addr)external view returns(Carblock[] memory) {
+        Carblock[] memory carblocks = new Carblock[](users[_addr].length);
+        
+        for(uint256 i =0 ; i< users[_addr].length; i++){
+            carblocks[i] = carblocksNFT[users[_addr][i]];
+        }
+        return carblocks;
+    }
+
+    function addMaintenance(uint256 _tokenId, uint _date, MaintenanceType _mType, uint _kilometers, string calldata _maintenanceURI) external {
+        require(_msgSender() == ownerOf(_tokenId), "Error : you are not the owner of the car");
+        allMaintenances[_tokenId].push(Maintenance(_date, _kilometers, _mType, _maintenanceURI));
+    }
+
+    function getMaintenances(uint256 _tokenId) external view returns(Maintenance[] memory){
+        require(_msgSender() == ownerOf(_tokenId), "Error : you are not the owner of the car");
+        return allMaintenances[_tokenId];
+    }
 
     //TODO : onlyOwner ?
     //TODO : check memory vs calldata
@@ -83,14 +110,12 @@ contract CarBlocks is ERC721URIStorage {
         _tokenIds.increment(); 
 
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
-        Carblock storage carblockNFT = carblocksNFT.push();
-        carblockNFT.carState = _state;
-        carblockNFT.car = car;
-        carblockNFT.maintenancesNumber = 0;
+        carblocksNFT.push(Carblock(_state, car));
 
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
+        users[_user].push(newTokenId);
 
         return newTokenId;
     }
