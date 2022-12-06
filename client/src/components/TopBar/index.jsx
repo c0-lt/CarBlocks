@@ -33,7 +33,6 @@ function TopBar() {
     setNotifications(++notifCount);
   }, [notifCount]);
 
-  
   return (
     <Box sx={{flexGrow: 1}}>
       <AppBar
