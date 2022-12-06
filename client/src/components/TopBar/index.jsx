@@ -41,7 +41,8 @@ function TopBar() {
     setNotifications(++notifCount);
   }, [notifCount]);
 
-  /* const subscribeEvent = React.useCallback(() => {
+  /* 
+  const subscribeEvent = React.useCallback(() => {
     if (contract && !subscribed) {
       contract.events
         .ProposalRegistered(() => {})
@@ -66,13 +67,17 @@ function TopBar() {
         });
       setSubscribed(true);
     }
-  }, [contract, enqueueSnackbar, addNotif, subscribed]); */
+  }, [contract, enqueueSnackbar, addNotif, subscribed]); 
+  */
 
-  /* const addProposalId = (proposalId) => {
+  /* 
+  const addProposalId = (proposalId) => {
     setProposalsId(current => [...current, proposalId]);
-  } */
+  } 
+  */
 
-  /* React.useEffect(() => {
+  /* 
+  React.useEffect(() => {
     console.log("Top bar");
     if (contract) {
       subscribeEvent();
