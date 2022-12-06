@@ -149,7 +149,7 @@ function TopBar() {
               component={RouterLink}
               to="/about"
             >
-              A propos
+              à propos
             </Button>
           </Box>
           <Box sx={{display: {xs: "flex", md: "flex"}}}>

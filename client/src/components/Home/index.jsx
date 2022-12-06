@@ -45,13 +45,15 @@ function Home() {
 
   return (
     <>
-      <Box
-        maxWidth="sm"
-        component="img"
-        src="logo+title+catchphrase.png"
-        alt="logo"
-        sx={{mb: "30px"}}
-      />
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <Box
+          maxWidth="sm"
+          component="img"
+          src="logo+title+catchphrase.png"
+          alt="logo"
+          sx={{mb: "30px"}}
+        />
+      </Box>
       {/* <Typography
               component="h1"
               variant="h2"

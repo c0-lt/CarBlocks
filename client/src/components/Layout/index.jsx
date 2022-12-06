@@ -13,6 +13,7 @@ import Profile from "../Profile";
 import TopBar from "../TopBar";
 
 import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
 
 function Layout() {
   return (
@@ -30,7 +31,7 @@ function Layout() {
         mb: 6,
         bgcolor: "background.paper",
       }}
-      maxWidth="sm"
+      maxWidth="lg"
     >
           <Outlet />
           </Container>
