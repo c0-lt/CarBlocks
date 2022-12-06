@@ -40,10 +40,7 @@ function Cars() {
                       Mclaren 720s
                     </Typography>
                     <Typography>
-                      Date de 1ère mise en circulation: 26/11/2022
-                    </Typography>
-                    <Typography>
-                      Kilométrage: 12 256 kms
+                      2022 | 12 256 kms
                     </Typography>
                   </CardContent>
                   <CardActions>
