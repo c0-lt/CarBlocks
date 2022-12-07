@@ -11,7 +11,7 @@ import ButtonBase from "@mui/material/ButtonBase";
 
 import {useAccount} from "wagmi";
 
-import Address from "./Address";
+import Account from "./Account";
 import {useSnackbar} from "notistack";
 import {
   Link as RouterLink,
@@ -47,7 +47,7 @@ function TopBar() {
           <ButtonBase component={RouterLink} to="/">
             <Box
               component="img"
-              src="logo400x120-white.png"
+              src="/logo400x120-white.png"
               alt="logo"
               sx={{width: "120px"}}
             />
@@ -91,9 +91,9 @@ function TopBar() {
                 variant="text"
                 className="LinkAppBar"
                 component={RouterLink}
-                to="/car"
+                to="/account"
               >
-                Mes véhicules
+                Mon compte
               </Button>
             )}
             <Button
@@ -115,7 +115,7 @@ function TopBar() {
                 <NotificationsIcon />
               </Badge>
             </IconButton>
-            <Address />
+            <Account />
           </Box>
         </Toolbar>
       </AppBar>
