@@ -49,7 +49,6 @@ function Cars() {
                     to={{
                       pathname: "/marketplace/" + card,
                     }}>Voir</Button>
-                    <Button size="small">Faire une offre</Button>
                   </CardActions>
                 </Card>
               </Grid>

@@ -63,7 +63,7 @@ function Account() {
       sx={{ borderRight: 1, borderColor: 'divider' }}
     >
       <Tab label="Mes voitures" {...a11yProps(0)} />
-      <Tab label="Déclarer sa voiture" {...a11yProps(1)} />
+      <Tab label="Déclarer une voiture" {...a11yProps(1)} />
       <Tab label="Mes offres" {...a11yProps(2)} />
       <Tab label="Offres reçues" {...a11yProps(3)} />
     </Tabs>
