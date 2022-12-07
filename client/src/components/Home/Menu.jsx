@@ -17,8 +17,8 @@ function Menu() {
         <Button variant="outlined" component={RouterLink} to="/marketplace">
           Marketplace
         </Button>
-        <Button variant="outlined" component={RouterLink} to="/car">
-          Mes véhicules
+        <Button variant="outlined" component={RouterLink} to="/account">
+          Mon compte
         </Button>
       </Stack>
     </>

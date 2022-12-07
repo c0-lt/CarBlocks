@@ -9,6 +9,12 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card';
 
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+  MemoryRouter,
+} from "react-router-dom";
+
 function Cars() {
   const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -39,7 +45,10 @@ function Cars() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Voir</Button>
+                    <Button size="small" component={RouterLink}
+                    to={{
+                      pathname: "/marketplace/" + card,
+                    }}>Voir</Button>
                     <Button size="small">Faire une offre</Button>
                   </CardActions>
                 </Card>

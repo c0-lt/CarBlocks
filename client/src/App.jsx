@@ -9,9 +9,12 @@ import Container from '@mui/material/Container';
 import Layout from "./components/Layout";
 import Home from "./components/Home";
 import Social from "./components/Social";
+import SocialCar from "./components/Social/Car";
 import Marketplace from "./components/Marketplace";
-import Car from "./components/Car";
+import MarketplaceCar from "./components/Marketplace/Car";
+import Account from "./components/Account";
 import About from "./components/About";
+import Offer from "./components/Offer";
 
 import "./App.css";
 
@@ -27,9 +30,12 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="social" element={<Social />} />
+          <Route path="social/:id" element={<SocialCar />} />
           <Route path="marketplace" element={<Marketplace />} />
-          <Route path="car" element={<Car />} />
+          <Route path="marketplace/:id" element={<MarketplaceCar />} />
+          <Route path="account" element={<Account />} />
           <Route path="about" element={<About />} />
+          <Route path="offer/:id" element={<Offer />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>

@@ -10,6 +10,12 @@ import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 import Rating from '@mui/material/Rating';
 
+import {
+  Link as RouterLink,
+  LinkProps as RouterLinkProps,
+  MemoryRouter,
+} from "react-router-dom";
+
 function Cars() {
   const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
@@ -38,7 +44,10 @@ function Cars() {
                     <Rating name="half-rating-read" defaultValue={2.5} precision={0.5} readOnly />
                   </CardContent>
                   <CardActions>
-                    <Button size="small">Voir</Button>
+                    <Button size="small" component={RouterLink}
+                    to={{
+                      pathname: "/social/" + card,
+                    }}>Voir</Button>
                   </CardActions>
                 </Card>
               </Grid>

@@ -6,6 +6,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import MyCars from './MyCars';
 import MintCar from './MintCar';
+import MyOffers from './MyOffers';
+import OffersReceived from './OffersReceived';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -40,7 +42,7 @@ function a11yProps(index) {
   };
 }
 
-function Car() {
+function Account() {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -62,6 +64,8 @@ function Car() {
     >
       <Tab label="Mes voitures" {...a11yProps(0)} />
       <Tab label="Déclarer sa voiture" {...a11yProps(1)} />
+      <Tab label="Mes offres" {...a11yProps(2)} />
+      <Tab label="Offres reçues" {...a11yProps(3)} />
     </Tabs>
     <TabPanel value={value} index={0}>
       <MyCars/>
@@ -69,8 +73,14 @@ function Car() {
     <TabPanel value={value} index={1}>
       <MintCar/>
     </TabPanel>
+    <TabPanel value={value} index={2}>
+      <MyOffers/>
+    </TabPanel>
+    <TabPanel value={value} index={3}>
+      <OffersReceived/>
+    </TabPanel>
   </Box>
   );
 }
 
-export default Car;
+export default Account;
