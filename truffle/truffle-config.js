@@ -30,6 +30,13 @@ module.exports = {
 
   // Set default mocha options here, use special reporters, etc.
   mocha: {
+    reporter: "eth-gas-reporter",
+    reporterOptions: {
+      //gasPrice: 1,
+      token: "ETH",
+      showTimeSpent: true,
+      coinmarketcap: `${process.env.COINMARKETCAP_API_KEY}`,
+    },
     // timeout: 100000
   },
 
