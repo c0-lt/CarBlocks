@@ -93,15 +93,11 @@ contract CarBlocks is ERC721URIStorage {
     }
 
     //TODO: accessible only to NFT owner ?
-    /// @notice Retrieve all NFTs from address of owner
+    /// @notice Retrieve all NFTs of contract caller
     /// @dev Get an array of Carblock struct with the NFT token ID
-    /// @param _addr Owner's address
     /// @return carblocks an array of carblock NFT
-    function getCarblocks(address _addr)
-        external
-        view
-        returns (Carblock[] memory)
-    {
+    function getCarblocks() external view returns (Carblock[] memory) {
+        address _addr = _msgSender();
         Carblock[] memory carblocks = new Carblock[](users[_addr].length);
 
         for (uint256 i = 0; i < users[_addr].length; i++) {

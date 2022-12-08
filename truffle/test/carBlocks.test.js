@@ -94,7 +94,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should get an array of 3 carblocks", async () => {
-      let carblocks = await cb.getCarblocks(user1);
+      let carblocks = await cb.getCarblocks({from: user1});
       expect(carblocks.length.toString()).to.be.bignumber.equal(BN(3));
     });
 
@@ -136,9 +136,8 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
 
     it("should transfer a token from user 1 to user 2 ", async () => {
       expect(await cb.ownerOf(1)).to.equal(user1);
-      console.log("USERS : ", await cb.users(user1, 0));
+      //console.log("USERS : ", await cb.users(user1, 0));
       await cb.transferCarblockNFT(user2, 1, 0x00, {from: user1});
-      console.log("USERS : ", await cb.users(user2, 0));
       expect(await cb.ownerOf(1)).not.to.equal(user1);
       expect(await cb.ownerOf(1)).to.equal(user2);
     });
