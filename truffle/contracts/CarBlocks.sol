@@ -56,13 +56,23 @@ contract CarBlocks is ERC721URIStorage {
     struct Carblock {
         CarState carState;
         Car car;
+        bool isForSale;
+    }
+
+    /// @notice Make sure contract caller is owner of _tokenId
+    modifier isNFTOwner(uint256 _tokenId) {
+        require(
+            _msgSender() == ownerOf(_tokenId),
+            "Error: you are not the owner of the car"
+        );
+        _;
     }
 
     /// @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
     //TODO : qui peut appeler users ?
-    mapping(address => uint256[]) public users;
+    mapping(address => uint256[]) public users; // address => [tokenID]
     mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
 
     constructor(string memory _energyType) ERC721(_name, _symbol) {
@@ -76,12 +86,14 @@ contract CarBlocks is ERC721URIStorage {
     function getCarblock(uint256 _tokenId)
         external
         view
+        isNFTOwner(_tokenId)
         returns (Carblock memory)
     {
         return carblocksNFT[_tokenId];
     }
 
-    /// @notice Retrieve NFTs from address of owner
+    //TODO: accessible only to NFT owner ?
+    /// @notice Retrieve all NFTs from address of owner
     /// @dev Get an array of Carblock struct with the NFT token ID
     /// @param _addr Owner's address
     /// @return carblocks an array of carblock NFT
@@ -98,6 +110,23 @@ contract CarBlocks is ERC721URIStorage {
         return carblocks;
     }
 
+    /// @notice Retrieve all NFTs that are for sale
+    /// @dev The returned array of Carblock might not be completely full
+    /// @return Carblock[] the list of carblocks NFT
+    function getCarblocksForSale() external view returns (Carblock[] memory) {
+        Carblock[] memory carblocksForSale = new Carblock[](
+            carblocksNFT.length
+        );
+        uint256 counter;
+        for (uint256 i = 0; i < carblocksNFT.length; i++) {
+            if (carblocksNFT[i].isForSale == true) {
+                carblocksForSale[counter] = carblocksNFT[i];
+                counter++;
+            }
+        }
+        return carblocksForSale;
+    }
+
     /// @notice Add a new maintenance to a specific NFT
     /// @dev After the maintenance file has been upload to IPFS call this method to update maintenanceURI
     /// @param _tokenId NFT token ID
@@ -111,11 +140,7 @@ contract CarBlocks is ERC721URIStorage {
         MaintenanceType _mType,
         uint256 _kilometers,
         string calldata _maintenanceURI
-    ) external {
-        require(
-            _msgSender() == ownerOf(_tokenId),
-            "Error: you are not the owner of the car"
-        );
+    ) external isNFTOwner(_tokenId) {
         _allMaintenances[_tokenId].push(
             Maintenance(_date, _kilometers, _mType, _maintenanceURI)
         );
@@ -128,12 +153,9 @@ contract CarBlocks is ERC721URIStorage {
     function getMaintenances(uint256 _tokenId)
         external
         view
+        isNFTOwner(_tokenId)
         returns (Maintenance[] memory)
     {
-        require(
-            _msgSender() == ownerOf(_tokenId),
-            "Error: you are not the owner of the car"
-        );
         return _allMaintenances[_tokenId];
     }
 
@@ -143,34 +165,35 @@ contract CarBlocks is ERC721URIStorage {
     /// @dev
     /// @param _user address of the future owner of minted NFT
     /// @param _circulationStartDate first circulation date of owner's car
-    /// @param _VIN car serial number
-    /// @param _brand brand of car
-    /// @param _model model of car
-    /// @param _tokenURI URI to json stored on IPFS
+    /// @param _vInfo array with [VIN, brand, model, tokenURI] in this order
     /// @param _state car's state (ENUM)
+    /// @param _isForSale wether the car is for sale
     function mintCarblock(
         address _user,
         uint256 _circulationStartDate,
-        string calldata _VIN,
-        string calldata _brand,
-        string calldata _model,
-        string calldata _tokenURI,
-        CarState _state
+        string[] calldata _vInfo,
+        CarState _state,
+        bool _isForSale
     ) external returns (uint256) {
         _tokenIds.increment(); // Increment NFT ID (starts at 0)
 
-        Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
-        carblocksNFT.push(Carblock(_state, car));
+        Car memory car = Car(
+            _circulationStartDate,
+            _vInfo[0],
+            _vInfo[1],
+            _vInfo[2]
+        );
+        carblocksNFT.push(Carblock(_state, car, _isForSale));
 
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
-        _setTokenURI(newTokenId, _tokenURI);
+        _setTokenURI(newTokenId, _vInfo[3]);
         users[_user].push(newTokenId);
 
         return newTokenId;
     }
 
-    /// @notice Transfer an NFT when an owner is selling his vehicle to new owner
+    /// @notice Transfer a NFT when an owner is selling his vehicle to new owner
     /// @dev Uses _safeTransfer to update owner and update the 'users' mapping
     /// @param _to address of the new NFT owner
     /// @param _tokenId Token ID of NFT to transfer
@@ -179,7 +202,7 @@ contract CarBlocks is ERC721URIStorage {
         address _to,
         uint256 _tokenId,
         bytes memory _data
-    ) external payable {
+    ) external payable isNFTOwner(_tokenId) {
         address sender = _msgSender();
         _safeTransfer(sender, _to, _tokenId, _data);
 
