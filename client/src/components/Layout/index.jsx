@@ -6,10 +6,12 @@ import Footer from "../Footer";
 import TopBar from "../TopBar";
 
 import Container from "@mui/material/Container";
+import { Backdrop, CircularProgress } from "@mui/material";
+import { BackdropProvider } from "../../contexts/Loader";
 
 function Layout() {
   return (
-    <>
+    <BackdropProvider>
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{vertical: "top", horizontal: "right"}}
@@ -29,7 +31,7 @@ function Layout() {
         </Container>
       </main>
       <Footer />
-    </>
+    </BackdropProvider>
   );
 }
 

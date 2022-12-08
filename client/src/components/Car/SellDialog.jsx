@@ -65,7 +65,7 @@ function SellDialog({id, handleClose, open, car}) {
               id="price"
               required
               label="Prix"
-              autoFocusffe
+              autoFocus
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">

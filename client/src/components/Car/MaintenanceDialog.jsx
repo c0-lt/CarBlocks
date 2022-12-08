@@ -37,8 +37,13 @@ import AddCommentIcon from "@mui/icons-material/AddComment";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
 import {useParams, Link as RouterLink} from "react-router-dom";
+import axios from "axios";
+import {useBackdrop} from "../../contexts/Loader";
+import useEth from "../../contexts/EthContext/useEth";
 
 function MaintenanceDialog({id, handleClose, open, car}) {
+  const backdrop = useBackdrop();
+
   const maintenanceType = [
     "Remplacement pièces",
     "Remplacement pneus",
@@ -48,31 +53,84 @@ function MaintenanceDialog({id, handleClose, open, car}) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    backdrop.showLoader();
     const data = new FormData(event.currentTarget);
+    console.log(file);
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      serviceDate: dayjs(date).unix(),
+      kilometrage: data.get("kilometrage"),
+      type: type,
+      file: file,
     });
+    sendFileToIPFS();
   };
 
-  const [date, setDate] = React.useState();
+  const sendFileToIPFS = async (e) => {
+    if (file) {
+      // const FormData = require('form-data');
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const metadata = JSON.stringify({
+        name: "File name",
+      });
+      formData.append("pinataMetadata", metadata);
+
+      const options = JSON.stringify({
+        cidVersion: 0,
+      });
+      formData.append("pinataOptions", options);
+
+      console.log(`multipart/form-data; boundary=${formData._boundary}`);
+
+      try {
+        const resFile = await axios.post(
+          "https://api.pinata.cloud/pinning/pinFileToIPFS",
+          formData,
+          {
+            maxBodyLength: "Infinity",
+            headers: {
+              'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
+              // pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
+              // pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
+              Authorization:
+                "Bearer " + `${process.env.REACT_APP_PINATA_API_JWT}`,
+            },
+          }
+        );
+
+        const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
+        console.log(ImgHash);
+        const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
+        console.log(ImgHashGW);
+        backdrop.hideLoader();
+        //Take a look at your Pinata Pinned section, you will see a new file added to you list.
+      } catch (error) {
+        console.log("Error sending File to IPFS: ");
+        console.log(error);
+      }
+    }
+  };
+
+  const [date, setDate] = React.useState(dayjs());
   const [file, setFile] = React.useState("");
+  const [filePath, setFilePath] = React.useState("");
+  const [type, setType] = React.useState("");
 
   const handleChangeDate = (newValue) => {
     console.log(newValue);
     setDate(newValue);
   };
 
-  const handleChangeFile = (newValue) => {
-    let filePath = newValue.target.value;
-    if (filePath) {
-      const lastIndexOf = filePath.lastIndexOf("\\");
-      filePath = filePath.slice(lastIndexOf + 1);
+  const handleChangeFile = (e) => {
+    setFile(e.target.files[0]);
+    let filePathTmp = e.target.value;
+    if (filePathTmp) {
+      const lastIndexOf = filePathTmp.lastIndexOf("\\");
+      filePathTmp = filePathTmp.slice(lastIndexOf + 1);
     }
-    setFile(filePath);
+    setFilePath(filePathTmp);
   };
-
-  const [type, setType] = React.useState("");
 
   const handleChangeType = (event) => {
     setType(event.target.value);
@@ -93,7 +151,7 @@ function MaintenanceDialog({id, handleClose, open, car}) {
         <DialogTitle>Ajouter un entretien</DialogTitle>
         <DialogContent>
           <DialogContentText>{car}</DialogContentText>
-          <Grid container spacing={2} sx={{mt: 2}} justifyContent="center">
+          <Grid container spacing={2} sx={{mt: 2}} textAlign="left">
             <Grid item xs={6}>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
@@ -113,9 +171,10 @@ function MaintenanceDialog({id, handleClose, open, car}) {
               <TextField
                 fullWidth
                 id="kilometrage"
+                name="kilometrage"
                 required
                 label="Kilométrage"
-                autoFocusffe
+                autoFocus
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">Km</InputAdornment>
@@ -148,7 +207,7 @@ function MaintenanceDialog({id, handleClose, open, car}) {
                   name="file"
                   label="Facture"
                   id="file"
-                  value={file}
+                  value={filePath}
                 />
                 <IconButton
                   size="large"

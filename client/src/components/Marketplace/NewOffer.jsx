@@ -65,7 +65,7 @@ function NewOffer({id, handleClose, open, car}) {
               id="outlined-select-currency"
               required
               label="Offre"
-              autoFocusffe
+              autoFocus
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
