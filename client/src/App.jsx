@@ -17,6 +17,7 @@ import About from "./components/About";
 import Offer from "./components/Offer";
 
 import "./App.css";
+import Car from "./components/Car";
 
 function App() {
   const client = createClient({
@@ -34,8 +35,9 @@ function App() {
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/:id" element={<MarketplaceCar />} />
           <Route path="account" element={<Account />} />
-          <Route path="about" element={<About />} />
+          <Route path="car/:id" element={<Car />} />
           <Route path="offer/:id" element={<Offer />} />
+          <Route path="about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
