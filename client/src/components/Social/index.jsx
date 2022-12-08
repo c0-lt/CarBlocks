@@ -1,12 +1,18 @@
-import {useState} from "react";
-import useEth from "../../contexts/EthContext/useEth";
+import Cars from "./Cars";
+import Filters from "./Filters";
+import Grid from '@mui/material/Grid';
 
-function Social() {
+function Marketplace() {
   return (
-    <div className="demo">
-      Social
-    </div>
+    <Grid maxWidth="lg" container spacing={2}>
+      <Grid item md={3}>
+        <Filters/>
+      </Grid>
+      <Grid item md={9}>
+        <Cars />
+      </Grid>
+    </Grid>
   );
 }
 
-export default Social;
+export default Marketplace;

@@ -1,28 +1,15 @@
 import {useState} from "react";
-import useEth from "../../contexts/EthContext/useEth";
-import Title from "../Demo/Title";
 import Contract from "../Demo/Contract";
 import ContractBtns from "../Demo/ContractBtns";
-import NoticeNoArtifact from "../Demo/NoticeNoArtifact";
-import NoticeWrongNetwork from "../Demo/NoticeWrongNetwork";
 import Menu from "./Menu";
 
 import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 
 import {useAccount, useConnect, useDisconnect} from "wagmi";
 import {InjectedConnector} from "wagmi/connectors/injected";
-
-import {EthProvider} from "../../contexts/EthContext";
-import {SnackbarProvider} from "notistack";
-import Intro from "../Intro";
-import Demo from "../Demo";
-import Footer from "../Footer";
-import Profile from "../Profile";
-import TopBar from "../TopBar";
 
 function Home() {
   const {address, isConnected} = useAccount();
@@ -31,7 +18,6 @@ function Home() {
   });
   const {disconnect} = useDisconnect();
 
-  const {state} = useEth();
   const [value, setValue] = useState("?");
 
   const demo = (
@@ -44,22 +30,16 @@ function Home() {
   );
 
   return (
-    <Container
-      sx={{
-        mt: 5,
-        bgcolor: "background.paper",
-        pt: 8,
-        pb: 6,
-      }}
-      maxWidth="sm"
-    >
-      <Box
-        maxWidth="sm"
-        component="img"
-        src="logo+title+catchphrase.png"
-        alt="logo"
-        sx={{mb: "30px"}}
-      />
+    <>
+      <Box display="flex" justifyContent="center" alignItems="center">
+        <Box
+          maxWidth="sm"
+          component="img"
+          src="logo+title+catchphrase.png"
+          alt="logo"
+          sx={{mb: "30px"}}
+        />
+      </Box>
       {/* <Typography
               component="h1"
               variant="h2"
@@ -88,17 +68,17 @@ function Home() {
         ) : (
           <>
             <Button onClick={() => connect()} variant="contained" size="large">
-              Particulier
+              Connexion Particulier
             </Button>
             <Button variant="outlined" size="large">
-              Professionnel
+              Connexion Professionnel
             </Button>
           </>
         )}
       </Stack>
 
       {isConnected && <Menu />}
-    </Container>
+    </>
   );
 
   /*   return (

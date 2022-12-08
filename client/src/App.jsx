@@ -1,26 +1,27 @@
 import * as React from "react";
-import { Routes, Route, Outlet, Link } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 
 import { WagmiConfig, createClient } from "wagmi";
 import { getDefaultProvider } from "ethers";
 
-import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 
-import { EthProvider } from "./contexts/EthContext";
-import { SnackbarProvider } from 'notistack';
 import Layout from "./components/Layout";
 import Home from "./components/Home";
 import Social from "./components/Social";
+import SocialCar from "./components/Social/Car";
 import Marketplace from "./components/Marketplace";
-import Car from "./components/Car";
+import MarketplaceCar from "./components/Marketplace/Car";
+import Account from "./components/Account";
 import About from "./components/About";
+import Offer from "./components/Offer";
 
 import "./App.css";
+import Car from "./components/Car";
 
 function App() {
   const client = createClient({
-    autoConnect: false,
+    autoConnect: true,
     provider: getDefaultProvider(),
   });
 
@@ -30,8 +31,12 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="social" element={<Social />} />
+          <Route path="social/:id" element={<SocialCar />} />
           <Route path="marketplace" element={<Marketplace />} />
-          <Route path="car" element={<Car />} />
+          <Route path="marketplace/:id" element={<MarketplaceCar />} />
+          <Route path="account" element={<Account />} />
+          <Route path="car/:id" element={<Car />} />
+          <Route path="offer/:id" element={<Offer />} />
           <Route path="about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>
