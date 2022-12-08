@@ -7,6 +7,7 @@ import "./CarBlocks.sol";
 /// @author Quentin COLLETTE & Maxime LESBROS
 /// @notice Smart Contract allowing to create & manage Carblocks NFT collections
 /// @dev Stay away from this or you're facing sleep deprivation
+//TODO : nat spec
 contract CarBlocksFactory {
     CarBlocks[] public carblocksCollection;
 
