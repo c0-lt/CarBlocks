@@ -105,12 +105,11 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
 
     it("should get one carblock corresponding to a Fiat", async () => {
       let carblock = await cb.getCarblock(1);
-      console.log(carblock);
       expect(carblock.car.brand).to.equal("Fiat");
     });
   });
 
-  describe.only("Test of maintenances access functions", () => {
+  describe("Test of maintenances access functions", () => {
     before(async () => {
       cb = await buildCarblocks();
       await mintCB(user1);
@@ -128,10 +127,25 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
 
     it("should get a maintenances for 10000 kilometers", async () => {
       let maintenances = await cb.getMaintenances(1, {from: user1});
-      console.log(maintenances);
       expect(maintenances[0].kilometers.toString()).to.be.bignumber.equal(
         BN(10000)
       );
+    });
+  });
+
+  describe("Test of NFT transfer", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1);
+    });
+
+    it.only("should transfer a token from user 1 to user 2 ", async () => {
+      expect(await cb.ownerOf(1)).to.equal(user1);
+      console.log("USERS : ", await cb.users(user1, 0));
+      await cb.transferCarblockNFT(user2, 1, 0x00, {from: user1});
+      console.log("USERS : ", await cb.users(user2, 0));
+      expect(await cb.ownerOf(1)).not.to.equal(user1);
+      expect(await cb.ownerOf(1)).to.equal(user2);
     });
   });
 });

@@ -51,39 +51,67 @@ contract CarBlocks is ERC721URIStorage {
         CarState carState;
         Car car;
     }
-         
+
     // @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
-    //TODO : QCO si on transfert il faut virer le tokenID dans users
-    mapping(address =>uint256[]) private users;   
-    mapping(uint256 => Maintenance[]) allMaintenances;  // tokenID => [Maintenance1, Maintenance2]  
+    //TODO : qui peut appeler users ?
+    mapping(address => uint256[]) public users;
+    mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
 
     constructor() ERC721("Carblocks", "CBK") {}
 
-    
-    function getCarblock(uint256 _tokenId)external view returns(Carblock memory) {
+    function getCarblock(uint256 _tokenId)
+        external
+        view
+        returns (Carblock memory)
+    {
         return carblocksNFT[_tokenId];
     }
 
-    function getCarblocks(address _addr)external view returns(Carblock[] memory) {
+    function getCarblocks(address _addr)
+        external
+        view
+        returns (Carblock[] memory)
+    {
         Carblock[] memory carblocks = new Carblock[](users[_addr].length);
-        
-        for(uint256 i =0 ; i< users[_addr].length; i++){
+
+        for (uint256 i = 0; i < users[_addr].length; i++) {
             carblocks[i] = carblocksNFT[users[_addr][i]];
         }
         return carblocks;
     }
 
-    function addMaintenance(uint256 _tokenId, uint _date, MaintenanceType _mType, uint _kilometers, string calldata _maintenanceURI) external {
-        require(_msgSender() == ownerOf(_tokenId), "Error : you are not the owner of the car");
-        allMaintenances[_tokenId].push(Maintenance(_date, _kilometers, _mType, _maintenanceURI));
+    function addMaintenance(
+        uint256 _tokenId,
+        uint256 _date,
+        MaintenanceType _mType,
+        uint256 _kilometers,
+        string calldata _maintenanceURI
+    ) external {
+        require(
+            _msgSender() == ownerOf(_tokenId),
+            "Error: you are not the owner of the car"
+        );
+        _allMaintenances[_tokenId].push(
+            Maintenance(_date, _kilometers, _mType, _maintenanceURI)
+        );
     }
 
-    function getMaintenances(uint256 _tokenId) external view returns(Maintenance[] memory){
-        require(_msgSender() == ownerOf(_tokenId), "Error : you are not the owner of the car");
-        return allMaintenances[_tokenId];
+    function getMaintenances(uint256 _tokenId)
+        external
+        view
+        returns (Maintenance[] memory)
+    {
+        require(
+            _msgSender() == ownerOf(_tokenId),
+            "Error: you are not the owner of the car"
+        );
+        return _allMaintenances[_tokenId];
     }
+
+    //TODO:gas cost
+    //TODO: transfer ?? -> use _msgData pour les données
 
     //TODO : onlyOwner ?
     //TODO : check memory vs calldata
@@ -105,9 +133,9 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _model,
         string calldata _tokenURI,
         CarState _state
-    ) external returns(uint256){
+    ) external returns (uint256) {
         // Increment NFT ID (starts at 0)
-        _tokenIds.increment(); 
+        _tokenIds.increment();
 
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
         carblocksNFT.push(Carblock(_state, car));
@@ -119,4 +147,29 @@ contract CarBlocks is ERC721URIStorage {
 
         return newTokenId;
     }
+
+    function transferCarblockNFT(
+        address _to,
+        uint256 _tokenId,
+        bytes memory _data
+    ) external payable {
+        address sender = _msgSender();
+        _safeTransfer(sender, _to, _tokenId, _data);
+
+        uint256[] memory updatedTokensList = new uint256[](
+            users[sender].length - 1
+        );
+        uint8 counter;
+
+        for (uint256 i = 0; i < users[sender].length; i++) {
+            if (users[sender][i] != _tokenId) {
+                updatedTokensList[counter] = users[sender][i];
+            }
+            counter++;
+        }
+        users[sender] = updatedTokensList;
+        users[_to].push(_tokenId);
+    }
 }
+
+// https://ethereum.stackexchange.com/questions/115430/how-to-make-a-payable-transferfrom-function-that-inherits-from-openzeppelin-erc7
