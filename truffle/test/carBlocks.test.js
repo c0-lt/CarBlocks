@@ -5,11 +5,12 @@ const {expect} = require("chai");
 contract("Test cases for CarBlocks smart contract", (accounts) => {
   const admin = accounts[0];
   const user1 = accounts[1];
+  const energyType = "Hybrid";
   const tokenURI =
     "https://gateway.pinata.cloud/ipfs/QmeCgSRsv1J1KDTz6gctSXc2Y8jwqkGqvqGfp9Tja8WpNX/multipla.json";
 
   function buildCarblocks() {
-    return CarBlocks.new({from: admin});
+    return CarBlocks.new(energyType, {from: admin});
   }
 
   describe("Test of the deployment phase", () => {
@@ -26,7 +27,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should have a name", async () => {
-      expect(await cb.name.call()).to.be.equal("Carblocks");
+      expect(await cb.name.call()).to.be.equal("CarBlock");
     });
   });
 

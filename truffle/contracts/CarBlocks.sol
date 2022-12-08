@@ -14,6 +14,13 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice counter to increment id of carblock NFT
     Counters.Counter private _tokenIds;
 
+    /// @notice this will differentiate the various collections (gasoline, diesel, hybrid...)
+    string public energyType;
+
+    /// @notice forcing the name and symbol for our Carblock token
+    string constant _name = "CarBlock";
+    string constant _symbol = "CBK";
+
     /// @notice Defines the various states a car can be in
     enum CarState {
         circulation,
@@ -56,9 +63,10 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
-    constructor() ERC721("Carblocks", "CBK") {}
+    constructor(string memory _energyType) ERC721(_name, _symbol) {
+        energyType = _energyType;
+    }
 
-    //TODO : onlyOwner ?
     //TODO : check memory vs calldata
     //TODO : payable
     /// @notice Allow user to mint a new Carblock NFT
@@ -78,9 +86,9 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _model,
         string calldata _tokenURI,
         CarState _state
-    ) external returns(uint256){
+    ) external returns (uint256) {
         // Increment NFT ID (starts at 0)
-        _tokenIds.increment(); 
+        _tokenIds.increment();
 
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
         Carblock storage carblockNFT = carblocksNFT.push();
