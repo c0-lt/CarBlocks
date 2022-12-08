@@ -14,16 +14,14 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     return CarBlocks.new(energyType, {from: admin});
   }
 
-  async function mintCB(to) {
+  async function mintCB(_to, _isForSale) {
     return await cb.mintCarblock(
-      to,
+      _to,
       1670177418,
-      "1234",
-      "Fiat",
-      "Multipla",
-      tokenURI,
+      ["1234", "Fiat", "Multipla", tokenURI],
       0,
-      {from: to}
+      _isForSale,
+      {from: _to}
     );
   }
 
@@ -49,19 +47,17 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     let tokenID = 0;
     beforeEach(async () => {
       cb = await buildCarblocks();
-      // .call will instantely return the tokenID but will not save anything in bck
+      // .call will instantly return the tokenID but will not save anything in bck
       // for that, we need to call mintCarblock directly. So we need to "execute" it twice
       tokenID = await cb.mintCarblock.call(
         user1,
         1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
+        ["1234", "Fiat", "Multipla", tokenURI],
         0,
+        false,
         {from: user1}
       );
-      await mintCB(user1);
+      await mintCB(user1, false);
     });
 
     it("should have a balance of 1", async () => {
@@ -80,7 +76,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("Should emit Transfer event", async () => {
-      const eventEmitted = await mintCB(user1);
+      const eventEmitted = await mintCB(user1, false);
       await expectEvent(eventEmitted, "Transfer", {
         from: "0x0000000000000000000000000000000000000000",
         to: user1,
@@ -91,10 +87,10 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
   describe("Test of carblock access functions", () => {
     beforeEach(async () => {
       cb = await buildCarblocks();
-      await mintCB(user1);
-      await mintCB(user1);
-      await mintCB(user1);
-      await mintCB(user2);
+      await mintCB(user1, false);
+      await mintCB(user1, false);
+      await mintCB(user1), false;
+      await mintCB(user2), false;
     });
 
     it("should get an array of 3 carblocks", async () => {
@@ -103,7 +99,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should get one carblock corresponding to a Fiat", async () => {
-      let carblock = await cb.getCarblock(1);
+      let carblock = await cb.getCarblock(1, {from: user1});
       expect(carblock.car.brand).to.equal("Fiat");
     });
   });
@@ -111,9 +107,9 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
   describe("Test of maintenances access functions", () => {
     before(async () => {
       cb = await buildCarblocks();
-      await mintCB(user1);
-      await mintCB(user1);
-      await mintCB(user1);
+      await mintCB(user1, false);
+      await mintCB(user1, false);
+      await mintCB(user1), false;
     });
 
     it("should add a new maintenance for user with tokenId : 1", async () => {
@@ -135,7 +131,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
   describe("Test of NFT transfer", () => {
     before(async () => {
       cb = await buildCarblocks();
-      await mintCB(user1);
+      await mintCB(user1, false);
     });
 
     it("should transfer a token from user 1 to user 2 ", async () => {
@@ -145,6 +141,20 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       console.log("USERS : ", await cb.users(user2, 0));
       expect(await cb.ownerOf(1)).not.to.equal(user1);
       expect(await cb.ownerOf(1)).to.equal(user2);
+    });
+  });
+
+  describe("Test of NFT marketplace", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, true);
+      await mintCB(user1, true);
+      await mintCB(user1, true);
+    });
+
+    it("should get a list of 3 NFT for sale", async () => {
+      let sale = await cb.getCarblocksForSale();
+      expect(sale.length.toString()).to.be.bignumber.equal(BN(3));
     });
   });
 });
