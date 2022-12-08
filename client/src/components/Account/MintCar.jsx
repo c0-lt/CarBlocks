@@ -6,13 +6,26 @@ import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import dayjs from "dayjs";
 import Stack from "@mui/material/Stack";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
 import {LocalizationProvider} from "@mui/x-date-pickers/LocalizationProvider";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
-import IconButton from '@mui/material/IconButton';
-import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import IconButton from "@mui/material/IconButton";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
 
 function MintCar() {
+  const energyList = [
+    "Essence",
+    "Diesel",
+    "GPL",
+    "Electrique",
+    "Hybride essence",
+    "Hybride diesel"
+  ];
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -32,15 +45,21 @@ function MintCar() {
 
   const handleChangePicture = (newValue) => {
     let picturePath = newValue.target.value;
-    if(picturePath) {
-      const lastIndexOf = picturePath.lastIndexOf('\\');
+    if (picturePath) {
+      const lastIndexOf = picturePath.lastIndexOf("\\");
       picturePath = picturePath.slice(lastIndexOf + 1);
     }
     setPicture(picturePath);
   };
 
+  const [energy, setEnergy] = React.useState("");
+
+  const handleChangeEnergy = (event) => {
+    setEnergy(event.target.value);
+  };
+
   return (
-    <Box width="md" sx={{mx: 'auto'}}>
+    <Box width="md" sx={{mx: "auto"}}>
       <Typography variant="h3" gutterBottom>
         Déclarer sa voiture
       </Typography>
@@ -51,10 +70,10 @@ function MintCar() {
         alignItems="center"
         noValidate
         onSubmit={handleSubmit}
-        sx={{mt: 3, mx: 'auto'}}
+        sx={{mt: 3, mx: "auto"}}
         maxWidth="sm"
       >
-        <Grid container spacing={2} >
+        <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
               name="vin"
@@ -129,7 +148,7 @@ function MintCar() {
               accept="image/*"
               id="raised-button-file"
               multiple
-              type="file"
+              energy="file"
             />
             <label htmlFor="raised-button-file">
               <Button variant="raised" component="span">
@@ -137,22 +156,51 @@ function MintCar() {
               </Button>
             </label>
           </Grid> */}
+          <Grid item xs={12} sm={6} textAlign="left"
+        justifyContent="left"
+        alignItems="left">
+          <FormControl fullWidth>
+              <InputLabel id="label-energy">Energy</InputLabel>
+              <Select
+                labelId="label-energy"
+                id="energy"
+                value={energy}
+                label="Energy"
+                onChange={handleChangeEnergy}
+              >
+                {energyList.map((energyCurrent) => (
+                  <MenuItem value={energyCurrent}>{energyCurrent}</MenuItem>
+                ))}
+              </Select>
+              </FormControl>
+          </Grid>
           <Grid item xs={12} sm={6}>
-          <Stack direction="row" spacing={1}>
-          <TextField
-              required
-              disabled
-              fullWidth
-              name="picture"
-              label="Photo"
-              id="picture"
-              value={picture}
-            />
-          <IconButton size="large" color="primary" aria-label="upload picture" component="label">
-            <input hidden onChange={handleChangePicture} id="picture" accept="image/*" type="file" />
-            <PhotoCamera fontSize="inherit" />
-          </IconButton>
-          </Stack>
+            <Stack direction="row" spacing={1}>
+              <TextField
+                required
+                disabled
+                fullWidth
+                name="picture"
+                label="Photo"
+                id="picture"
+                value={picture}
+              />
+              <IconButton
+                size="large"
+                color="primary"
+                aria-label="upload picture"
+                component="label"
+              >
+                <input
+                  hidden
+                  onChange={handleChangePicture}
+                  id="picture"
+                  accept="image/*"
+                  energy="file"
+                />
+                <PhotoCamera fontSize="inherit" />
+              </IconButton>
+            </Stack>
           </Grid>
           {/* <Grid item xs={12} sm={8}>
             <FormControlLabel
@@ -161,7 +209,7 @@ function MintCar() {
             />
           </Grid> */}
         </Grid>
-        <Button type="submit" variant="contained" sx={{mt: 3, mb: 2}}>
+        <Button energy="submit" variant="contained" sx={{mt: 3, mb: 2}}>
           Enregistrer
         </Button>
       </Box>

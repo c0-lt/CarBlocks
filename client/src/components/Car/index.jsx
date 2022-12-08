@@ -110,6 +110,7 @@ function Car() {
                   <Grid item md={6}>
                     <Typography>Marque:</Typography>
                     <Typography>Modèle:</Typography>
+                    <Typography>Energie:</Typography>
                     <Typography>Numéro d'immatriculation:</Typography>
                     <Typography>Première mise en circulation:</Typography>
                     <Typography>Numéro de série:</Typography>
@@ -118,6 +119,7 @@ function Car() {
                   <Grid item md={6}>
                     <Typography>Mclaren</Typography>
                     <Typography>720s</Typography>
+                    <Typography>Essence</Typography>
                     <Typography>AF-312-RS</Typography>
                     <Typography>
                       {dayjs().format("DD-MM-YYYY HH:mm:ss")}
