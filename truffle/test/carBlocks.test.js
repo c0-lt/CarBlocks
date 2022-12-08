@@ -155,5 +155,11 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       let sale = await cb.getCarblocksForSale();
       expect(sale.length.toString()).to.be.bignumber.equal(BN(3));
     });
+
+    it("should set a price of 10000 for a NFT", async () => {
+      await cb.setPrice(1, 10000, {from: user1});
+      let carblock = await cb.getCarblock(1, {from: user1});
+      expect(await carblock.price).to.be.bignumber.equal(BN(10000));
+    });
   });
 });
