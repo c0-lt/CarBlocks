@@ -69,6 +69,10 @@ contract CarBlocks is ERC721URIStorage {
         energyType = _energyType;
     }
 
+    /// @notice Retrieve NFT from token ID
+    /// @dev Get the Carblock struct with the NFT token ID
+    /// @param _tokenId NFT token ID
+    /// @return Carblock
     function getCarblock(uint256 _tokenId)
         external
         view
@@ -77,6 +81,10 @@ contract CarBlocks is ERC721URIStorage {
         return carblocksNFT[_tokenId];
     }
 
+    /// @notice Retrieve NFTs from address of owner
+    /// @dev Get an array of Carblock struct with the NFT token ID
+    /// @param _addr Owner's address
+    /// @return carblocks an array of carblock NFT
     function getCarblocks(address _addr)
         external
         view
@@ -90,6 +98,13 @@ contract CarBlocks is ERC721URIStorage {
         return carblocks;
     }
 
+    /// @notice Add a new maintenance to a specific NFT
+    /// @dev After the maintenance file has been upload to IPFS call this method to update maintenanceURI
+    /// @param _tokenId NFT token ID
+    /// @param _date Date of maintenance
+    /// @param _mType Type of maintenance (enum)
+    /// @param _kilometers Total distance of the car at time of maintenance
+    /// @param _maintenanceURI URI of maintenance JSON file on IPFS
     function addMaintenance(
         uint256 _tokenId,
         uint256 _date,
@@ -106,6 +121,10 @@ contract CarBlocks is ERC721URIStorage {
         );
     }
 
+    /// @notice Get list of all maintenances done on a car from a NFT token ID
+    /// @dev Return an array of Maintenance struct
+    /// @param _tokenId NFT token ID
+    /// @return Maintenance[]
     function getMaintenances(uint256 _tokenId)
         external
         view
@@ -122,7 +141,7 @@ contract CarBlocks is ERC721URIStorage {
     //TODO : payable
     /// @notice Allow user to mint a new Carblock NFT
     /// @dev
-    /// @param _user address of the futur owner of minted NFT
+    /// @param _user address of the future owner of minted NFT
     /// @param _circulationStartDate first circulation date of owner's car
     /// @param _VIN car serial number
     /// @param _brand brand of car
@@ -138,8 +157,7 @@ contract CarBlocks is ERC721URIStorage {
         string calldata _tokenURI,
         CarState _state
     ) external returns (uint256) {
-        // Increment NFT ID (starts at 0)
-        _tokenIds.increment();
+        _tokenIds.increment(); // Increment NFT ID (starts at 0)
 
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
         carblocksNFT.push(Carblock(_state, car));
@@ -152,6 +170,11 @@ contract CarBlocks is ERC721URIStorage {
         return newTokenId;
     }
 
+    /// @notice Transfer an NFT when an owner is selling his vehicle to new owner
+    /// @dev Uses _safeTransfer to update owner and update the 'users' mapping
+    /// @param _to address of the new NFT owner
+    /// @param _tokenId Token ID of NFT to transfer
+    /// @param _data additional data
     function transferCarblockNFT(
         address _to,
         uint256 _tokenId,
