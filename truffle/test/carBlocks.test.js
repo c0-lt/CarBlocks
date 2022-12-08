@@ -5,11 +5,24 @@ const {expect} = require("chai");
 contract("Test cases for CarBlocks smart contract", (accounts) => {
   const admin = accounts[0];
   const user1 = accounts[1];
+  const user2 = accounts[2];
+  const energyType = "Hybrid";
   const tokenURI =
     "https://gateway.pinata.cloud/ipfs/QmeCgSRsv1J1KDTz6gctSXc2Y8jwqkGqvqGfp9Tja8WpNX/multipla.json";
 
   function buildCarblocks() {
-    return CarBlocks.new({from: admin});
+    return CarBlocks.new(energyType, {from: admin});
+  }
+
+  async function mintCB(_to, _isForSale) {
+    return await cb.mintCarblock(
+      _to,
+      1670177418,
+      ["1234", "Fiat", "Multipla", tokenURI],
+      0,
+      _isForSale,
+      {from: _to}
+    );
   }
 
   describe("Test of the deployment phase", () => {
@@ -26,7 +39,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should have a name", async () => {
-      expect(await cb.name.call()).to.be.equal("Carblocks");
+      expect(await cb.name.call()).to.be.equal("CarBlock");
     });
   });
 
@@ -34,28 +47,17 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     let tokenID = 0;
     beforeEach(async () => {
       cb = await buildCarblocks();
-      // .call will instantely return the tokenID but will not save anything in bck
+      // .call will instantly return the tokenID but will not save anything in bck
       // for that, we need to call mintCarblock directly. So we need to "execute" it twice
       tokenID = await cb.mintCarblock.call(
         user1,
         1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
+        ["1234", "Fiat", "Multipla", tokenURI],
         0,
+        false,
         {from: user1}
       );
-      await cb.mintCarblock(
-        user1,
-        1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
-        0,
-        {from: user1}
-      );
+      await mintCB(user1, false);
     });
 
     it("should have a balance of 1", async () => {
@@ -74,21 +76,84 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("Should emit Transfer event", async () => {
-      const eventEmitted = await cb.mintCarblock(
-        user1,
-        1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
-        0,
-        {from: user1}
-      );
+      const eventEmitted = await mintCB(user1, false);
       await expectEvent(eventEmitted, "Transfer", {
         from: "0x0000000000000000000000000000000000000000",
         to: user1,
         tokenId: BN(2),
       });
+    });
+  });
+  describe("Test of carblock access functions", () => {
+    beforeEach(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, false);
+      await mintCB(user1, false);
+      await mintCB(user1), false;
+      await mintCB(user2), false;
+    });
+
+    it("should get an array of 3 carblocks", async () => {
+      let carblocks = await cb.getCarblocks({from: user1});
+      expect(carblocks.length.toString()).to.be.bignumber.equal(BN(3));
+    });
+
+    it("should get one carblock corresponding to a Fiat", async () => {
+      let carblock = await cb.getCarblock(1, {from: user1});
+      expect(carblock.car.brand).to.equal("Fiat");
+    });
+  });
+
+  describe("Test of maintenances access functions", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, false);
+      await mintCB(user1, false);
+      await mintCB(user1), false;
+    });
+
+    it("should add a new maintenance for user with tokenId : 1", async () => {
+      await cb.addMaintenance(1, 1670177428, 0, 10000, "ipfs://billUrl", {
+        from: user1,
+      });
+      let maintenance = await cb.getMaintenances(1, {from: user1});
+      expect(maintenance.length.toString()).to.be.bignumber.equal(BN(1));
+    });
+
+    it("should get a maintenances for 10000 kilometers", async () => {
+      let maintenances = await cb.getMaintenances(1, {from: user1});
+      expect(maintenances[0].kilometers.toString()).to.be.bignumber.equal(
+        BN(10000)
+      );
+    });
+  });
+
+  describe("Test of NFT transfer", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, false);
+    });
+
+    it("should transfer a token from user 1 to user 2 ", async () => {
+      expect(await cb.ownerOf(1)).to.equal(user1);
+      //console.log("USERS : ", await cb.users(user1, 0));
+      await cb.transferCarblockNFT(user2, 1, 0x00, {from: user1});
+      expect(await cb.ownerOf(1)).not.to.equal(user1);
+      expect(await cb.ownerOf(1)).to.equal(user2);
+    });
+  });
+
+  describe("Test of NFT marketplace", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, true);
+      await mintCB(user1, true);
+      await mintCB(user1, true);
+    });
+
+    it("should get a list of 3 NFT for sale", async () => {
+      let sale = await cb.getCarblocksForSale();
+      expect(sale.length.toString()).to.be.bignumber.equal(BN(3));
     });
   });
 });
