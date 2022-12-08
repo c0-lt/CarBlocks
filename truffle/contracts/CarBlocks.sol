@@ -89,7 +89,7 @@ contract CarBlocks is ERC721URIStorage {
         isNFTOwner(_tokenId)
         returns (Carblock memory)
     {
-        return carblocksNFT[_tokenId];
+        return carblocksNFT[_tokenId - 1];
     }
 
     //TODO: accessible only to NFT owner ?
