@@ -57,7 +57,7 @@ function MarketplaceCar() {
           <Box
             maxWidth="sm"
             component="img"
-            src="https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg"
+            src="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
             alt="logo"
           />
           </Box>

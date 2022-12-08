@@ -55,7 +55,7 @@ function MyCars() {
               >
                 <CardMedia
                   component="img"
-                  image="https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg"
+                  image="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
                   alt="random"
                 />
                 <CardContent sx={{flexGrow: 1}}>

@@ -58,14 +58,14 @@ function SocialCar() {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          backgroundImage: `url("https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg")`,
+          backgroundImage: `url("https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG")`,
         }}
       >
         {/* Increase the priority of the hero background image */}
         {
           <img
             style={{display: "none"}}
-            src="https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg"
+            src="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
             alt="Mclaren 720s"
           />
         }
