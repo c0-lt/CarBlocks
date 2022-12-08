@@ -56,6 +56,7 @@ contract CarBlocks is ERC721URIStorage {
     struct Carblock {
         CarState carState;
         Car car;
+        uint256 price;
         bool isForSale;
     }
 
@@ -89,7 +90,7 @@ contract CarBlocks is ERC721URIStorage {
         isNFTOwner(_tokenId)
         returns (Carblock memory)
     {
-        return carblocksNFT[_tokenId];
+        return carblocksNFT[_tokenId - 1];
     }
 
     //TODO: accessible only to NFT owner ?
@@ -121,6 +122,17 @@ contract CarBlocks is ERC721URIStorage {
             }
         }
         return carblocksForSale;
+    }
+
+    /// @notice Allow NFT Owner to set a price for his car
+    /// @dev _
+    /// @param _tokenId NFT token ID
+    /// @param _price expected price
+    function setPrice(uint256 _tokenId, uint256 _price)
+        external
+        isNFTOwner(_tokenId)
+    {
+        carblocksNFT[_tokenId - 1].price = _price;
     }
 
     /// @notice Add a new maintenance to a specific NFT
@@ -179,7 +191,7 @@ contract CarBlocks is ERC721URIStorage {
             _vInfo[1],
             _vInfo[2]
         );
-        carblocksNFT.push(Carblock(_state, car, _isForSale));
+        carblocksNFT.push(Carblock(_state, car, 0, _isForSale));
 
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
