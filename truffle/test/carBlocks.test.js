@@ -5,12 +5,26 @@ const {expect} = require("chai");
 contract("Test cases for CarBlocks smart contract", (accounts) => {
   const admin = accounts[0];
   const user1 = accounts[1];
+  const user2 = accounts[2];
   const energyType = "Hybrid";
   const tokenURI =
     "https://gateway.pinata.cloud/ipfs/QmeCgSRsv1J1KDTz6gctSXc2Y8jwqkGqvqGfp9Tja8WpNX/multipla.json";
 
   function buildCarblocks() {
     return CarBlocks.new(energyType, {from: admin});
+  }
+
+  async function mintCB(to) {
+    return await cb.mintCarblock(
+      to,
+      1670177418,
+      "1234",
+      "Fiat",
+      "Multipla",
+      tokenURI,
+      0,
+      {from: to}
+    );
   }
 
   describe("Test of the deployment phase", () => {
@@ -47,16 +61,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
         0,
         {from: user1}
       );
-      await cb.mintCarblock(
-        user1,
-        1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
-        0,
-        {from: user1}
-      );
+      await mintCB(user1);
     });
 
     it("should have a balance of 1", async () => {
@@ -75,21 +80,71 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("Should emit Transfer event", async () => {
-      const eventEmitted = await cb.mintCarblock(
-        user1,
-        1670177418,
-        "1234",
-        "Fiat",
-        "Multipla",
-        tokenURI,
-        0,
-        {from: user1}
-      );
+      const eventEmitted = await mintCB(user1);
       await expectEvent(eventEmitted, "Transfer", {
         from: "0x0000000000000000000000000000000000000000",
         to: user1,
         tokenId: BN(2),
       });
+    });
+  });
+  describe("Test of carblock access functions", () => {
+    beforeEach(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1);
+      await mintCB(user1);
+      await mintCB(user1);
+      await mintCB(user2);
+    });
+
+    it("should get an array of 3 carblocks", async () => {
+      let carblocks = await cb.getCarblocks(user1);
+      expect(carblocks.length.toString()).to.be.bignumber.equal(BN(3));
+    });
+
+    it("should get one carblock corresponding to a Fiat", async () => {
+      let carblock = await cb.getCarblock(1);
+      expect(carblock.car.brand).to.equal("Fiat");
+    });
+  });
+
+  describe("Test of maintenances access functions", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1);
+      await mintCB(user1);
+      await mintCB(user1);
+    });
+
+    it("should add a new maintenance for user with tokenId : 1", async () => {
+      await cb.addMaintenance(1, 1670177428, 0, 10000, "ipfs://billUrl", {
+        from: user1,
+      });
+      let maintenance = await cb.getMaintenances(1, {from: user1});
+      expect(maintenance.length.toString()).to.be.bignumber.equal(BN(1));
+    });
+
+    it("should get a maintenances for 10000 kilometers", async () => {
+      let maintenances = await cb.getMaintenances(1, {from: user1});
+      expect(maintenances[0].kilometers.toString()).to.be.bignumber.equal(
+        BN(10000)
+      );
+    });
+  });
+
+  describe("Test of NFT transfer", () => {
+    before(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1);
+    });
+
+    it("should transfer a token from user 1 to user 2 ", async () => {
+      expect(await cb.ownerOf(1)).to.equal(user1);
+      console.log("USERS : ", await cb.users(user1, 0));
+      await cb.transferCarblockNFT(user2, 1, 0x00, {from: user1});
+      console.log("USERS : ", await cb.users(user2, 0));
+      expect(await cb.ownerOf(1)).not.to.equal(user1);
+      expect(await cb.ownerOf(1)).to.equal(user2);
     });
   });
 });

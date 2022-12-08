@@ -47,24 +47,75 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice Holds information linked to a maintenance operation
     struct Maintenance {
         uint256 date;
+        uint256 kilometers;
         MaintenanceType mType;
-        string billsUri;
+        string maintenanceURI;
     }
 
     /// @notice Defines the carblock NFT structure
     struct Carblock {
         CarState carState;
         Car car;
-        // Maintenance[] maintenances; // QCO: this does not work, we need to use mapping instead
-        mapping(uint256 => Maintenance) maintenances;
-        uint256 maintenancesNumber;
     }
 
     /// @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
+    //TODO : qui peut appeler users ?
+    mapping(address => uint256[]) public users;
+    mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
+
     constructor(string memory _energyType) ERC721(_name, _symbol) {
         energyType = _energyType;
+    }
+
+    function getCarblock(uint256 _tokenId)
+        external
+        view
+        returns (Carblock memory)
+    {
+        return carblocksNFT[_tokenId];
+    }
+
+    function getCarblocks(address _addr)
+        external
+        view
+        returns (Carblock[] memory)
+    {
+        Carblock[] memory carblocks = new Carblock[](users[_addr].length);
+
+        for (uint256 i = 0; i < users[_addr].length; i++) {
+            carblocks[i] = carblocksNFT[users[_addr][i]];
+        }
+        return carblocks;
+    }
+
+    function addMaintenance(
+        uint256 _tokenId,
+        uint256 _date,
+        MaintenanceType _mType,
+        uint256 _kilometers,
+        string calldata _maintenanceURI
+    ) external {
+        require(
+            _msgSender() == ownerOf(_tokenId),
+            "Error: you are not the owner of the car"
+        );
+        _allMaintenances[_tokenId].push(
+            Maintenance(_date, _kilometers, _mType, _maintenanceURI)
+        );
+    }
+
+    function getMaintenances(uint256 _tokenId)
+        external
+        view
+        returns (Maintenance[] memory)
+    {
+        require(
+            _msgSender() == ownerOf(_tokenId),
+            "Error: you are not the owner of the car"
+        );
+        return _allMaintenances[_tokenId];
     }
 
     //TODO : check memory vs calldata
@@ -91,15 +142,36 @@ contract CarBlocks is ERC721URIStorage {
         _tokenIds.increment();
 
         Car memory car = Car(_circulationStartDate, _VIN, _brand, _model);
-        Carblock storage carblockNFT = carblocksNFT.push();
-        carblockNFT.carState = _state;
-        carblockNFT.car = car;
-        carblockNFT.maintenancesNumber = 0;
+        carblocksNFT.push(Carblock(_state, car));
 
         uint256 newTokenId = _tokenIds.current();
         _safeMint(_user, newTokenId);
         _setTokenURI(newTokenId, _tokenURI);
+        users[_user].push(newTokenId);
 
         return newTokenId;
+    }
+
+    function transferCarblockNFT(
+        address _to,
+        uint256 _tokenId,
+        bytes memory _data
+    ) external payable {
+        address sender = _msgSender();
+        _safeTransfer(sender, _to, _tokenId, _data);
+
+        uint256[] memory updatedTokensList = new uint256[](
+            users[sender].length - 1
+        );
+        uint8 counter;
+
+        for (uint256 i = 0; i < users[sender].length; i++) {
+            if (users[sender][i] != _tokenId) {
+                updatedTokensList[counter] = users[sender][i];
+            }
+            counter++;
+        }
+        users[sender] = updatedTokensList;
+        users[_to].push(_tokenId);
     }
 }
