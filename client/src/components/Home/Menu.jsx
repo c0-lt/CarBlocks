@@ -1,10 +1,6 @@
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  MemoryRouter,
-} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 
 function Menu() {
   return (

@@ -8,12 +8,10 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import Paper from '@mui/material/Paper';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Fab from '@mui/material/Fab';
 import SendIcon from '@mui/icons-material/Send';
@@ -36,7 +34,7 @@ function Offer() {
             >
               <CardMedia
                 component="img"
-                image="https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg"
+                image="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
                 alt="random"
               />
               <CardContent sx={{flexGrow: 1}}>

@@ -1,15 +1,16 @@
 import * as React from "react";
-import {Routes, Route, Outlet, Link} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 import {SnackbarProvider} from "notistack";
 import Footer from "../Footer";
 import TopBar from "../TopBar";
 
 import Container from "@mui/material/Container";
+import { BackdropProvider } from "../../contexts/Loader";
 
 function Layout() {
   return (
-    <>
+    <BackdropProvider>
       <SnackbarProvider
         maxSnack={3}
         anchorOrigin={{vertical: "top", horizontal: "right"}}
@@ -29,7 +30,7 @@ function Layout() {
         </Container>
       </main>
       <Footer />
-    </>
+    </BackdropProvider>
   );
 }
 

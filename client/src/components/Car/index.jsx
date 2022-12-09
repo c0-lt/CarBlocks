@@ -2,19 +2,8 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
-import Paper from "@mui/material/Paper";
-import Divider from "@mui/material/Divider";
-import TextField from "@mui/material/TextField";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
 import Link from "@mui/material/Link";
 
 import Stepper from "@mui/material/Stepper";
@@ -22,7 +11,6 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import StepContent from "@mui/material/StepContent";
 
-import SendIcon from "@mui/icons-material/Send";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import SellIcon from "@mui/icons-material/Sell";
 import BuildIcon from "@mui/icons-material/Build";
@@ -87,12 +75,22 @@ function Car() {
 
   return (
     <Box>
-      <MaintenanceDialog id={id} handleClose={handleCloseMaintenance} open={openMaintenance} car={"Mclaren 720s"}/>
-      <SellDialog id={id} handleClose={handleCloseSell} open={openSell} car={"Mclaren 720s"}/>
+      <MaintenanceDialog
+        id={id}
+        handleClose={handleCloseMaintenance}
+        open={openMaintenance}
+        car={"Mclaren 720s"}
+      />
+      <SellDialog
+        id={id}
+        handleClose={handleCloseSell}
+        open={openSell}
+        car={"Mclaren 720s"}
+      />
       <Typography variant="h3" gutterBottom>
         Ma voiture {id}
       </Typography>
-      <Container sx={{py: 2}} justifyContent="center">
+      <Container sx={{py: 2}} >
         <Grid container spacing={4}>
           <Grid item xs={12} sm={7} md={7}>
             <Grid container spacing={1}>
@@ -110,6 +108,7 @@ function Car() {
                   <Grid item md={6}>
                     <Typography>Marque:</Typography>
                     <Typography>Modèle:</Typography>
+                    <Typography>Energie:</Typography>
                     <Typography>Numéro d'immatriculation:</Typography>
                     <Typography>Première mise en circulation:</Typography>
                     <Typography>Numéro de série:</Typography>
@@ -118,6 +117,7 @@ function Car() {
                   <Grid item md={6}>
                     <Typography>Mclaren</Typography>
                     <Typography>720s</Typography>
+                    <Typography>Essence</Typography>
                     <Typography>AF-312-RS</Typography>
                     <Typography>
                       {dayjs().format("DD-MM-YYYY HH:mm:ss")}
@@ -132,7 +132,7 @@ function Car() {
                   <Box
                     maxWidth="100%"
                     component="img"
-                    src="https://i.gaw.to/vehicles/photos/40/28/402886-2022-mclaren-720s.jpg"
+                    src="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
                     alt="logo"
                     loading="lazy"
                   />
@@ -140,7 +140,7 @@ function Car() {
                 Statut: en circulation
               </Grid>
             </Grid>
-            <Box display="flex" fullWidth justifyContent="center" sx={{mt: 4}}>
+            <Box display="flex" justifyContent="center" sx={{mt: 4}}>
               <Button
                 variant="contained"
                 onClick={handleOpenSell}
@@ -150,7 +150,13 @@ function Car() {
               </Button>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={5} md={5} sx={{ borderLeft: 1, borderColor: 'divider' }}>
+          <Grid
+            item
+            xs={12}
+            sm={5}
+            md={5}
+            sx={{borderLeft: 1, borderColor: "divider"}}
+          >
             <Typography variant="h5" gutterBottom>
               Suivi entretien
             </Typography>
@@ -181,7 +187,7 @@ function Car() {
                 </Step>
               ))}
             </Stepper>
-            <Box display="flex" fullWidth justifyContent="center" sx={{mt: 4}}>
+            <Box display="flex" justifyContent="center" sx={{mt: 4}}>
               <Button
                 startIcon={<BuildIcon />}
                 variant="contained"

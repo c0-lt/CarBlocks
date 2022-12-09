@@ -5,16 +5,11 @@ import AccountCircle from "@mui/icons-material/AccountCircle";
 import NoAccountsIcon from "@mui/icons-material/NoAccounts";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import LoginIcon from '@mui/icons-material/Login';
-import LogoutIcon from '@mui/icons-material/Logout';
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import LoginIcon from "@mui/icons-material/Login";
+import LogoutIcon from "@mui/icons-material/Logout";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 
-
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  MemoryRouter,
-} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 import {useAccount, useConnect, useDisconnect} from "wagmi";
 import {InjectedConnector} from "wagmi/connectors/injected";
 import {Divider, ListItemIcon, ListItemText} from "@mui/material";
@@ -67,37 +62,32 @@ function Account() {
       onClose={handleMenuClose}
     >
       {isConnected ? (
-        <>
+        [
           <MenuItem
+            key="account"
             onClick={handleMenuClose}
             component={RouterLink}
             to="/account"
           >
             <ListItemIcon>
-              <ManageAccountsIcon/>
+              <ManageAccountsIcon />
             </ListItemIcon>
-            <ListItemText>
-            Mon compte
-            </ListItemText>
-          </MenuItem>
-          <Divider />
-          <MenuItem onClick={handleDisconnect}>
+            <ListItemText>Mon compte</ListItemText>
+          </MenuItem>,
+          <Divider key="divider" />,
+          <MenuItem key="logout" onClick={handleDisconnect}>
             <ListItemIcon>
-              <LogoutIcon/>
+              <LogoutIcon />
             </ListItemIcon>
-            <ListItemText>
-            Déconnexion
-            </ListItemText>
-            </MenuItem>
-        </>
+            <ListItemText>Déconnexion</ListItemText>
+          </MenuItem>,
+        ]
       ) : (
-        <MenuItem onClick={handleConnect}>
+        <MenuItem key="login" onClick={handleConnect}>
           <ListItemIcon>
-              <LoginIcon/>
-            </ListItemIcon>
-            <ListItemText>
-            Connexion
-            </ListItemText>
+            <LoginIcon />
+          </ListItemIcon>
+          <ListItemText>Connexion</ListItemText>
         </MenuItem>
       )}
     </Menu>
