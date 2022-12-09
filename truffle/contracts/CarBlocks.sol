@@ -170,7 +170,7 @@ contract CarBlocks is ERC721URIStorage {
     //TODO : check memory vs calldata
     //TODO : payable
     /// @notice Allow user to mint a new Carblock NFT
-    /// @dev
+    /// @dev We use _mint instead of _safeMint as we don't need to check if _user is a contract
     /// @param _user address of the future owner of minted NFT
     /// @param _circulationStartDate first circulation date of owner's car
     /// @param _vInfo array with [VIN, brand, model, tokenURI] in this order
@@ -194,7 +194,7 @@ contract CarBlocks is ERC721URIStorage {
         carblocksNFT.push(Carblock(_state, car, 0, _isForSale));
 
         uint256 newTokenId = _tokenIds.current();
-        _safeMint(_user, newTokenId);
+        _mint(_user, newTokenId);
         _setTokenURI(newTokenId, _vInfo[3]);
         users[_user].push(newTokenId);
 
@@ -202,17 +202,16 @@ contract CarBlocks is ERC721URIStorage {
     }
 
     /// @notice Transfer a NFT when an owner is selling his vehicle to new owner
-    /// @dev Uses _safeTransfer to update owner and update the 'users' mapping
+    /// @dev Uses _transfer to update owner and update the 'users' mapping (don't need _safeTransfer for same reason as _safeMint)
     /// @param _to address of the new NFT owner
     /// @param _tokenId Token ID of NFT to transfer
-    /// @param _data additional data
-    function transferCarblockNFT(
-        address _to,
-        uint256 _tokenId,
-        bytes memory _data
-    ) external payable isNFTOwner(_tokenId) {
+    function transferCarblockNFT(address _to, uint256 _tokenId)
+        external
+        payable
+        isNFTOwner(_tokenId) // TODO: this check is already made in _transfer function
+    {
         address sender = _msgSender();
-        _safeTransfer(sender, _to, _tokenId, _data);
+        _transfer(sender, _to, _tokenId);
 
         uint256[] memory updatedTokensList = new uint256[](
             users[sender].length - 1
