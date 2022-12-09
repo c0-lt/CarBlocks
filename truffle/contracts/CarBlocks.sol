@@ -133,6 +133,7 @@ contract CarBlocks is ERC721URIStorage {
         isNFTOwner(_tokenId)
     {
         carblocksNFT[_tokenId - 1].price = _price;
+        carblocksNFT[_tokenId - 1].isForSale = true;
     }
 
     /// @notice Add a new maintenance to a specific NFT
