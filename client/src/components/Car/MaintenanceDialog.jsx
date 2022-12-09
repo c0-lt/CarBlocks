@@ -1,19 +1,9 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import PropTypes from "prop-types";
-import Typography from "@mui/material/Typography";
 import Grid from "@mui/material/Grid";
-import Card from "@mui/material/Card";
-import CardActionArea from "@mui/material/CardActionArea";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Paper from "@mui/material/Paper";
-import Rating from "@mui/material/Rating";
 import Button from "@mui/material/Button";
-import CardActions from "@mui/material/CardActions";
 import TextField from "@mui/material/TextField";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -29,17 +19,10 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
 
 import IconButton from "@mui/material/IconButton";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import StarIcon from "@mui/icons-material/Star";
-import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
-import AddCommentIcon from "@mui/icons-material/AddComment";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
-import {useParams, Link as RouterLink} from "react-router-dom";
 import axios from "axios";
 import {useBackdrop} from "../../contexts/Loader";
-import useEth from "../../contexts/EthContext/useEth";
 
 function MaintenanceDialog({id, handleClose, open, car}) {
   const backdrop = useBackdrop();
@@ -141,7 +124,6 @@ function MaintenanceDialog({id, handleClose, open, car}) {
       <Box
         component="form"
         textAlign="center"
-        justifyContent="center"
         alignItems="center"
         noValidate
         onSubmit={handleSubmit}
@@ -193,7 +175,7 @@ function MaintenanceDialog({id, handleClose, open, car}) {
                   onChange={handleChangeType}
                 >
                   {maintenanceType.map((maintenance) => (
-                    <MenuItem value={maintenance}>{maintenance}</MenuItem>
+                    <MenuItem key={maintenance} value={maintenance}>{maintenance}</MenuItem>
                   ))}
                 </Select>
               </FormControl>

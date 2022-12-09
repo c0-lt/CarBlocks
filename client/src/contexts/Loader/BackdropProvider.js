@@ -3,12 +3,12 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import BackdropContext from "./BackdropContext";
 
-const DEFAULT_OPTIONS = {
+/* const DEFAULT_OPTIONS = {
   backdropProps: {},
   progressProps: {},
-};
+}; */
 
-export default ({ children, progress }) => {
+const BackdropProvider = ({ children, progress }) => {
   const [open, setOpen] = useState(false);
   const backdrop = {
     showLoader() {
@@ -33,3 +33,5 @@ export default ({ children, progress }) => {
     </Fragment>
   );
 };
+
+export default BackdropProvider;

@@ -9,14 +9,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 
-import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-
-
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  MemoryRouter,
-} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 
 function MyCars() {
   const cards = [1, 2, 3, 4, 5, 6];
@@ -68,10 +61,15 @@ function MyCars() {
                   <Typography>Kilométrage: 12 256 kms</Typography>
                 </CardContent>
                 <CardActions>
-                  <Button size="small" component={RouterLink}
+                  <Button
+                    size="small"
+                    component={RouterLink}
                     to={{
                       pathname: "/car/" + card,
-                    }}>Voir</Button>
+                    }}
+                  >
+                    Voir
+                  </Button>
                   {/* <Button size="small">Ajouter entretien</Button> */}
                 </CardActions>
               </Card>

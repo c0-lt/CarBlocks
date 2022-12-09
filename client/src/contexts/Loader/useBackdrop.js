@@ -1,6 +1,8 @@
 import { useContext } from "react";
 import BackdropContext from "./BackdropContext";
 
-export default () => {
+const useBackdrop = () => {
   return useContext(BackdropContext);
 };
+
+export default useBackdrop;

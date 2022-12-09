@@ -12,22 +12,13 @@ import {useAccount, useConnect, useDisconnect} from "wagmi";
 import {InjectedConnector} from "wagmi/connectors/injected";
 
 function Home() {
-  const {address, isConnected} = useAccount();
+  const {isConnected} = useAccount();
   const {connect} = useConnect({
     connector: new InjectedConnector(),
   });
   const {disconnect} = useDisconnect();
 
   const [value, setValue] = useState("?");
-
-  const demo = (
-    <>
-      <div className="contract-container">
-        <Contract value={value} />
-        <ContractBtns setValue={setValue} />
-      </div>
-    </>
-  );
 
   return (
     <>

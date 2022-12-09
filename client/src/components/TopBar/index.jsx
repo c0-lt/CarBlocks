@@ -13,11 +13,7 @@ import {useAccount} from "wagmi";
 
 import Account from "./Account";
 import {useSnackbar} from "notistack";
-import {
-  Link as RouterLink,
-  LinkProps as RouterLinkProps,
-  MemoryRouter,
-} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 
 function TopBar() {
   const {address, isConnected} = useAccount();

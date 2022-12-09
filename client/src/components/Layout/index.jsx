@@ -1,12 +1,11 @@
 import * as React from "react";
-import {Routes, Route, Outlet, Link} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 
 import {SnackbarProvider} from "notistack";
 import Footer from "../Footer";
 import TopBar from "../TopBar";
 
 import Container from "@mui/material/Container";
-import { Backdrop, CircularProgress } from "@mui/material";
 import { BackdropProvider } from "../../contexts/Loader";
 
 function Layout() {
