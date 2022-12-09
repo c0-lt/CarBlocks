@@ -23,9 +23,12 @@ import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
 import axios from "axios";
 import {useBackdrop} from "../../contexts/Loader";
+import Pinata from "../../utils/Pinata";
+import {useSnackbar} from "notistack";
 
 function MaintenanceDialog({id, handleClose, open, car}) {
   const backdrop = useBackdrop();
+  const {enqueueSnackbar} = useSnackbar();
 
   const maintenanceType = [
     "Remplacement pièces",
@@ -45,54 +48,53 @@ function MaintenanceDialog({id, handleClose, open, car}) {
       type: type,
       file: file,
     });
-    sendFileToIPFS();
-  };
 
-  const sendFileToIPFS = async (e) => {
-    if (file) {
-      // const FormData = require('form-data');
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const metadata = JSON.stringify({
-        name: "File name",
-      });
-      formData.append("pinataMetadata", metadata);
-
-      const options = JSON.stringify({
-        cidVersion: 0,
-      });
-      formData.append("pinataOptions", options);
-
-      console.log(`multipart/form-data; boundary=${formData._boundary}`);
-
-      try {
-        const resFile = await axios.post(
-          "https://api.pinata.cloud/pinning/pinFileToIPFS",
-          formData,
+    var test = {
+        "description": "Carblocks JSON", 
+        "external_url": "https://carblocks.vercel.app/marketplace/1", 
+        "image": "https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG", 
+        "name": "Mclaren 720s",
+        "attributes": [ 
           {
-            maxBodyLength: "Infinity",
-            headers: {
-              'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
-              // pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
-              // pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
-              Authorization:
-                "Bearer " + `${process.env.REACT_APP_PINATA_API_JWT}`,
-            },
-          }
-        );
-
-        const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-        console.log(ImgHash);
-        const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
-        console.log(ImgHashGW);
-        backdrop.hideLoader();
-        //Take a look at your Pinata Pinned section, you will see a new file added to you list.
-      } catch (error) {
-        console.log("Error sending File to IPFS: ");
-        console.log(error);
-      }
+            "trait_type": "Brand", 
+            "value": "Mclaren"
+          }, 
+          {
+            "trait_type": "Model", 
+            "value": "720s"
+          } ]
     }
+    Pinata.sendFile(
+      file,
+      (data) => {
+        const ImgHash = `ipfs://${data.IpfsHash}`;
+        console.log(ImgHash);
+        const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
+        console.log(ImgHashGW);
+        enqueueSnackbar("File uploaded", {variant: "success"});
+        backdrop.hideLoader();
+      },
+      (error) => {
+        console.error(error);
+        enqueueSnackbar("Error sending File to IPFS", {variant: "error"});
+        backdrop.hideLoader();
+      }
+    );
+
+    Pinata.sendJSON(test, (data) => {
+      const ImgHash = `ipfs://${data.IpfsHash}`;
+      console.log(ImgHash);
+      const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
+      console.log(ImgHashGW);
+      enqueueSnackbar("File uploaded", {variant: "success"});
+      backdrop.hideLoader();
+    },
+    (error) => {
+      console.error(error);
+      enqueueSnackbar("Error sending File to IPFS", {variant: "error"});
+      backdrop.hideLoader();
+    });
+
   };
 
   const [date, setDate] = React.useState(dayjs());
@@ -175,7 +177,9 @@ function MaintenanceDialog({id, handleClose, open, car}) {
                   onChange={handleChangeType}
                 >
                   {maintenanceType.map((maintenance) => (
-                    <MenuItem key={maintenance} value={maintenance}>{maintenance}</MenuItem>
+                    <MenuItem key={maintenance} value={maintenance}>
+                      {maintenance}
+                    </MenuItem>
                   ))}
                 </Select>
               </FormControl>
