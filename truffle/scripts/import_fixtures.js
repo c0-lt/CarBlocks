@@ -21,19 +21,6 @@ var fixtures = [
   },
   {
     to: "0xc72c0D99b3560a1c4020fabBf468abD36389230C",
-    start: 1661378400,
-    vinfo: [
-      "SBM14FCAXNW001906",
-      "Mclaren",
-      "720S",
-      "https://gateway.pinata.cloud/ipfs/QmZNZkRjH8fBLrYpdbmBzWywpkSnXcwdFLyGK6wkVfFPaX/1.json",
-    ],
-    state: 0,
-    isForSale: false,
-    energy: "Essence",
-  },
-  {
-    to: "0xc72c0D99b3560a1c4020fabBf468abD36389230C",
     start: 1636585200,
     vinfo: [
       "ADF32FCGXNZ002205",
