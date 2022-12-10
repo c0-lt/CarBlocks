@@ -28,9 +28,9 @@ function MyCars({contracts}) {
         let tmpCars = await carBlocksContract.getCarblocks();
         for (let h in tmpCars) {
           let tmpCar = tmpCars[h];
-          // console.log(tmpCar);
+          console.log(tmpCar);
           // console.log((parseInt(h)+1));
-          const tokenURI = await carBlocksContract.tokenURI(parseInt(h) + 1); // TODO use tokenId
+          const tokenURI = await carBlocksContract.tokenURI(tmpCar.tokenId.toNumber()); // TODO use tokenId
           // console.log(tokenURI);
           const response = await fetch(tokenURI);
           const json = await response.json();

@@ -19,6 +19,7 @@ import {InputAdornment} from "@mui/material";
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
 import {useAccount} from "wagmi";
+import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 
 function MintCar({contracts}) {
@@ -31,6 +32,7 @@ function MintCar({contracts}) {
     "Hybride diesel",
   ];
   const formId = "formMintCar";
+  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
   const [date, setDate] = React.useState();
@@ -94,7 +96,9 @@ function MintCar({contracts}) {
         0,
         false
       );
+      navigate(0);
       backdrop.hideLoader();
+
     } catch (error) {
       callbackError(error, "Error minting Carblock");
       // console.log("Error sending File to IPFS: ");
