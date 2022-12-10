@@ -88,6 +88,30 @@ const Pinata = {
         // console.log(error);
       }
     }
+  },
+
+  convertCarblockFromMetadata : (metadata) => {
+    console.log(metadata);
+    let mapping = {
+      "Brand":"brand",
+      "Model":"model",
+      "Energy":"energy",
+      "Registration number":"registrationNumber",
+      "Kilometers":"kilometers"
+    }
+    let carblock = {
+      brand: "",
+      model: "",
+      registrationNumber: "",
+      kilometers: 0,
+      energy: "",
+      image: metadata.image
+    }
+    for(let a=0; a<metadata.attributes.length; a++) {
+      let attribute = metadata.attributes[a];
+      carblock[mapping[attribute.trait_type]] = attribute.value;
+    }
+    return carblock;
   }
 
 }
