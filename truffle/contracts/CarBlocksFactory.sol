@@ -16,16 +16,11 @@ contract CarBlocksFactory {
         string energyType
     );
 
-    function createCarblocksCollection(string calldata _energyType)
-        external
-        returns (CarBlocks)
-    {
+    function createCarblocksCollection(string calldata _energyType) external {
         CarBlocks carblocks = new CarBlocks(_energyType);
         _carblocksCollection.push(carblocks);
 
         emit CarblocksCollectionCreated(address(carblocks), _energyType);
-
-        return carblocks;
     }
 
     function getCarblocksCollection()
