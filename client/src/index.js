@@ -8,11 +8,21 @@ import '@fontsource/roboto/700.css';
 import "./index.css";
 import App from "./App";
 
+import {WagmiConfig, createClient} from "wagmi";
+import {ethers} from "ethers";
+
+const client = createClient({
+  autoConnect: true,
+  provider: new ethers.providers.Web3Provider(window.ethereum),
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   //<React.StrictMode>
+  <WagmiConfig client={client}>
   <BrowserRouter>
     <App />
   </BrowserRouter>
+  </WagmiConfig>
   //</React.StrictMode>
 );
