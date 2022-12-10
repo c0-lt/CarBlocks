@@ -9,7 +9,7 @@ import "./CarBlocks.sol";
 /// @dev Stay away from this or you're facing sleep deprivation
 //TODO : nat spec
 contract CarBlocksFactory {
-    CarBlocks[] public carblocksCollection;
+    CarBlocks[] private _carblocksCollection;
 
     event CarblocksCollectionCreated(
         address contractAddress,
@@ -21,10 +21,18 @@ contract CarBlocksFactory {
         returns (CarBlocks)
     {
         CarBlocks carblocks = new CarBlocks(_energyType);
-        carblocksCollection.push(carblocks);
+        _carblocksCollection.push(carblocks);
 
         emit CarblocksCollectionCreated(address(carblocks), _energyType);
 
         return carblocks;
+    }
+
+    function getCarblocksCollection()
+        external
+        view
+        returns (CarBlocks[] memory)
+    {
+        return _carblocksCollection;
     }
 }
