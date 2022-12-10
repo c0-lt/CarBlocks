@@ -7,91 +7,67 @@ pragma solidity 0.8.17;
 /// @dev Stay away from this or you're facing sleep deprivation
 contract SocialNetwork {
     /*TODO:
-- stocker les utilisateurs
-- poster un commentaire sur une fiche véhicule (les commentaires sont liés à une fiche)
 - noter un véhicule correspondant à un NFT que l'utilisateur possède (marque+modèle) (les notes sont liés à une fiche)
 -- stocker des commentaires
-- envoyer un message à un utilisateur (messages lié à une offre)
-- envoyer une offre à un utilisateur (liée à un NFT en vente)
-
  */
-
     struct Message {
         uint256 timestamp;
         address author;
         string content;
     }
 
-    /* uint256 price, address user, uint256 tokenId
-  à partir du tokenId, je dois récupérer le price et le user
-  tokenId peut avoir plusieurs offres
-  tokenId => [{price, user}]
-  - Faire une offre : pousser dans le tableau une nouvelle offre. Vérifier qu'une offre n'est pas déjà existante
-  - Refuser une offre : supprimer l'offre dans le tableau
-  - Accepter l'offre : transférer le token et remettre un tableau vide dans le mapping pour le tokenId
-   */
-    struct Offer {
-        uint256 price;
-        address user;
-    }
-    mapping(uint256 => Offer[]) private _allOffers; // tokenId => [{price, user}]
+    ///@notice store a list of messages from a hash(tokenId, _from, _to)
+    mapping(bytes32 => Message[]) public _allMessages;
 
-    function makeOffer(uint256 _tokenId, uint256 _price) external {
-        require(
-            _allOffers[_tokenId].length < 10,
-            "Error : user has already received 10 offers"
+    /// @notice Send a message to a user regarding a specific NFT
+    /// @dev store message in _allMessages with a hash
+    /// @param _tokenId NFT token ID
+    /// @param _to address of chat recipient
+    /// @param _content address of chat recipient
+    function sendMessage(
+        uint256 _tokenId,
+        address _to,
+        string calldata _content
+    ) external {
+        _allMessages[_getChatId(_tokenId, msg.sender, _to)].push(
+            Message(block.timestamp, msg.sender, _content)
         );
-        _allOffers[_tokenId].push(Offer(_price, msg.sender));
     }
 
-    function rejectOffer(uint256 _tokenId, address _bider) external {
-        //TODO: require OwnerOf(tokenId == msg.sender)
-
-        for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
-            if (_allOffers[_tokenId][i].user == _bider) {
-                // We switch with the last element in array
-                _allOffers[_tokenId][i] = _allOffers[_tokenId][
-                    _allOffers[_tokenId].length - 1
-                ];
-                _allOffers[_tokenId].pop();
-            }
-        }
+    /// @notice Retrieve a conversation (chat) between 2 users on a specific NFT
+    /// @dev Get an array of message between msg.sender and _to on tokenId
+    /// @param _tokenId NFT token ID
+    /// @param _to address of chat recipient
+    /// @return messages array of Message
+    function getChat(uint256 _tokenId, address _to)
+        external
+        view
+        returns (Message[] memory)
+    {
+        return _allMessages[_getChatId(_tokenId, msg.sender, _to)];
     }
 
-    function acceptOffer(uint256 _tokenId, address _bider) external {
-        //TODO : transfer token to _bider
-        delete _allOffers[_tokenId];
-    }
-
-    function hasMadeOffer(uint256 _tokenId) external view returns (bool) {
-        for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
-            if (_allOffers[_tokenId][i].user == msg.sender) {
-                return true;
-            }
-        }
-        return false;
+    /// @notice Generate a unique id for a message between 2 users and a specific NFT
+    /// @dev Concat the three param, always in the same order and hash them
+    /// @param _tokenId NFT token ID
+    /// @param _to address of msg recipient
+    /// @param _from address of msg sender
+    /// @return hash of three parameters
+    function _getChatId(
+        uint256 _tokenId,
+        address _from,
+        address _to
+    ) private pure returns (bytes32) {
+        if (_from < _to)
+            return keccak256(abi.encodePacked(_tokenId, _from, _to));
+        else return keccak256(abi.encodePacked(_tokenId, _to, _from));
     }
 
     /*
     mapping(idCard => [Opinions])
     id de card
     string brand
-string model
-string photoURI
-array opinion */
-
-    /*function _getChatId(uint256 _tokenId, address _from, address _to) {
-        if(_from < _to)
-            return keccak256(abi.encodePacked(_from, _to));
-        else
-            return keccak256(abi.encodePacked(_to, _from));
-    }*/
-
-    /*
-    
-    mapping(bytes32 => []Message)
-    // concatener tokenId+hash1+hash2
-    function sendMessage(uint256 tokenId, address _to, string _content) {}
-    function getAllMessages(uint)
-     */
+    string model
+    string photoURI
+    array opinion */
 }
