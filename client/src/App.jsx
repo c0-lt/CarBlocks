@@ -19,24 +19,28 @@ import "./App.css";
 import Car from "./components/Car";
 
 function App() {
-  const [contracts, setContracts] = React.useState({});
+  const [factoryContract, setFactoryContracts] = React.useState();
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const carBlocksArtifact = require("./contracts/CarBlocks.json");
   const carBlocksFactoryArtifact = require("./contracts/CarBlocksFactory.json");
 
   const handleChild = (status) => {
-    console.log("handle status"+status);
-    status ? setIsWalletConnected(true) : setIsWalletConnected(false);
+    console.log("handle status "+status);
+    if(factoryContract) {
+      status ? setIsWalletConnected(true) : setIsWalletConnected(false);
+    } else {
+      init();
+    }
   };
 
-  const init = React.useCallback((carBlocksArtifact, carBlocksFactoryArtifact) => {
+  const init = React.useCallback(async (carBlocksArtifact, carBlocksFactoryArtifact) => {
     console.log("Init");
     if (carBlocksArtifact && carBlocksFactoryArtifact) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
-      console.log("provider");
-      console.log(provider);
-      const networkID = "5777";
       const signer = provider.getSigner();
+      // const networkID = "5777";
+      const networkID = await signer.getChainId();
+      console.log("NetworkID: "+networkID);
 
       let carBlocksFactoryContract, carBlocksContract;
       try {
@@ -55,16 +59,26 @@ function App() {
       } catch (err) {
         console.error(err);
       }
-      // setContracts({factory: carBlocksFactoryContract});
+      setFactoryContracts(carBlocksFactoryContract);
     }
   }, []);
 
   React.useEffect(() => {
-    console.log("Handle contract change");
-    // if(isWalletConnected) {
-    //   console.log("CONNECTED: Handle contract change");
-    // }
-  }, [contracts]);
+    console.log("Handle connected");
+    if(isWalletConnected) {
+      console.log("CONNECTED: Handle connected");
+      initContracts(factoryContract);
+    }
+  }, [isWalletConnected]);
+
+  const initContracts = React.useCallback(async (factoryContract) => {
+    console.log("Init contracts");
+    if (factoryContract) {
+      console.log(factoryContract);
+      const test = await factoryContract.carblocksCollection(0);
+      console.log(test); // TODO 
+    }
+  }, [factoryContract]);
 
   React.useEffect(() => {
     console.log("Init effect");
@@ -79,7 +93,7 @@ function App() {
     const events = ["chainChanged", "accountsChanged"];
     const handleChange = () => {
       console.log("ether change");
-      init();
+      init(carBlocksArtifact, carBlocksFactoryArtifact);
     };
     events.forEach((e) => window.ethereum.on(e, handleChange));
     return () => {
