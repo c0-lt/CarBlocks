@@ -68,18 +68,15 @@ contract CarBlocks is ERC721URIStorage {
 
     /// @notice Make sure contract caller is owner of _tokenId
     modifier isNFTOwner(uint256 _tokenId) {
-        require(
-            _msgSender() == ownerOf(_tokenId),
-            "Error: you are not the owner of the car"
-        );
+        require(msg.sender == ownerOf(_tokenId), "Err: not the owner of token");
         _;
     }
 
     /// @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
-    //TODO : qui peut appeler users ?
-    mapping(address => uint256[]) public users; // address => [tokenID]
+    //TODO : qui peut appeler _users ?
+    mapping(address => uint256[]) private _users; // address => [tokenID]
     mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
     mapping(uint256 => Offer[]) private _allOffers; // tokenId => [{price, user}]
 
@@ -105,11 +102,10 @@ contract CarBlocks is ERC721URIStorage {
     /// @dev Get an array of Carblock struct with the NFT token ID
     /// @return carblocks an array of carblock NFT
     function getCarblocks() external view returns (Carblock[] memory) {
-        address _addr = _msgSender();
-        Carblock[] memory carblocks = new Carblock[](users[_addr].length);
+        Carblock[] memory carblocks = new Carblock[](_users[msg.sender].length);
 
-        for (uint256 i = 0; i < users[_addr].length; i++) {
-            carblocks[i] = carblocksNFT[users[_addr][i]];
+        for (uint256 i = 0; i < _users[msg.sender].length; i++) {
+            carblocks[i] = carblocksNFT[_users[msg.sender][i] - 1];
         }
         return carblocks;
     }
@@ -193,20 +189,21 @@ contract CarBlocks is ERC721URIStorage {
     ) external returns (uint256) {
         _tokenIds.increment(); // Increment NFT ID (starts at 0)
 
-        Car memory car = Car(
-            _circulationStartDate,
-            _vInfo[0],
-            _vInfo[1],
-            _vInfo[2]
+        carblocksNFT.push(
+            Carblock(
+                _state,
+                Car(_circulationStartDate, _vInfo[0], _vInfo[1], _vInfo[2]),
+                0,
+                _isForSale
+            )
         );
-        carblocksNFT.push(Carblock(_state, car, 0, _isForSale));
 
-        uint256 newTokenId = _tokenIds.current();
-        _mint(_user, newTokenId);
-        _setTokenURI(newTokenId, _vInfo[3]);
-        users[_user].push(newTokenId);
+        //uint256 newTokenId = _tokenIds.current();
+        _mint(_user, _tokenIds.current());
+        _setTokenURI(_tokenIds.current(), _vInfo[3]);
+        _users[_user].push(_tokenIds.current());
 
-        return newTokenId;
+        return _tokenIds.current();
     }
 
     /** -- OFFERS MANAGEMENT --*/
@@ -216,10 +213,7 @@ contract CarBlocks is ERC721URIStorage {
     /// @param _tokenId Token ID of NFT that user wants to purchase
     /// @param _price price offer of user
     function makeOffer(uint256 _tokenId, uint256 _price) external {
-        require(
-            _allOffers[_tokenId].length < 10,
-            "Error : user has already received 10 offers"
-        );
+        require(_allOffers[_tokenId].length < 10, "Err: 10 offers/NFT max");
         _allOffers[_tokenId].push(Offer(_price, msg.sender));
     }
 
@@ -238,26 +232,24 @@ contract CarBlocks is ERC721URIStorage {
 
     /** - OFFERS MANAGEMENT - */
 
+    //TODO : check visibility
     /// @notice Transfer a NFT when an owner is selling his vehicle to new owner
-    /// @dev Uses _transfer to update owner and update the 'users' mapping (don't need _safeTransfer for same reason as _safeMint)
+    /// @dev Uses _transfer to update owner and update the '_users' mapping (don't need _safeTransfer for same reason as _safeMint)
     /// @param _to address of the new NFT owner
     /// @param _tokenId Token ID of NFT to transfer
-    function transferCarblockNFT(address _to, uint256 _tokenId)
-        external
-        payable
-        isNFTOwner(_tokenId) // TODO: this check is already made in _transfer function
-    {
-        address sender = _msgSender();
-        _transfer(sender, _to, _tokenId);
+    function transferCarblockNFT(address _to, uint256 _tokenId) internal {
+        _transfer(msg.sender, _to, _tokenId);
 
-        for (uint256 i = 0; i < users[sender].length; i++) {
-            if (users[sender][i] == _tokenId) {
+        for (uint256 i = 0; i < _users[msg.sender].length; i++) {
+            if (_users[msg.sender][i] == _tokenId) {
                 // We switch with the last element of array
-                users[sender][i] = users[sender][users[sender].length - 1];
-                users[sender].pop();
+                _users[msg.sender][i] = _users[msg.sender][
+                    _users[msg.sender].length - 1
+                ];
+                _users[msg.sender].pop();
                 break;
             }
         }
-        users[_to].push(_tokenId);
+        _users[_to].push(_tokenId);
     }
 }
