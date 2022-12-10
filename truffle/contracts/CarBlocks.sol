@@ -214,18 +214,14 @@ contract CarBlocks is ERC721URIStorage {
         address sender = _msgSender();
         _transfer(sender, _to, _tokenId);
 
-        uint256[] memory updatedTokensList = new uint256[](
-            users[sender].length - 1
-        );
-        uint8 counter;
-
         for (uint256 i = 0; i < users[sender].length; i++) {
-            if (users[sender][i] != _tokenId) {
-                updatedTokensList[counter] = users[sender][i];
+            if (users[sender][i] == _tokenId) {
+                // We switch with the last element of array
+                users[sender][i] = users[sender][users[sender].length - 1];
+                users[sender].pop();
+                break;
             }
-            counter++;
         }
-        users[sender] = updatedTokensList;
         users[_to].push(_tokenId);
     }
 }

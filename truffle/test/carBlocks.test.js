@@ -132,12 +132,15 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     before(async () => {
       cb = await buildCarblocks();
       await mintCB(user1, false);
+      await mintCB(user1, false);
+      await mintCB(user1, false);
     });
 
     it("should transfer a token from user 1 to user 2 ", async () => {
       expect(await cb.ownerOf(1)).to.equal(user1);
       //console.log("USERS : ", await cb.users(user1, 0));
-      await cb.transferCarblockNFT(user2, 1, {from: user1});
+      await cb.transferCarblockNFT(user2, 1, 0x00, {from: user1});
+      await cb.transferCarblockNFT(user2, 2, 0x00, {from: user1});
       expect(await cb.ownerOf(1)).not.to.equal(user1);
       expect(await cb.ownerOf(1)).to.equal(user2);
     });
