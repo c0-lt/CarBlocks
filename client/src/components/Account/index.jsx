@@ -71,7 +71,7 @@ function Account({contracts}) {
       <MyCars contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={1}>
-      <MintCar/>
+      <MintCar contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={2}>
       <MyOffers/>
