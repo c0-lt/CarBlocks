@@ -15,44 +15,117 @@ import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
 import IconButton from "@mui/material/IconButton";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import {InputAdornment} from "@mui/material";
+import {useBackdrop} from "../../contexts/Loader";
+import {useSnackbar} from "notistack";
+import {useAccount} from "wagmi";
+import {useNavigate} from "react-router-dom";
+import Pinata from "../../utils/Pinata";
 
-function MintCar() {
+function MintCar({contracts}) {
   const energyList = [
     "Essence",
     "Diesel",
     "GPL",
     "Electrique",
     "Hybride essence",
-    "Hybride diesel"
+    "Hybride diesel",
   ];
+  const formId = "formMintCar";
+  const navigate = useNavigate();
+  const backdrop = useBackdrop();
+  const {enqueueSnackbar} = useSnackbar();
+  const [date, setDate] = React.useState();
+  const [picture, setPicture] = React.useState();
+  const [picturePath, setPicturePath] = React.useState("");
+  const [energy, setEnergy] = React.useState("");
+  const {address} = useAccount();
+
+  const callbackError = (error, msg) => {
+    console.error(error);
+    enqueueSnackbar(msg, {variant: "error"});
+    backdrop.hideLoader();
+  };
+
+  const callbackPictureSent = (data) => {
+    console.log("picture sent");
+    // console.log(carblock);
+    const ImgHash = `ipfs://${data.IpfsHash}`;
+    console.log(ImgHash);
+    const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
+    console.log(ImgHashGW);
+    enqueueSnackbar("Picture uploaded", {variant: "success"});
+    const form = new FormData(document.getElementById(formId));
+    let carblock = {
+      brand: form.get("brand"),
+      model: form.get("model"),
+      circulationStartDate: dayjs(date).unix(),
+      registrationNumber: form.get("registrationNumber"),
+      kilometers: form.get("kilometers"),
+      energy: energy,
+      image: ImgHashGW,
+      VIN: form.get("VIN"),
+    };
+    console.log(carblock);
+    console.log(Pinata.convertToIPFSJSON(carblock));
+    Pinata.sendJSON(
+      Pinata.convertToIPFSJSON(carblock),
+      carblock,
+      callbackSendJSON,
+      callbackError
+    );
+  };
+
+  const callbackSendJSON = (data, carblock) => {
+    const IpfsHash = `ipfs://${data.IpfsHash}`;
+    console.log(IpfsHash);
+    const IpfsHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
+    console.log(IpfsHashGW);
+    enqueueSnackbar("JSON Metadata uploaded", {variant: "success"});
+    // Mint
+    mintCarblock(carblock, IpfsHashGW);
+  };
+
+  const mintCarblock = async (carblock, URI) => {
+    try {
+      const carblockContract = contracts.carblocks[carblock.energy];
+      await carblockContract.mintCarblock(
+        address,
+        carblock.circulationStartDate,
+        [carblock.VIN, carblock.brand, carblock.model, URI],
+        0,
+        false
+      );
+      navigate(0);
+      backdrop.hideLoader();
+
+    } catch (error) {
+      callbackError(error, "Error minting Carblock");
+      // console.log("Error sending File to IPFS: ");
+      // console.log(error);
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    backdrop.showLoader();
+    Pinata.sendFile(picture, {}, callbackPictureSent, callbackError);
   };
 
-  const [value, setValue] = React.useState();
-  const [picture, setPicture] = React.useState("");
-
-  const handleChange = (newValue) => {
+  const handleChangeDate = (newValue) => {
     console.log(newValue);
-    setValue(newValue);
+    setDate(newValue);
   };
 
-  const handleChangePicture = (newValue) => {
-    let picturePath = newValue.target.value;
+  const handleChangePicture = (e) => {
+    setPicture(e.target.files[0]);
+    let picturePath = e.target.value;
     if (picturePath) {
       const lastIndexOf = picturePath.lastIndexOf("\\");
       picturePath = picturePath.slice(lastIndexOf + 1);
     }
-    setPicture(picturePath);
+    setPicturePath(picturePath);
   };
-
-  const [energy, setEnergy] = React.useState("");
 
   const handleChangeEnergy = (event) => {
     setEnergy(event.target.value);
@@ -65,6 +138,7 @@ function MintCar() {
       </Typography>
       <Box
         component="form"
+        id={formId}
         textAlign="center"
         justifyContent="center"
         alignItems="center"
@@ -74,12 +148,12 @@ function MintCar() {
         maxWidth="sm"
       >
         <Grid container spacing={2}>
-          <Grid item xs={12}>
+          <Grid key="VIN" item xs={12}>
             <TextField
-              name="vin"
+              name="VIN"
               required
               fullWidth
-              id="vin"
+              id="VIN"
               label="N° de série (VIN)"
               autoFocus
             />
@@ -91,22 +165,37 @@ function MintCar() {
                   label="Date de 1ère mise en circulation"
                   name="originalInServiceDate"
                 /> */}
-          <Grid item xs={12} sm={8}>
+          <Grid key="registrationNumber" item xs={12} sm={6}>
             <TextField
               required
               fullWidth
-              id="registration"
+              id="registrationNumber"
               label="N° immatriculation"
-              name="registration"
+              name="registrationNumber"
             />
           </Grid>
-          <Grid item xs={12} sm={4}>
+          <Grid key="kilometers" item xs={12} sm={3}>
+            <TextField
+              required
+              fullWidth
+              id="kilometers"
+              label="Kilomètres"
+              name="kilometers"
+              inputProps={{inputMode: "numeric", pattern: "[0-9]*"}}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">Km</InputAdornment>
+                ),
+              }}
+            />
+          </Grid>
+          <Grid key="originalInServiceDate" item xs={12} sm={3}>
             <LocalizationProvider dateAdapter={AdapterDayjs}>
               <DesktopDatePicker
                 label="Date de 1ère mise en circulation"
                 inputFormat="DD/MM/YYYY"
-                value={value}
-                onChange={handleChange}
+                value={date}
+                onChange={handleChangeDate}
                 id="originalInServiceDate"
                 name="originalInServiceDate"
                 renderInput={(params) => (
@@ -115,17 +204,17 @@ function MintCar() {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid key="brand" item xs={12} sm={6}>
             <TextField
               required
               fullWidth
-              name="brandname"
+              name="brand"
               label="Marque"
-              id="brandname"
-              autoComplete="brandname"
+              id="brand"
+              autoComplete="brand"
             />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid key="model" item xs={12} sm={6}>
             <TextField
               required
               fullWidth
@@ -156,25 +245,38 @@ function MintCar() {
               </Button>
             </label>
           </Grid> */}
-          <Grid item xs={12} sm={6} textAlign="left"
-        justifyContent="left"
-        alignItems="left">
-          <FormControl fullWidth>
+          <Grid
+            key="energy"
+            item
+            xs={12}
+            sm={6}
+            textAlign="left"
+            justifyContent="left"
+            alignItems="left"
+          >
+            <FormControl fullWidth>
               <InputLabel id="label-energy">Energy</InputLabel>
               <Select
                 labelId="label-energy"
                 id="energy"
+                required
                 value={energy}
                 label="Energy"
                 onChange={handleChangeEnergy}
               >
-                {energyList.map((energyCurrent) => (
-                  <MenuItem value={energyCurrent}>{energyCurrent}</MenuItem>
+                {energyList.map((energyCurrent, i) => (
+                  <MenuItem
+                    {...(i > 1 ? {disabled: true} : {})}
+                    key={i}
+                    value={energyCurrent}
+                  >
+                    {energyCurrent}
+                  </MenuItem>
                 ))}
               </Select>
-              </FormControl>
+            </FormControl>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid key="picture" item xs={12} sm={6}>
             <Stack direction="row" spacing={1}>
               <TextField
                 required
@@ -183,7 +285,7 @@ function MintCar() {
                 name="picture"
                 label="Photo"
                 id="picture"
-                value={picture}
+                value={picturePath}
               />
               <IconButton
                 size="large"
@@ -196,7 +298,7 @@ function MintCar() {
                   onChange={handleChangePicture}
                   id="picture"
                   accept="image/*"
-                  energy="file"
+                  type="file"
                 />
                 <PhotoCamera fontSize="inherit" />
               </IconButton>
@@ -209,7 +311,7 @@ function MintCar() {
             />
           </Grid> */}
         </Grid>
-        <Button energy="submit" variant="contained" sx={{mt: 3, mb: 2}}>
+        <Button type="submit" variant="contained" sx={{mt: 3, mb: 2}}>
           Enregistrer
         </Button>
       </Box>

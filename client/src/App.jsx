@@ -19,6 +19,7 @@ import "./App.css";
 import Car from "./components/Car";
 
 function App() {
+  const [contracts, setContracts] = React.useState();
   const [factoryContract, setFactoryContracts] = React.useState();
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const carBlocksArtifact = require("./contracts/CarBlocks.json");
@@ -33,9 +34,9 @@ function App() {
     }
   };
 
-  const init = React.useCallback(async (carBlocksArtifact, carBlocksFactoryArtifact) => {
+  const init = React.useCallback(async (carBlocksArtifact, carBlocksFactoryArtifact, factoryContract) => {
     console.log("Init");
-    if (carBlocksArtifact && carBlocksFactoryArtifact) {
+    if (carBlocksArtifact && carBlocksFactoryArtifact && !factoryContract) {
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
       // const networkID = "5777";
@@ -49,13 +50,7 @@ function App() {
           carBlocksFactoryArtifact.abi,
           signer
         );
-        carBlocksContract = new ethers.Contract(
-          carBlocksArtifact.networks[networkID].address,
-          carBlocksArtifact.abi,
-          signer
-        );
         console.log(carBlocksFactoryContract);
-        console.log(carBlocksContract);
       } catch (err) {
         console.error(err);
       }
@@ -71,35 +66,66 @@ function App() {
     }
   }, [isWalletConnected]);
 
+ /*  React.useEffect(() => {
+    console.log("Contracts effect");
+    if(contracts) {
+      console.log("Contracts set");
+      // TODO
+
+    }
+  }, [contracts]); */
+
   const initContracts = React.useCallback(async (factoryContract) => {
     console.log("Init contracts");
     if (factoryContract) {
+      let contractsObject = {factory: [], carblocks: {}};
       console.log(factoryContract);
-      const test = await factoryContract.carblocksCollection(0);
-      console.log(test); // TODO 
+      const carBlocksContracts = await factoryContract.getCarblocksCollection();
+      console.log(carBlocksContracts); // TODO 
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+
+      for(let c in carBlocksContracts) {
+        const cAddress = carBlocksContracts[c];
+        const carBlocksContract = new ethers.Contract(
+          cAddress,
+          carBlocksArtifact.abi,
+          signer
+        );
+        const energy = await carBlocksContract.energyType();
+        contractsObject.carblocks[energy] = carBlocksContract;
+        contractsObject.factory.push(energy);
+      }
+      console.log(contractsObject);
+      setContracts(contractsObject);
     }
   }, [factoryContract]);
 
   React.useEffect(() => {
     console.log("Init effect");
     try {
-      init(carBlocksArtifact, carBlocksFactoryArtifact);
+      init(carBlocksArtifact, carBlocksFactoryArtifact, factoryContract);
     } catch (err) {
       console.error(err);
     }
-  }, [init, carBlocksArtifact, carBlocksFactoryArtifact]);
+  }, [init, carBlocksArtifact, carBlocksFactoryArtifact, factoryContract]);
 
   React.useEffect(() => {
     const events = ["chainChanged", "accountsChanged"];
     const handleChange = () => {
-      console.log("ether change");
-      init(carBlocksArtifact, carBlocksFactoryArtifact);
+      console.log("chain changed");
+      init(carBlocksArtifact, carBlocksFactoryArtifact, factoryContract);
     };
-    events.forEach((e) => window.ethereum.on(e, handleChange));
+    const handleAccountsChange = () => {
+      console.log("ether accounts changed");
+      initContracts(factoryContract);
+    }
+    window.ethereum.on("accountsChanged", handleAccountsChange);
+    window.ethereum.on("chainChanged", handleChange);
     return () => {
       events.forEach((e) => window.ethereum.removeListener(e, handleChange));
     };
-  }, [init, carBlocksArtifact, carBlocksFactoryArtifact]);
+  }, [init, carBlocksArtifact, carBlocksFactoryArtifact, factoryContract]);
 
   return (
     
@@ -110,7 +136,7 @@ function App() {
           <Route path="social/:id" element={<SocialCar />} />
           <Route path="marketplace" element={<Marketplace />} />
           <Route path="marketplace/:id" element={<MarketplaceCar />} />
-          <Route path="account" element={<Account />} />
+          <Route path="account" element={<Account contracts={contracts}/>} />
           <Route path="car/:id" element={<Car />} />
           <Route path="offer/:id" element={<Offer />} />
           <Route path="about" element={<About />} />

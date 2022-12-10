@@ -42,7 +42,7 @@ function a11yProps(index) {
   };
 }
 
-function Account() {
+function Account({contracts}) {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -68,10 +68,10 @@ function Account() {
       <Tab label="Offres reçues" {...a11yProps(3)} />
     </Tabs>
     <TabPanel value={value} index={0}>
-      <MyCars/>
+      <MyCars contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={1}>
-      <MintCar/>
+      <MintCar contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={2}>
       <MyOffers/>

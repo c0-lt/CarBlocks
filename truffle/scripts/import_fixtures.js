@@ -1,8 +1,8 @@
 const CarBlocks = artifacts.require("../contracts/CarBlocks.sol");
 
 const collection = {
-  Diesel: "0xdd8A41141cB7297EF3828Ae20404f683aef4CC23",
-  Essence: "0xf9b299716BF436eDCf1C61E268e3eDa17544a459",
+  Diesel: '0xB7050d45DC501B7E5e98b774cf06CD212fC260a6',
+  Essence: '0x6470ed71E14a70daBEfb728F2D98B08fAe7F1017'
 };
 
 var fixtures = [
