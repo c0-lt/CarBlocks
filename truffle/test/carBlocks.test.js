@@ -165,4 +165,18 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       expect(await carblock.price).to.be.bignumber.equal(BN(10000));
     });
   });
+
+  describe("Test of offers management", () => {
+    beforeEach(async () => {
+      cb = await buildCarblocks();
+      await mintCB(user1, true);
+    });
+
+    it("should make an offer", async () => {
+      await cb.makeOffer(1, 10, {from: user2});
+      let offers = await cb.getOffers(1, {from: user1});
+      expect(offers[0].price).to.be.bignumber.equal(BN(10));
+      expect(offers[0].user).to.be.equal(user2);
+    });
+  });
 });

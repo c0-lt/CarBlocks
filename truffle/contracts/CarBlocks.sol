@@ -60,6 +60,12 @@ contract CarBlocks is ERC721URIStorage {
         bool isForSale;
     }
 
+    ///@notice Defines a way to store offers made by users
+    struct Offer {
+        uint256 price;
+        address user;
+    }
+
     /// @notice Make sure contract caller is owner of _tokenId
     modifier isNFTOwner(uint256 _tokenId) {
         require(
@@ -75,6 +81,7 @@ contract CarBlocks is ERC721URIStorage {
     //TODO : qui peut appeler users ?
     mapping(address => uint256[]) public users; // address => [tokenID]
     mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
+    mapping(uint256 => Offer[]) private _allOffers; // tokenId => [{price, user}]
 
     constructor(string memory _energyType) ERC721(_name, _symbol) {
         energyType = _energyType;
@@ -201,6 +208,35 @@ contract CarBlocks is ERC721URIStorage {
 
         return newTokenId;
     }
+
+    /** -- OFFERS MANAGEMENT --*/
+
+    /// @notice Allow user to make an offer for NFT
+    /// @dev Limit to 10 offers per NFT
+    /// @param _tokenId Token ID of NFT that user wants to purchase
+    /// @param _price price offer of user
+    function makeOffer(uint256 _tokenId, uint256 _price) external {
+        require(
+            _allOffers[_tokenId].length < 10,
+            "Error : user has already received 10 offers"
+        );
+        _allOffers[_tokenId].push(Offer(_price, msg.sender));
+    }
+
+    /// @notice Allow user to retrieve all offers for a NFT
+    /// @dev Limit to 10 offers per NFT
+    /// @param _tokenId Token ID of NFT that user wants to purchase
+    /// @return allOffers an array of offers
+    function getOffers(uint256 _tokenId)
+        external
+        view
+        isNFTOwner(_tokenId)
+        returns (Offer[] memory)
+    {
+        return _allOffers[_tokenId];
+    }
+
+    /** - OFFERS MANAGEMENT - */
 
     /// @notice Transfer a NFT when an owner is selling his vehicle to new owner
     /// @dev Uses _transfer to update owner and update the 'users' mapping (don't need _safeTransfer for same reason as _safeMint)
