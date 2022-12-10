@@ -54,6 +54,7 @@ contract CarBlocks is ERC721URIStorage {
 
     /// @notice Defines the carblock NFT structure
     struct Carblock {
+        uint256 tokenId;
         CarState carState;
         Car car;
         uint256 price;
@@ -191,6 +192,7 @@ contract CarBlocks is ERC721URIStorage {
 
         carblocksNFT.push(
             Carblock(
+                _tokenIds.current(),
                 _state,
                 Car(_circulationStartDate, _vInfo[0], _vInfo[1], _vInfo[2]),
                 0,
