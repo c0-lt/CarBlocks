@@ -1,7 +1,6 @@
 import * as React from "react";
 import {Routes, Route, Link} from "react-router-dom";
 
-import {WagmiConfig, createClient} from "wagmi";
 import {ethers} from "ethers";
 
 import Container from "@mui/material/Container";
@@ -20,10 +19,6 @@ import "./App.css";
 import Car from "./components/Car";
 
 function App() {
-  const client = createClient({
-    autoConnect: true,
-    provider: new ethers.providers.Web3Provider(window.ethereum),
-  });
   const [contracts, setContracts] = React.useState({});
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const carBlocksArtifact = require("./contracts/CarBlocks.json");
@@ -93,7 +88,7 @@ function App() {
   }, [init, carBlocksArtifact, carBlocksFactoryArtifact]);
 
   return (
-    <WagmiConfig client={client}>
+    
       <Routes>
         <Route path="/" element={<Layout handleChild={handleChild}/>}>
           <Route index element={<Home />} />
@@ -108,7 +103,6 @@ function App() {
           <Route path="*" element={<NoMatch />} />
         </Route>
       </Routes>
-    </WagmiConfig>
   );
 }
 
