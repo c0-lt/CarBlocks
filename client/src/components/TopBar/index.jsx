@@ -15,11 +15,19 @@ import Account from "./Account";
 import {useSnackbar} from "notistack";
 import {Link as RouterLink} from "react-router-dom";
 
-function TopBar() {
+function TopBar({handleChild}) {
   const {address, isConnected} = useAccount();
   const open = true;
   const [notification, setNotifications] = React.useState(0);
   let notifCount = 0; // Lack of react knowledge
+
+  React.useEffect(() => {
+    console.log("child is connect"+isConnected);
+
+    if (isConnected === true) {
+      handleChild(true);
+    }
+  });
 
   const {enqueueSnackbar} = useSnackbar();
 
