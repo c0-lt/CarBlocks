@@ -9,7 +9,15 @@ import Container from "@mui/material/Container";
 import {BackdropProvider} from "../../contexts/Loader";
 // import {AlertProvider} from "../../contexts/Alert";
 
-function Layout() {
+function Layout({handleChild}) {
+  // React.useEffect(() => {
+  //   console.log(isConnected);
+
+  //   if (isConnected === true) {
+  //     handleChild(true);
+  //   }
+  // });
+
   return (
     <BackdropProvider>
       <SnackbarProvider
@@ -17,7 +25,7 @@ function Layout() {
         anchorOrigin={{vertical: "top", horizontal: "right"}}
         autoHideDuration={6000}
       >
-        <TopBar />
+        <TopBar handleChild={handleChild}/>
         <main>
           <Container
             sx={{

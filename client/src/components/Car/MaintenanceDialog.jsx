@@ -62,7 +62,12 @@ function MaintenanceDialog({id, handleClose, open, car}) {
           {
             "trait_type": "Model", 
             "value": "720s"
-          } ]
+          },
+          {
+            "trait_type": "Energy", 
+            "value": "Petrol"
+          }
+         ]
     }
     Pinata.sendFile(
       file,
