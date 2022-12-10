@@ -17,6 +17,7 @@ $ npm start
 ```
 
 ## Tests
+
 ```sh
 # To start unit tests
 $ cd truffle
@@ -24,14 +25,11 @@ $ truffle test
 
 ```
 
-## Details
+## Fixtures import
 
-Changes in package.json for "browserslist" see https://stackoverflow.com/a/71037227/1336421
-
-
-## Tips
-- Test with truffle console : mint a new NFT
-    ```sh
-    $ cd truffle
-    $ truffle exec truffle_console_debug.js
-    ```
+```sh
+truffle migrate --f 5
+# Copy the JSON that output from this command {diesel: "0x00", essence : "0x00"}
+# Paste in scripts/import_fixtures.js in const collection
+truffle exec scripts/import_fixtures.js
+```
