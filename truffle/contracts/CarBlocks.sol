@@ -230,6 +230,47 @@ contract CarBlocks is ERC721URIStorage {
         return _allOffers[_tokenId];
     }
 
+    /// @notice Reject an offer
+    /// @dev Remove offer of _bider from allOffers
+    /// @param _tokenId of offer to reject
+    /// @param _bider address of user who made the offer
+    function rejectOffer(uint256 _tokenId, address _bider)
+        external
+        isNFTOwner(_tokenId)
+    {
+        for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
+            if (_allOffers[_tokenId][i].user == _bider) {
+                // We switch with the last element in array
+                _allOffers[_tokenId][i] = _allOffers[_tokenId][
+                    _allOffers[_tokenId].length - 1
+                ];
+                _allOffers[_tokenId].pop();
+                break;
+            }
+        }
+    }
+
+    /// @notice Check if user has made an offer on NFT
+    /// @param _tokenId NFT token ID
+    /// @return bool true if contract caller has already made an offer
+    function hasMadeOffer(uint256 _tokenId) external view returns (bool) {
+        for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
+            if (_allOffers[_tokenId][i].user == msg.sender) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /// @notice Accept an offer and transfer NFT to bider
+    /// @dev Delete all offers in _allOffers and call transfertCarblockNFT
+    /// @param _tokenId NFT token ID
+    /// @param _bider user that made the accepted offer
+    function acceptOffer(uint256 _tokenId, address _bider) external payable {
+        transferCarblockNFT(_bider, _tokenId);
+        delete _allOffers[_tokenId];
+    }
+
     /** - OFFERS MANAGEMENT - */
 
     //TODO : check visibility

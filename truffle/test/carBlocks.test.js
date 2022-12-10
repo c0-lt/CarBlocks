@@ -139,6 +139,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     it("should transfer a token from user 1 to user 2 ", async () => {
       expect(await cb.ownerOf(1)).to.equal(user1);
       //console.log("USERS : ", await cb.users(user1, 0));
+      //Note : switch transferCarblockNFT to public for this test case
       await cb.transferCarblockNFT(user2, 1, {from: user1});
       await cb.transferCarblockNFT(user2, 2, {from: user1});
       expect(await cb.ownerOf(1)).not.to.equal(user1);
@@ -170,6 +171,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     beforeEach(async () => {
       cb = await buildCarblocks();
       await mintCB(user1, true);
+      await mintCB(user1, true);
     });
 
     it("should make an offer", async () => {
@@ -177,6 +179,26 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       let offers = await cb.getOffers(1, {from: user1});
       expect(offers[0].price).to.be.bignumber.equal(BN(10));
       expect(offers[0].user).to.be.equal(user2);
+    });
+
+    it("should reject an offer", async () => {
+      await cb.makeOffer(1, 10, {from: user2});
+      await cb.makeOffer(2, 15, {from: user2});
+
+      await cb.rejectOffer(2, user2, {from: user1});
+      let offers = await cb.getOffers(1, {from: user1});
+      expect(offers.length.toString()).to.be.bignumber.equal(BN(1));
+    });
+
+    it("should check if offer has been made", async () => {
+      await cb.makeOffer(1, 10, {from: user2});
+      expect(await cb.hasMadeOffer(1, {from: user2})).to.be.true;
+    });
+
+    it("should accept an offer", async () => {
+      await cb.makeOffer(1, 10, {from: user2});
+      await cb.acceptOffer(1, user2, {from: user1});
+      expect(await cb.ownerOf(1)).to.equal(user2);
     });
   });
 });
