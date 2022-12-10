@@ -164,17 +164,6 @@ var fixtures = [
   },
 ];
 
-async function mintCB(_to, _isForSale) {
-  let cb = await CarBlocks.at(SC_ADDRESS);
-  return await cb.mintCarblock(
-    _to,
-    1670177418,
-    ["1234", "Fiat", "Multipla", "tokenURI"],
-    0,
-    _isForSale
-  );
-}
-
 module.exports = async function (callback) {
   try {
     let sc = {
