@@ -31,7 +31,7 @@ function NewOffer({id, handleClose, open, car, contract}) {
     });
     if(Number.isInteger(price) && price>=minimumPrice) {
       try {
-        await contract.makeOffer(car.id,price);
+        await contract.makeOffer(car.id,price,car.owner);
         enqueueSnackbar("Offre émise! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
         backdrop.hideLoader();
         handleClose();

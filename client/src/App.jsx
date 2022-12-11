@@ -138,7 +138,7 @@ function App() {
           <Route path="marketplace/:energy/:id" element={<MarketplaceCar contracts={contracts} />} />
           <Route path="account" element={<Account contracts={contracts}/>} />
           <Route path="car/:energy/:id" element={<Car contracts={contracts}/>} />
-          <Route path="offer/:id" element={<Offer />} />
+          <Route path="offer/:energy/:id" element={<Offer contracts={contracts}/>} />
           <Route path="about" element={<About />} />
           <Route path="*" element={<NoMatch />} />
         </Route>

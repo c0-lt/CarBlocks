@@ -14,6 +14,10 @@ import StepContent from "@mui/material/StepContent";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import SellIcon from "@mui/icons-material/Sell";
 import BuildIcon from "@mui/icons-material/Build";
+import HomeIcon from '@mui/icons-material/Home';
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import {Link as RouterLink} from "react-router-dom";
 
 import dayjs from "dayjs";
 
@@ -52,7 +56,7 @@ function Car({contracts}) {
   const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
-  const [myCar, setMyCar] = React.useState({});
+  const [myCar, setMyCar] = React.useState(null);
   const [maintenances, setMaintenances] = React.useState(servicing);
   const [openSell, setOpenSell] = React.useState(false);
   const [openMaintenance, setOpenMaintenance] = React.useState(false);
@@ -109,7 +113,7 @@ function Car({contracts}) {
       console.log(carBlocksContract);
       try {
         let tmpCar = await carBlocksContract.getCarblock(id);
-        // console.log(tmpCar);
+        console.log(tmpCar);
         // console.log((parseInt(h)+1));
         const tokenURI = await carBlocksContract.tokenURI(
           tmpCar.tokenId.toNumber()
@@ -117,6 +121,11 @@ function Car({contracts}) {
         // console.log(tokenURI);
         const response = await fetch(tokenURI);
         const json = await response.json();
+
+        let offers = [];
+        offers = await carBlocksContract.getOffers(tmpCar.tokenId.toNumber());
+        const hasOffer = offers.length > 0;
+        console.log(offers);
         // console.log(json.image);
         myCar = {
           VIN: tmpCar.car.VIN,
@@ -128,6 +137,8 @@ function Car({contracts}) {
           metadata: Pinata.convertCarblockFromMetadata(json),
           price: tmpCar.price.toNumber(),
           id: tmpCar.tokenId.toNumber(),
+          hasOffer: hasOffer,
+          isForSale: tmpCar.isForSale
         };
         // TODO waiting for contract to allow setPrice 0 to cancel sell
         if (myCar.isForSale && myCar.price == 0) {
@@ -153,6 +164,10 @@ function Car({contracts}) {
         backdrop.hideLoader();
       } catch (e) {
         console.log(e);
+        enqueueSnackbar(
+          "Vous n'êtes pas propriétaire.",
+          {variant: "error"}
+        );
         setMyCar(null);
         backdrop.hideLoader();
       }
@@ -178,7 +193,26 @@ function Car({contracts}) {
 
   return (
     <Box>
-      <MaintenanceDialog
+      <Typography variant="h3" gutterBottom>
+        Ma voiture
+      </Typography>
+      <Container sx={{py: 2}}>
+        <Grid container spacing={4}>
+          {!myCar && (
+            <Grid item key={-1} xs={12} sm={12} md={12}>
+              <Typography>Non autorisé</Typography>
+              <br/>
+              <Button
+                      variant="contained" component={RouterLink} to="/account"
+                      startIcon={<DirectionsCarIcon />}
+                    >
+                      Vos voitures
+                    </Button>
+            </Grid>
+          )}
+          {myCar && myCar.id && (
+            <>
+              <MaintenanceDialog
         id={id}
         handleClose={handleCloseMaintenance}
         open={openMaintenance}
@@ -193,18 +227,6 @@ function Car({contracts}) {
         car={myCar}
         contract={contract}
       />
-      <Typography variant="h3" gutterBottom>
-        Ma voiture
-      </Typography>
-      <Container sx={{py: 2}}>
-        <Grid container spacing={4}>
-          {myCar == null && (
-            <Grid item key={-1} xs={12} sm={12} md={12}>
-              <Typography>Non autorisé</Typography>
-            </Grid>
-          )}
-          {myCar && myCar.id && (
-            <>
               <Grid item xs={12} sm={7} md={7}>
                 <Grid container spacing={1}>
                   <Grid item md={8}>
@@ -258,6 +280,7 @@ function Car({contracts}) {
                     {myCar.isForSale && (
                       <Typography> En vente: {myCar.price} €</Typography>
                     )}
+                    
                   </Grid>
                 </Grid>
                 <Box display="flex" justifyContent="center" sx={{mt: 4}}>
@@ -278,6 +301,21 @@ function Car({contracts}) {
                       color="error"
                     >
                       Annuler vente
+                    </Button>
+                  )}
+                  {myCar.isForSale && myCar.hasOffer && (
+                    <Button
+                      size="small"
+                      component={RouterLink}
+                      color="secondary"
+                      variant="contained"
+                      startIcon={<SellIcon />}
+                      to={{
+                        pathname: "/offer/" + myCar.metadata.energy + "/" + myCar.id,
+                      }}
+                      sx={{ml: 5}}
+                    >
+                      Suivre offre
                     </Button>
                   )}
                 </Box>

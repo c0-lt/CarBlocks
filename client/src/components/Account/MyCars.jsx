@@ -16,13 +16,14 @@ import Pinata from "../../utils/Pinata";
 import {useBackdrop} from "../../contexts/Loader";
 
 function MyCars({contracts}) {
-  const [myCars, setMyCars] = React.useState({});
+  const [myCars, setMyCars] = React.useState([]);
   const backdrop = useBackdrop();
 
   const initMyCars = React.useCallback(
     async (contracts) => {
       console.log("Init my cars");
-      let myCars = {};
+      let myCars = [];
+      let myCarsWithOffer = [];
       let i = 0;
       for (let c in contracts.factory) {
         const energy = contracts.factory[c];
@@ -38,20 +39,35 @@ function MyCars({contracts}) {
           // console.log(tokenURI);
           const response = await fetch(tokenURI);
           const json = await response.json();
+
+          let offers = [];
+          offers = await carBlocksContract.getOffers(tmpCar.tokenId.toNumber());
+          const hasOffer = offers.length > 0;
+          console.log(offers);
           // console.log(json.image);
-          myCars[i] = {
+          let tmpFinalCar = {
             brand: tmpCar.car.brand,
             model: tmpCar.car.model,
             energy: energy,
             circulationStartDate: tmpCar.car.circulationStartDate.toNumber(),
             metadata: Pinata.convertCarblockFromMetadata(json),
             id: tmpCar.tokenId.toNumber(),
-          };
+            offers: offers,
+            hasOffer: hasOffer,
+            isForSale: tmpCar.isForSale,
+            key: i
+          }
+          if(hasOffer) {
+            myCarsWithOffer.push(tmpFinalCar);
+          } else {
+            myCars.push(tmpFinalCar);
+          }
           i++;
         }
       }
+      console.log(myCarsWithOffer);
       console.log(myCars);
-      setMyCars(myCars);
+      setMyCars(myCarsWithOffer.concat(myCars));
       backdrop.hideLoader();
     },
     [contracts]
@@ -93,8 +109,8 @@ function MyCars({contracts}) {
       <Container sx={{py: 2}} maxWidth="md">
         {/* End hero unit */}
         <Grid container spacing={4}>
-          {Object.entries(myCars).map(([key, car]) => (
-            <Grid item key={key} xs={12} sm={6} md={6}>
+          {myCars.map((car) => (
+            <Grid item key={car.key} xs={12} sm={6} md={6}>
               <Card
                 sx={{height: "100%", display: "flex", flexDirection: "column"}}
               >
@@ -125,6 +141,19 @@ function MyCars({contracts}) {
                   >
                     Voir
                   </Button>
+                  {car.isForSale && car.hasOffer && (
+                    <Button
+                      size="small"
+                      component={RouterLink}
+                      color="secondary"
+                      variant="outlined"
+                      to={{
+                        pathname: "/offer/" + car.energy + "/" + car.id,
+                      }}
+                    >
+                      Suivre offre
+                    </Button>
+                  )}
                   {/* <Button size="small">Ajouter entretien</Button> */}
                 </CardActions>
               </Card>
