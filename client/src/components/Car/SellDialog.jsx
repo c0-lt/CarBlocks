@@ -68,7 +68,7 @@ function SellDialog({handleClose, open, car, contract}) {
                 autoFocus
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">ETH</InputAdornment>
+                    <InputAdornment position="end">€</InputAdornment>
                   ),
                 }}
               ></TextField>

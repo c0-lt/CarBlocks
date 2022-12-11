@@ -99,7 +99,7 @@ function Cars({contracts}) {
                   <Divider/>
                   <br/>
                   <Typography gutterBottom variant="h6" component="h2">
-                    Price: {car.price} ETH
+                    Price: {car.price} €
                   </Typography>
                 </CardContent>
                 <CardActions>

@@ -174,7 +174,7 @@ function MintCar({contracts}) {
                   label="Date de 1ère mise en circulation"
                   name="originalInServiceDate"
                 /> */}
-          <Grid key="registrationNumber" item xs={12} sm={6}>
+          <Grid key="registrationNumber" item xs={12} sm={5}>
             <TextField
               required
               fullWidth
@@ -183,7 +183,7 @@ function MintCar({contracts}) {
               name="registrationNumber"
             />
           </Grid>
-          <Grid key="kilometers" item xs={12} sm={3}>
+          <Grid key="kilometers" item xs={12} sm={4}>
             <TextField
               required
               fullWidth
