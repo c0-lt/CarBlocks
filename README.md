@@ -28,7 +28,7 @@ $ truffle test
 ## Fixtures import
 
 ```sh
-truffle migrate --f 3
+truffle migrate --f 5
 truffle exec scripts/import_fixtures.js
 ```
 
