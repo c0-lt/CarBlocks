@@ -8,7 +8,7 @@ const Pinata = {
       formData.append("file", file);
 
       const metadata = JSON.stringify({
-        name: "File name",
+        name: file.name,
       });
       formData.append("pinataMetadata", metadata);
 
@@ -59,7 +59,7 @@ const Pinata = {
             cidVersion: 1,
           },
           pinataMetadata: {
-            name: "Carblock Test",
+            name: json.name,
             keyvalues: {
               test: "testValue",
             },

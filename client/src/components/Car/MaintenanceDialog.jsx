@@ -75,8 +75,13 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
       kilometers: data.get("kilometers"),
       type: type,
     };
+    console.log(file.name);
     console.log(form);
-    Pinata.sendFile(file, form, handleBillSent, callbackError);
+    if(file && form.serviceDate && form.kilometers && form.type) {
+      Pinata.sendFile(file, form, handleBillSent, callbackError);
+    } else {
+      callbackError("Something is missing in form!", "Formulaire incomplet!");
+    }
   };
 
   const [date, setDate] = React.useState(dayjs());
@@ -90,13 +95,13 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
   };
 
   const handleChangeFile = (e) => {
-    setFile(e.target.files[0]);
-    let filePathTmp = e.target.value;
-    if (filePathTmp) {
-      const lastIndexOf = filePathTmp.lastIndexOf("\\");
-      filePathTmp = filePathTmp.slice(lastIndexOf + 1);
+    if(e.target.files[0]) {
+      setFile(e.target.files[0]);
+      setFilePath(e.target.files[0].name);
+    } else {
+      setFile("");
+      setFilePath("");
     }
-    setFilePath(filePathTmp);
   };
 
   const handleChangeType = (event) => {
