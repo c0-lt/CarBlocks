@@ -121,7 +121,7 @@ contract CarBlocks is ERC721URIStorage {
         );
         uint256 counter;
         for (uint256 i = 0; i < carblocksNFT.length; i++) {
-            if (carblocksNFT[i].isForSale == true) {
+            if (carblocksNFT[i].isForSale) {
                 carblocksForSale[counter] = carblocksNFT[i];
                 counter++;
             }
