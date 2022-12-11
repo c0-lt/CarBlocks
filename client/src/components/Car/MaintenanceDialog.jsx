@@ -147,6 +147,7 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
                 name="kilometers"
                 required
                 label="Kilométrage"
+                type="number"
                 autoFocus
                 InputProps={{
                   endAdornment: (
