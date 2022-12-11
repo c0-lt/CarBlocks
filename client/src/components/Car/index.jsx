@@ -249,7 +249,7 @@ function Car({contracts}) {
                       <Box
                         maxWidth="100%"
                         component="img"
-                        src="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
+                        src={myCar.metadata.image}
                         alt="logo"
                         loading="lazy"
                       />
