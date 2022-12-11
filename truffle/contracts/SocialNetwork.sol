@@ -6,18 +6,68 @@ pragma solidity 0.8.17;
 /// @notice Smart Contract allowing users to interact with each others
 /// @dev Stay away from this or you're facing sleep deprivation
 contract SocialNetwork {
-    /*TODO:
-- noter un véhicule correspondant à un NFT que l'utilisateur possède (marque+modèle) (les notes sont liés à une fiche)
--- stocker des commentaires
- */
     struct Message {
         uint256 timestamp;
         address author;
         string content;
     }
 
+    struct Opinion {
+        uint256 date;
+        string comment;
+        string pros;
+        string cons;
+        uint256[] notes; /* order: [safety, budget, comfort, driving, equipment, finition, reliability, ecology] */
+    }
+
+    struct Card {
+        uint256 cardId;
+        string brand;
+        string model;
+        string photoURI;
+    }
+    ///@notice store all the car card in social part
+    Card[] public cards;
+
+    ///@notice store all the car opinions : cardId => Opinion[]
+    mapping(uint256 => Opinion[]) public opinions;
+
     ///@notice store a list of messages from a hash(tokenId, _from, _to)
     mapping(bytes32 => Message[]) public _allMessages;
+
+    /// @notice To save car cards in social part of our DApp
+    /// @dev We use this function to import fixtures with import_fixtures.js
+    /// @param _cardId internal card ID
+    /// @param _brand brand of car
+    /// @param _model model of car
+    /// @param _photoURI photo of car on IPFS
+    function createCard(
+        uint256 _cardId,
+        string calldata _brand,
+        string calldata _model,
+        string calldata _photoURI
+    ) external {
+        cards.push(Card(_cardId, _brand, _model, _photoURI));
+    }
+
+    /// @notice To save car opinions in social part of our DApp
+    /// @dev We use this function to import fixtures with import_fixtures.js
+    /// @param _cardId internal card ID
+    /// @param _comment general comment about car
+    /// @param _pros advantages
+    /// @param _pros disadvantages
+    /// @param _notes array of 8 notes
+    function createOpinion(
+        uint256 _cardId,
+        string calldata _comment,
+        string calldata _pros,
+        string calldata _cons,
+        uint256[] calldata _notes
+    ) external {
+        opinions[_cardId].push(
+            Opinion(block.timestamp, _comment, _pros, _cons, _notes)
+        );
+    }
 
     /// @notice Send a message to a user regarding a specific NFT
     /// @dev store message in _allMessages with a hash
@@ -48,7 +98,7 @@ contract SocialNetwork {
     }
 
     /// @notice Generate a unique id for a message between 2 users and a specific NFT
-    /// @dev Concat the three param, always in the same order and hash them
+    /// @dev Concatenate the three param, always in the same order and hash them
     /// @param _tokenId NFT token ID
     /// @param _to address of msg recipient
     /// @param _from address of msg sender
@@ -62,12 +112,4 @@ contract SocialNetwork {
             return keccak256(abi.encodePacked(_tokenId, _from, _to));
         else return keccak256(abi.encodePacked(_tokenId, _to, _from));
     }
-
-    /*
-    mapping(idCard => [Opinions])
-    id de card
-    string brand
-    string model
-    string photoURI
-    array opinion */
 }

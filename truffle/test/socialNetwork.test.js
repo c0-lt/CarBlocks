@@ -48,4 +48,68 @@ contract("Test cases for SocialNetwork smart contract", (accounts) => {
       expect(chat[1].content).to.equal("hello handsome");
     });
   });
+
+  describe.only("Test of card creation", () => {
+    beforeEach(async () => {
+      sn = await buildSocialNetwork();
+    });
+
+    it("should create a card", async () => {
+      let car = {
+        cardId: 4,
+        brand: "Renault",
+        model: "Clio",
+        photoURI:
+          "https://gateway.pinata.cloud/ipfs/QmeqGMaY9FQc2h5R6oQkjSKSY9sMS7jq1xRHCxpY7wzcTG",
+        opinions: [
+          {
+            comment:
+              "Voiture très modulaire et adaptée aux familles nombreuses",
+            pros: "Spacieuse | modulaire",
+            cons: "Manque un peu de puissance",
+            safety: 4,
+            budget: 5,
+            comfort: 4,
+            driving: 4,
+            equipment: 4,
+            finition: 3.5,
+            reliability: 4.5,
+            ecology: 3,
+          },
+          {
+            comment: "Une jolie petite voiture, mais inconfortable",
+            pros: "Design | Fiabilité",
+            cons: "Inconfort des sièges",
+            safety: 3.5,
+            budget: 4,
+            comfort: 2,
+            driving: 4,
+            equipment: 3.5,
+            finition: 4,
+            reliability: 4,
+            ecology: 3,
+          },
+        ],
+      };
+      await sn.createCard(car.cardId, car.brand, car.model, car.photoURI);
+      for (let i = 0; i < car.opinions.length; i++) {
+        const op = car.opinions[i];
+
+        let test = [
+          op.safety * 10,
+          op.budget * 10,
+          op.comfort * 10,
+          op.driving * 10,
+          op.equipment * 10,
+          op.finition * 10,
+          op.reliability * 10,
+          op.ecology * 10,
+        ];
+        await sn.createOpinion(car.cardId, op.comment, op.pros, op.cons, test);
+      }
+      let opi = await sn.opinions.call(4, 0);
+      expect(await opi.pros).to.be.equal("Spacieuse | modulaire");
+      //TODO: QCO je ne trouve pas les notes dans opi...
+    });
+  });
 });
