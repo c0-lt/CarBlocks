@@ -96,9 +96,9 @@ function MintCar({contracts}) {
         0,
         false
       );
-      navigate(0);
+      enqueueSnackbar("CarBlock minted! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
       backdrop.hideLoader();
-
+      navigate(0);
     } catch (error) {
       callbackError(error, "Error minting Carblock");
       // console.log("Error sending File to IPFS: ");
