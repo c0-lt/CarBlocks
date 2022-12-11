@@ -9,14 +9,38 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputAdornment from "@mui/material/InputAdornment";
 
-function SellDialog({id, handleClose, open, car}) {
-  const handleSubmit = (event) => {
+import {useBackdrop} from "../../contexts/Loader";
+import {useSnackbar} from "notistack";
+import {useAccount} from "wagmi";
+import {useNavigate} from "react-router-dom";
+import Pinata from "../../utils/Pinata";
+
+function SellDialog({handleClose, open, car, contract}) {
+  const navigate = useNavigate();
+  const backdrop = useBackdrop();
+  const {enqueueSnackbar} = useSnackbar();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    backdrop.showLoader();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    const price = parseInt(data.get("price"));
+    if(Number.isInteger(price) && price>0) {
+      try {
+        await contract.setPrice(car.id,price);
+        enqueueSnackbar("CarBlock mis en vente! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
+        backdrop.hideLoader();
+        handleClose();
+      } catch (e) {
+        console.error(e);
+        enqueueSnackbar("Erreur lors de la transaction", {variant: "error"});
+        backdrop.hideLoader();
+        handleClose();
+      }
+    } else {
+      enqueueSnackbar("Le prix n'est pas un nombre entier ou égal à 0.", {variant: "error"});
+      backdrop.hideLoader();
+    }
   };
 
   return (
@@ -33,11 +57,12 @@ function SellDialog({id, handleClose, open, car}) {
       >
         <DialogTitle>Mettre en vente</DialogTitle>
         <DialogContent>
-          <DialogContentText>{car}</DialogContentText>
+          <DialogContentText>{car.brand} {car.model}</DialogContentText>
           <Grid container spacing={2} sx={{mt: 2}} justifyContent="center">
             <Grid item xs={6}>
               <TextField
                 id="price"
+                name="price"
                 required
                 label="Prix"
                 autoFocus

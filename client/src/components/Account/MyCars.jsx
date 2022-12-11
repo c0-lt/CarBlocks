@@ -24,6 +24,7 @@ function MyCars({contracts}) {
       console.log("Init my cars");
       let myCars = {};
       for (let c in contracts.factory) {
+        const energy = contracts.factory[c];
         const carBlocksContract = contracts.carblocks[contracts.factory[c]];
         let tmpCars = await carBlocksContract.getCarblocks();
         for (let h in tmpCars) {
@@ -38,9 +39,10 @@ function MyCars({contracts}) {
           myCars[h] = {
             brand: tmpCar.car.brand,
             model: tmpCar.car.model,
+            energy: energy,
             circulationStartDate: tmpCar.car.circulationStartDate.toNumber(),
             metadata: Pinata.convertCarblockFromMetadata(json),
-            id: h,
+            id: tmpCar.tokenId.toNumber(),
           };
         }
       }
@@ -114,7 +116,7 @@ function MyCars({contracts}) {
                     size="small"
                     component={RouterLink}
                     to={{
-                      pathname: "/car/" + car.id,
+                      pathname: "/car/" + car.energy +"/"+ car.id,
                     }}
                   >
                     Voir
