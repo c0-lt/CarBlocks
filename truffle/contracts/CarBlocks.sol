@@ -18,8 +18,8 @@ contract CarBlocks is ERC721URIStorage {
     string public energyType;
 
     /// @notice forcing the name and symbol for our Carblock token
-    string constant _name = "CarBlock";
-    string constant _symbol = "CBK";
+    string constant _NAME = "CarBlock";
+    string constant _SYMBOL = "CBK";
 
     /// @notice Defines the various states a car can be in
     enum CarState {
@@ -81,7 +81,7 @@ contract CarBlocks is ERC721URIStorage {
     mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
     mapping(uint256 => Offer[]) private _allOffers; // tokenId => [{price, user}]
 
-    constructor(string memory _energyType) ERC721(_name, _symbol) {
+    constructor(string memory _energyType) ERC721(_NAME, _SYMBOL) {
         energyType = _energyType;
     }
 
@@ -308,12 +308,15 @@ contract CarBlocks is ERC721URIStorage {
         Carblock[] memory carblocks = getCarblocks();
         for (uint256 i = 0; i < carblocks.length; i++) {
             if (
-                keccak256(abi.encodePacked(carblocks[i].car.brand)) ==
-                keccak256(abi.encodePacked(_brand)) &&
-                keccak256(abi.encodePacked(carblocks[i].car.model)) ==
-                keccak256(abi.encodePacked(_model))
+                (keccak256(abi.encodePacked(carblocks[i].car.brand)) ==
+                    keccak256(abi.encodePacked(_brand)))
             ) {
-                return true;
+                if (
+                    (keccak256(abi.encodePacked(carblocks[i].car.model)) ==
+                        keccak256(abi.encodePacked(_model)))
+                ) {
+                    return true;
+                }
             }
         }
         return false;
