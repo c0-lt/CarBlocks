@@ -102,7 +102,7 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice Retrieve all NFTs of contract caller
     /// @dev Get an array of Carblock struct with the NFT token ID
     /// @return carblocks an array of carblock NFT
-    function getCarblocks() external view returns (Carblock[] memory) {
+    function getCarblocks() public view returns (Carblock[] memory) {
         Carblock[] memory carblocks = new Carblock[](_users[msg.sender].length);
 
         for (uint256 i = 0; i < _users[msg.sender].length; i++) {
@@ -294,5 +294,28 @@ contract CarBlocks is ERC721URIStorage {
             }
         }
         _users[_to].push(_tokenId);
+    }
+
+    /// @notice Check if user has a specific brand & model of car so that he can give his opinion
+    /// @dev Uses getCarblocks to retrieve list of car and then string compares _brand & _model
+    /// @param _brand brand of car
+    /// @param _model model of car
+    function hasCar(string memory _brand, string memory _model)
+        external
+        view
+        returns (bool)
+    {
+        Carblock[] memory carblocks = getCarblocks();
+        for (uint256 i = 0; i < carblocks.length; i++) {
+            if (
+                keccak256(abi.encodePacked(carblocks[i].car.brand)) ==
+                keccak256(abi.encodePacked(_brand)) &&
+                keccak256(abi.encodePacked(carblocks[i].car.model)) ==
+                keccak256(abi.encodePacked(_model))
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 }

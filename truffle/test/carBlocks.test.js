@@ -102,6 +102,13 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       let carblock = await cb.getCarblock(1, {from: user1});
       expect(carblock.car.brand).to.equal("Fiat");
     });
+
+    it("should check if user has a specific car (brand + model)", async () => {
+      let hasCar = await cb.hasCar("Fiat", "Multipla", {from: user1});
+      expect(hasCar).to.be.true;
+      hasCar = await cb.hasCar("Fiat", "Punto", {from: user1});
+      expect(hasCar).to.be.false;
+    });
   });
 
   describe("Test of maintenances access functions", () => {
