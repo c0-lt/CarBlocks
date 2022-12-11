@@ -65,6 +65,7 @@ contract CarBlocks is ERC721URIStorage {
     struct Offer {
         uint256 price;
         address user;
+        address recipient;
     }
 
     /// @notice Make sure contract caller is owner of _tokenId
@@ -214,9 +215,14 @@ contract CarBlocks is ERC721URIStorage {
     /// @dev Limit to 10 offers per NFT
     /// @param _tokenId Token ID of NFT that user wants to purchase
     /// @param _price price offer of user
-    function makeOffer(uint256 _tokenId, uint256 _price) external {
+    /// @param _recipient address of offer recipient
+    function makeOffer(
+        uint256 _tokenId,
+        uint256 _price,
+        address _recipient
+    ) external {
         require(_allOffers[_tokenId].length < 10, "Err: 10 offers/NFT max");
-        _allOffers[_tokenId].push(Offer(_price, msg.sender));
+        _allOffers[_tokenId].push(Offer(_price, msg.sender, _recipient));
     }
 
     /// @notice Allow user to retrieve all offers for a NFT

@@ -182,15 +182,16 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should make an offer", async () => {
-      await cb.makeOffer(1, 10, {from: user2});
+      await cb.makeOffer(1, 10, user1, {from: user2});
       let offers = await cb.getOffers(1, {from: user1});
       expect(offers[0].price).to.be.bignumber.equal(BN(10));
       expect(offers[0].user).to.be.equal(user2);
+      expect(offers[0].recipient).to.be.equal(user1);
     });
 
     it("should reject an offer", async () => {
-      await cb.makeOffer(1, 10, {from: user2});
-      await cb.makeOffer(2, 15, {from: user2});
+      await cb.makeOffer(1, 10, user1, {from: user2});
+      await cb.makeOffer(2, 15, user1, {from: user2});
 
       await cb.rejectOffer(2, user2, {from: user1});
       let offers = await cb.getOffers(1, {from: user1});
@@ -198,12 +199,12 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
     });
 
     it("should check if offer has been made", async () => {
-      await cb.makeOffer(1, 10, {from: user2});
+      await cb.makeOffer(1, 10, user1, {from: user2});
       expect(await cb.hasMadeOffer(1, {from: user2})).to.be.true;
     });
 
     it("should accept an offer", async () => {
-      await cb.makeOffer(1, 10, {from: user2});
+      await cb.makeOffer(1, 10, user1, {from: user2});
       await cb.acceptOffer(1, user2, {from: user1});
       expect(await cb.ownerOf(1)).to.equal(user2);
     });

@@ -49,7 +49,7 @@ contract("Test cases for SocialNetwork smart contract", (accounts) => {
     });
   });
 
-  describe.only("Test of card creation", () => {
+  describe("Test of card creation", () => {
     beforeEach(async () => {
       sn = await buildSocialNetwork();
     });
