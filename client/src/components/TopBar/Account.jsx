@@ -14,8 +14,11 @@ import {useAccount, useConnect, useDisconnect} from "wagmi";
 import {InjectedConnector} from "wagmi/connectors/injected";
 import {Divider, ListItemIcon, ListItemText} from "@mui/material";
 
+import {useNavigate} from "react-router-dom";
+
 function Account() {
   const {address, isConnected} = useAccount();
+  const navigate = useNavigate();
   const {connect} = useConnect({
     connector: new InjectedConnector(),
   });
@@ -33,6 +36,7 @@ function Account() {
   const handleDisconnect = () => {
     disconnect();
     setAnchorEl(null);
+    navigate("/");
   };
 
   const handleConnect = () => {
