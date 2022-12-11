@@ -1,9 +1,5 @@
 const CarBlocks = artifacts.require("../contracts/CarBlocks.sol");
-
-const collection = {
-  Diesel: '0xB7050d45DC501B7E5e98b774cf06CD212fC260a6',
-  Essence: '0x6470ed71E14a70daBEfb728F2D98B08fAe7F1017'
-};
+const CarBlocksFactory = artifacts.require("../contracts/CarBlocksFactory.sol");
 
 var fixtures = [
   {
@@ -166,9 +162,11 @@ var fixtures = [
 
 module.exports = async function (callback) {
   try {
+    let cf = await CarBlocksFactory.deployed();
+    let collection = await cf.getCarblocksCollection();
     let sc = {
-      Diesel: await CarBlocks.at(collection.Diesel),
-      Essence: await CarBlocks.at(collection.Essence),
+      Diesel: await CarBlocks.at(collection[0]),
+      Essence: await CarBlocks.at(collection[1]),
     };
 
     for (let i = 0; i < fixtures.length; i++) {
