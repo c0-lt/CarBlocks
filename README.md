@@ -28,8 +28,11 @@ $ truffle test
 ## Fixtures import
 
 ```sh
-truffle migrate --f 5
-# Copy the JSON that output from this command {diesel: "0x00", essence : "0x00"}
-# Paste in scripts/import_fixtures.js in const collection
+truffle migrate --f 3
 truffle exec scripts/import_fixtures.js
 ```
+
+# TODO
+
+- eth-gas-reporter
+- mythril report
