@@ -109,7 +109,16 @@ function MintCar({contracts}) {
   const handleSubmit = (event) => {
     event.preventDefault();
     backdrop.showLoader();
-    Pinata.sendFile(picture, {}, callbackPictureSent, callbackError);
+    const form = new FormData(event.currentTarget);
+    const data = {
+      name: form.get("brand")+" "+form.get("model"),
+    };
+    console.log(data);
+    if(picture && data.name) {
+      Pinata.sendFile(picture, data, callbackPictureSent, callbackError);
+    } else {
+      callbackError("Something is missing in form!", "Formulaire incomplet!");
+    }
   };
 
   const handleChangeDate = (newValue) => {
@@ -118,13 +127,13 @@ function MintCar({contracts}) {
   };
 
   const handleChangePicture = (e) => {
+    if(e.target.files[0]) {
     setPicture(e.target.files[0]);
-    let picturePath = e.target.value;
-    if (picturePath) {
-      const lastIndexOf = picturePath.lastIndexOf("\\");
-      picturePath = picturePath.slice(lastIndexOf + 1);
+    setPicturePath(e.target.files[0].name);
+    } else {
+      setPicture("");
+      setPicturePath("");
     }
-    setPicturePath(picturePath);
   };
 
   const handleChangeEnergy = (event) => {

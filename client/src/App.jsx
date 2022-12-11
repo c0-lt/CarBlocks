@@ -134,8 +134,8 @@ function App() {
           <Route index element={<Home />} />
           <Route path="social" element={<Social />} />
           <Route path="social/:id" element={<SocialCar />} />
-          <Route path="marketplace" element={<Marketplace />} />
-          <Route path="marketplace/:id" element={<MarketplaceCar />} />
+          <Route path="marketplace" element={<Marketplace contracts={contracts} />} />
+          <Route path="marketplace/:energy/:id" element={<MarketplaceCar contracts={contracts} />} />
           <Route path="account" element={<Account contracts={contracts}/>} />
           <Route path="car/:energy/:id" element={<Car contracts={contracts}/>} />
           <Route path="offer/:id" element={<Offer />} />

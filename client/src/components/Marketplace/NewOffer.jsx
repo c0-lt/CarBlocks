@@ -9,14 +9,43 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import InputAdornment from "@mui/material/InputAdornment";
 
-function NewOffer({id, handleClose, open, car}) {
-  const handleSubmit = (event) => {
+import {useBackdrop} from "../../contexts/Loader";
+import {useSnackbar} from "notistack";
+import {useAccount} from "wagmi";
+import {useNavigate} from "react-router-dom";
+
+function NewOffer({id, handleClose, open, car, contract}) {
+  const navigate = useNavigate();
+  const backdrop = useBackdrop();
+  const {enqueueSnackbar} = useSnackbar();
+  
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    backdrop.showLoader();
     const data = new FormData(event.currentTarget);
+    const price = parseInt(data.get("offer"));
+    const minimumPrice = car.price;
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      offer: price
     });
+    if(Number.isInteger(price) && price>=minimumPrice) {
+      try {
+        await contract.makeOffer(car.id,price);
+        enqueueSnackbar("Offre émise! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
+        backdrop.hideLoader();
+        handleClose();
+      } catch (e) {
+        console.error(e);
+        enqueueSnackbar("Erreur lors de la transaction", {variant: "error"});
+        backdrop.hideLoader();
+        handleClose();
+      }
+    } else {
+      enqueueSnackbar("L'offre n'est pas un nombre entier ou inférieur au prix fixé.", {variant: "error"});
+      backdrop.hideLoader();
+    }
+    backdrop.hideLoader();
   };
 
   return (
@@ -33,11 +62,14 @@ function NewOffer({id, handleClose, open, car}) {
       >
         <DialogTitle>Faire une offre</DialogTitle>
         <DialogContent>
-          <DialogContentText>{car}</DialogContentText>
+          <DialogContentText>{car.brand} {car.model}
+          <br/>Price: {car.price} ETH</DialogContentText>
           <Grid container spacing={2} sx={{mt: 2}} justifyContent="center">
             <Grid item xs={6}>
               <TextField
-                id="outlined-select-currency"
+                helperText={"Doit être >= "+car.price}
+                id="offer"
+                name="offer"
                 required
                 label="Offre"
                 autoFocus

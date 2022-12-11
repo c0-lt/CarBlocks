@@ -23,6 +23,7 @@ function MyCars({contracts}) {
     async (contracts) => {
       console.log("Init my cars");
       let myCars = {};
+      let i = 0;
       for (let c in contracts.factory) {
         const energy = contracts.factory[c];
         const carBlocksContract = contracts.carblocks[contracts.factory[c]];
@@ -31,12 +32,14 @@ function MyCars({contracts}) {
           let tmpCar = tmpCars[h];
           console.log(tmpCar);
           // console.log((parseInt(h)+1));
-          const tokenURI = await carBlocksContract.tokenURI(tmpCar.tokenId.toNumber()); // TODO use tokenId
+          const tokenURI = await carBlocksContract.tokenURI(
+            tmpCar.tokenId.toNumber()
+          );
           // console.log(tokenURI);
           const response = await fetch(tokenURI);
           const json = await response.json();
           // console.log(json.image);
-          myCars[h] = {
+          myCars[i] = {
             brand: tmpCar.car.brand,
             model: tmpCar.car.model,
             energy: energy,
@@ -44,6 +47,7 @@ function MyCars({contracts}) {
             metadata: Pinata.convertCarblockFromMetadata(json),
             id: tmpCar.tokenId.toNumber(),
           };
+          i++;
         }
       }
       console.log(myCars);
@@ -104,7 +108,7 @@ function MyCars({contracts}) {
                     {car.brand}&nbsp;{car.model}
                   </Typography>
                   <Typography>
-                    Date de 1ère mise en circulation:{" "}
+                    Date de 1ère mise en circulation:
                     {dayjs.unix(car.circulationStartDate).format("DD-MM-YYYY")}
                   </Typography>
                   <Typography>
@@ -116,7 +120,7 @@ function MyCars({contracts}) {
                     size="small"
                     component={RouterLink}
                     to={{
-                      pathname: "/car/" + car.energy +"/"+ car.id,
+                      pathname: "/car/" + car.energy + "/" + car.id,
                     }}
                   >
                     Voir
