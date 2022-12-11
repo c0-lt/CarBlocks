@@ -226,6 +226,7 @@ contract CarBlocks is ERC721URIStorage {
             "Err: recipient not owner of NFT"
         );
         require(_allOffers[_tokenId].length < 10, "Err: 10 offers/NFT max");
+        require(!hasMadeOffer(_tokenId), "Err: only one offer/NFT allowed");
         _allOffers[_tokenId].push(Offer(_price, msg.sender, _recipient));
     }
 
@@ -240,6 +241,19 @@ contract CarBlocks is ERC721URIStorage {
         returns (Offer[] memory)
     {
         return _allOffers[_tokenId];
+    }
+
+    /// @notice Allow user to retrieve an offer he previously made for a NFT
+    /// @dev If no offer, just send back an offer with price at 0 from 0X0 to 0X0
+    /// @param _tokenId Token ID of NFT on which user made an offer
+    /// @return offer an Offer
+    function getOffer(uint256 _tokenId) external view returns (Offer memory) {
+        for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
+            if (_allOffers[_tokenId][i].user == msg.sender) {
+                return _allOffers[_tokenId][i];
+            }
+        }
+        return Offer(0, address(0), address(0));
     }
 
     /// @notice Reject an offer
@@ -265,7 +279,7 @@ contract CarBlocks is ERC721URIStorage {
     /// @notice Check if user has made an offer on NFT
     /// @param _tokenId NFT token ID
     /// @return bool true if contract caller has already made an offer
-    function hasMadeOffer(uint256 _tokenId) external view returns (bool) {
+    function hasMadeOffer(uint256 _tokenId) public view returns (bool) {
         for (uint256 i = 0; i < _allOffers[_tokenId].length; i++) {
             if (_allOffers[_tokenId][i].user == msg.sender) {
                 return true;

@@ -215,5 +215,10 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       await cb.acceptOffer(1, user2, {from: user1});
       expect(await cb.ownerOf(1)).to.equal(user2);
     });
+
+    it("should get an offer", async () => {
+      await cb.makeOffer(1, 10, user1, {from: user2});
+      expect((await cb.getOffer(1, {from: user2})).user).to.equal(user2);
+    });
   });
 });
