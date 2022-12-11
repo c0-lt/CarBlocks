@@ -39,7 +39,7 @@ function Offer() {
               />
               <CardContent sx={{flexGrow: 1}}>
                 <Typography component="h2" variant="h4" color="text.primary">
-                  50.02 ETH
+                  50.02 €
                 </Typography>
                 <Typography sx={{mb: 1.5}} color="text.secondary">
                   offer

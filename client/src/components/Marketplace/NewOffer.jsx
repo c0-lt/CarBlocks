@@ -63,7 +63,7 @@ function NewOffer({id, handleClose, open, car, contract}) {
         <DialogTitle>Faire une offre</DialogTitle>
         <DialogContent>
           <DialogContentText>{car.brand} {car.model}
-          <br/>Price: {car.price} ETH</DialogContentText>
+          <br/>Price: {car.price} €</DialogContentText>
           <Grid container spacing={2} sx={{mt: 2}} justifyContent="center">
             <Grid item xs={6}>
               <TextField

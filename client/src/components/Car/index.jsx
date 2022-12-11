@@ -256,7 +256,7 @@ function Car({contracts}) {
                     </Box>
                     <Typography>Statut: {myCar.carState}</Typography>
                     {myCar.isForSale && (
-                      <Typography> En vente: {myCar.price} ETH</Typography>
+                      <Typography> En vente: {myCar.price} €</Typography>
                     )}
                   </Grid>
                 </Grid>

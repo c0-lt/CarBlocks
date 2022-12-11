@@ -151,7 +151,7 @@ function MarketplaceCar({contracts}) {
                     <Divider />
                     <br />
                     <Typography gutterBottom variant="h6" component="h2">
-                      Price: {marketplaceCar.price} ETH
+                      Price: {marketplaceCar.price} €
                     </Typography>
                   </Grid>
                 </Grid>

@@ -20,7 +20,10 @@ function MyOffers() {
         Mes offres
       </Typography>
       <Container sx={{py: 2}} maxWidth="md">
-        <Grid container spacing={4}>
+      <Typography variant="h5" gutterBottom>
+        En cours de construction
+      </Typography>
+        {/* <Grid container spacing={4}>
           {cards.map((card) => (
             <Grid item key={card} xs={12} sm={6} md={6}>
               <Card
@@ -33,7 +36,7 @@ function MyOffers() {
                 />
                 <CardContent sx={{flexGrow: 1}}>
                   <Typography component="h2" variant="h4" color="text.primary">
-                    50.02 ETH
+                    50.02 €
                   </Typography>
                   <Typography sx={{mb: 1.5}} color="text.secondary">
                     offer
@@ -53,12 +56,11 @@ function MyOffers() {
                   >
                     Suivre offre
                   </Button>
-                  {/* <Button color="error" size="small">Annuler offre</Button> */}
                 </CardActions>
               </Card>
             </Grid>
           ))}
-        </Grid>
+        </Grid> */}
       </Container>
     </Box>
   );
