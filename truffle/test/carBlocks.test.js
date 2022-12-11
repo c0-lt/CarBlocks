@@ -189,6 +189,13 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       expect(offers[0].recipient).to.be.equal(user1);
     });
 
+    it("should not make an offer if recipient is not owner", async () => {
+      await expectRevert(
+        cb.makeOffer(1, 10, accounts[3], {from: user2}),
+        "Err: recipient not owner of NFT"
+      );
+    });
+
     it("should reject an offer", async () => {
       await cb.makeOffer(1, 10, user1, {from: user2});
       await cb.makeOffer(2, 15, user1, {from: user2});

@@ -221,6 +221,10 @@ contract CarBlocks is ERC721URIStorage {
         uint256 _price,
         address _recipient
     ) external {
+        require(
+            ownerOf(_tokenId) == _recipient,
+            "Err: recipient not owner of NFT"
+        );
         require(_allOffers[_tokenId].length < 10, "Err: 10 offers/NFT max");
         _allOffers[_tokenId].push(Offer(_price, msg.sender, _recipient));
     }
