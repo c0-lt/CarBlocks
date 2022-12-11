@@ -26,8 +26,8 @@ contract SocialNetwork {
         string model;
         string photoURI;
     }
-    ///@notice store all the car card in social part
-    Card[] public cards;
+    ///@notice store all the car cards appearing social tab
+    Card[] private _cards;
 
     ///@notice store all the car opinions : cardId => Opinion[]
     mapping(uint256 => Opinion[]) public opinions;
@@ -47,7 +47,13 @@ contract SocialNetwork {
         string calldata _model,
         string calldata _photoURI
     ) external {
-        cards.push(Card(_cardId, _brand, _model, _photoURI));
+        _cards.push(Card(_cardId, _brand, _model, _photoURI));
+    }
+
+    /// @notice Return all cards
+    /// @return cards
+    function getCards() external view returns (Card[] memory) {
+        return _cards;
     }
 
     /// @notice To save car opinions in social part of our DApp
