@@ -22,7 +22,7 @@ function TopBar({handleChild}) {
   let notifCount = 0; // Lack of react knowledge
 
   React.useEffect(() => {
-    console.log("child is connect"+isConnected);
+    console.log("child is connect" + isConnected);
 
     if (isConnected === true) {
       handleChild(true);
@@ -53,7 +53,7 @@ function TopBar({handleChild}) {
               component="img"
               src="/logo400x120-white.png"
               alt="logo"
-              sx={{width: "120px"}}
+              sx={{width: "120px", mb: "8px"}}
             />
             <Typography
               variant="h4"

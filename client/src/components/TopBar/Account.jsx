@@ -108,7 +108,7 @@ function Account() {
           <Chip
             size="medium"
             color="secondary"
-            icon={<AccountCircle fontSize="large" />}
+            icon={<AccountCircle fontSize="medium" />}
             label={wrapAddress(address)}
           />
         ) : (
