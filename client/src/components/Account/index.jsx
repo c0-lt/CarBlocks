@@ -74,10 +74,10 @@ function Account({contracts}) {
       <MintCar contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={2}>
-      <MyOffers/>
+      <MyOffers contracts={contracts}/>
     </TabPanel>
     <TabPanel value={value} index={3}>
-      <OffersReceived/>
+      <OffersReceived contracts={contracts}/>
     </TabPanel>
   </Box>
   );
