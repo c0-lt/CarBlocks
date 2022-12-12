@@ -2537,8 +2537,8 @@
         }
       },
       "links": {},
-      "address": "0xe77dF7bd7151B8440b6cb5908F311488142e6fa2",
-      "transactionHash": "0xbbb20dbfc501f145bb6031fc857ba87f994e8d78b18dbc0eb4fb61497cd04133"
+      "address": "0x1f47542c88CAb835c4744d79cbBBf13ADF95004b",
+      "transactionHash": "0x89121c0e2743ae448f038e092016c420f5e64e3db5f08e94817d370f1920697b"
     },
     "5777": {
       "events": {
@@ -2568,7 +2568,7 @@
     }
   },
   "schemaVersion": "3.4.10",
-  "updatedAt": "2022-12-12T05:30:50.323Z",
+  "updatedAt": "2022-12-12T08:32:32.812Z",
   "networkType": "ethereum",
   "devdoc": {
     "author": "Quentin COLLETTE & Maxime LESBROS",

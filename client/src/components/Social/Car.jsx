@@ -146,7 +146,7 @@ function SocialCar({contracts}) {
                       color="inherit"
                       gutterBottom
                     >
-                      Avis
+                      Avis certifiés
                     </Typography>
                     <Button
                       variant="contained"
