@@ -70,6 +70,10 @@ contract SocialNetwork {
         string calldata _cons,
         uint256[] calldata _notes
     ) external {
+        require(
+            _opinions[_cardId].length < 200,
+            "Err: only 200 opinions/model"
+        );
         _opinions[_cardId].push(
             Opinion(block.timestamp, _comment, _pros, _cons, _notes)
         );
@@ -96,6 +100,10 @@ contract SocialNetwork {
         address _to,
         string calldata _content
     ) external {
+        require(
+            _allMessages[_getChatId(_tokenId, msg.sender, _to)].length < 50,
+            "Err: max number of msg is 50"
+        );
         _allMessages[_getChatId(_tokenId, msg.sender, _to)].push(
             Message(block.timestamp, msg.sender, _content)
         );

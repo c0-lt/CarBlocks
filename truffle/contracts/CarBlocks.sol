@@ -160,6 +160,10 @@ contract CarBlocks is ERC721URIStorage {
         uint256 _kilometers,
         string calldata _maintenanceURI
     ) external isNFTOwner(_tokenId) {
+        require(
+            _allMaintenances[_tokenId].length < 100,
+            "Err: no more than 100 maintenances can be stored"
+        );
         _allMaintenances[_tokenId].push(
             Maintenance(_date, _kilometers, _mType, _maintenanceURI)
         );
