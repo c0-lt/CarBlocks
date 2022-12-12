@@ -127,7 +127,7 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       expect(maintenance.length.toString()).to.be.bignumber.equal(BN(1));
     });
 
-    it.only("should emit MaintenanceAdded event when new maintenance is added", async () => {
+    it("should emit MaintenanceAdded event when new maintenance is added", async () => {
       let eventEmitted = await cb.addMaintenance(
         1,
         1670177428,

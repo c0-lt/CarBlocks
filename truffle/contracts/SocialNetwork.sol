@@ -26,7 +26,7 @@ contract SocialNetwork {
         string model;
         string photoURI;
     }
-    ///@notice store all the car cards appearing social tab
+    ///@notice store all the car cards appearing in social tab
     Card[] private _cards;
 
     ///@notice store all the car opinions : cardId => Opinion[]
