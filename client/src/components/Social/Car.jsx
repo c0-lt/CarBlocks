@@ -41,15 +41,14 @@ function SocialCar({contracts}) {
   const initCard = React.useCallback(
     async (contracts) => {
       const cards = await Utils.getSocialCards(contracts.socialNetwork);
-      console.log(cards);
+      // console.log(cards);
       let card = {};
       card.card = cards[id-1];
       if(card && card.card.cardId) {
-        // card.opinions = await Utils.getSocialOpinions(contracts.socialNetwork, card.card.cardId.toNumber());
-        card.opinions = [];
-        card.opinions.push(await Utils.getSocialOpinions(contracts.socialNetwork, card.card.cardId.toNumber()));
+        card.opinions = await Utils.getSocialOpinions(contracts.socialNetwork, card.card.cardId.toNumber());
         card.hasOpinions = (card.opinions.length > 0)
       }
+      console.log(card);
       setCard(card);
       backdrop.hideLoader();
     },
@@ -151,13 +150,11 @@ function SocialCar({contracts}) {
             <Typography>Aucun avis pour le moment</Typography>
           )}
           {card && card.hasOpinions && (
+            card.opinions.map(opinion => (
           <Grid container spacing={2} sx={{mt: 2, p: 1, border: 1, borderColor: 'divider'}}>
-              {/* @TODO MAP */}
-              {card.opinions.map(opinion => (
                 <Review review={opinion} axis={axis}/>
-              ))}
           </Grid>
-          )}
+          )))}
         </Grid>
         <Grid item key="sellingCar" md={4}>
           <Box>

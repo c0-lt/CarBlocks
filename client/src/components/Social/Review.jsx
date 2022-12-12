@@ -9,6 +9,7 @@ import StarIcon from "@mui/icons-material/Star";
 import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
 
 function Review({axis, review}) {
+  console.log("Review");
   console.log(review);
   const getAxisContent = (start, nb) => {
     let content = [];
@@ -18,7 +19,7 @@ function Review({axis, review}) {
           <Grid key={"feedback"+i} item>
             <Rating
               name="text-feedback"
-              value={3.5}
+              value={review.notes[i].toNumber()/10}
               readOnly
               precision={0.5}
               emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}
@@ -51,7 +52,7 @@ function Review({axis, review}) {
           <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#ffcdd2"}}>
           { review.cons.split("|").map( con => (
             <Grid container direction="row" alignItems="center" spacing="4">
-              <Grid key={con+"description"} item>
+              <Grid key={con} item>
                 <IndeterminateCheckBoxOutlinedIcon />
               </Grid>
               <Grid key={con+"description"} item>{con}</Grid>
