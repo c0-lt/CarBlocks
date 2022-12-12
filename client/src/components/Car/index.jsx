@@ -111,7 +111,7 @@ function Car({contracts}) {
           hasOffer: hasOffer,
         };
         // TODO waiting for contract to allow setPrice 0 to cancel sell
-        if (myCar.isForSale && myCar.price === 0) {
+        if (myCar.isForSale && parseInt(myCar.price) === parseInt(0)) {
           myCar.isForSale = false;
         }
 

@@ -44,7 +44,7 @@ function MyCars({contracts}) {
             energy: energy,
             circulationStartDate: tmpCar.car.circulationStartDate.toNumber(),
             metadata: Pinata.convertCarblockFromMetadata(json),
-            id: tmpCar.tokenId.toNumber(),
+            tokenId: tmpCar.tokenId.toNumber(),
             offers: offers,
             hasOffer: hasOffer,
             isForSale: tmpCar.isForSale,
@@ -88,6 +88,11 @@ function MyCars({contracts}) {
       </Box>
       <Container sx={{py: 2}} maxWidth="md">
         {/* End hero unit */}
+        {myCars && myCars.length === 0 && (
+          <Typography variant="h5" gutterBottom>
+            Aucune voiture
+          </Typography>
+        )}
         <Grid container spacing={4}>
           {myCars.map((car) => (
             <Grid item key={car.key} xs={12} sm={6} md={6}>
@@ -121,7 +126,7 @@ function MyCars({contracts}) {
                     size="small"
                     component={RouterLink}
                     to={{
-                      pathname: "/car/" + car.energy + "/" + car.id,
+                      pathname: "/car/" + car.energy + "/" + car.tokenId,
                     }}
                   >
                     Voir
@@ -133,7 +138,7 @@ function MyCars({contracts}) {
                       color="secondary"
                       variant="outlined"
                       to={{
-                        pathname: "/offer/" + car.energy + "/" + car.id,
+                        pathname: "/offer/" + car.energy + "/" + car.tokenId,
                       }}
                     >
                       Suivre offre
