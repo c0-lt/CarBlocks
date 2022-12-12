@@ -30,10 +30,10 @@ contract SocialNetwork {
     Card[] private _cards;
 
     ///@notice store all the car opinions : cardId => Opinion[]
-    mapping(uint256 => Opinion[]) public opinions;
+    mapping(uint256 => Opinion[]) private _opinions;
 
     ///@notice store a list of messages from a hash(tokenId, _from, _to)
-    mapping(bytes32 => Message[]) public _allMessages;
+    mapping(bytes32 => Message[]) private _allMessages;
 
     /// @notice To save car cards in social part of our DApp
     /// @dev We use this function to import fixtures with import_fixtures.js
@@ -70,9 +70,20 @@ contract SocialNetwork {
         string calldata _cons,
         uint256[] calldata _notes
     ) external {
-        opinions[_cardId].push(
+        _opinions[_cardId].push(
             Opinion(block.timestamp, _comment, _pros, _cons, _notes)
         );
+    }
+
+    ///@notice Retrieve all opinions regarding a specific car card
+    ///@param _cardId the card ID of the car
+    ///@return array of Opinion
+    function getOpinions(uint256 _cardId)
+        external
+        view
+        returns (Opinion[] memory)
+    {
+        return _opinions[_cardId];
     }
 
     /// @notice Send a message to a user regarding a specific NFT

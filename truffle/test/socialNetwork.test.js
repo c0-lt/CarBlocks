@@ -107,11 +107,14 @@ contract("Test cases for SocialNetwork smart contract", (accounts) => {
         ];
         await sn.createOpinion(car.cardId, op.comment, op.pros, op.cons, test);
       }
-      let opi = await sn.opinions.call(4, 0);
-      expect(await opi.pros).to.be.equal("Spacieuse | modulaire");
+      let opi = await sn.getOpinions(4);
       let cards = await sn.getCards();
+
+      expect(await opi[0].pros).to.be.equal("Spacieuse | modulaire");
       expect(cards.length.toString()).to.be.bignumber.equal(BN(1));
-      //TODO: QCO je ne trouve pas les notes dans opi...
+      expect((await sn.getOpinions(4)).length.toString()).to.be.bignumber.equal(
+        BN(2)
+      );
     });
   });
 });
