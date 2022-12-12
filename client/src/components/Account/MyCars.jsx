@@ -11,7 +11,6 @@ import Container from "@mui/material/Container";
 import dayjs from "dayjs";
 
 import {Link as RouterLink} from "react-router-dom";
-import {ethers} from "ethers";
 import Pinata from "../../utils/Pinata";
 import {useBackdrop} from "../../contexts/Loader";
 
@@ -21,7 +20,6 @@ function MyCars({contracts}) {
 
   const initMyCars = React.useCallback(
     async (contracts) => {
-      console.log("Init my cars");
       let myCars = [];
       let myCarsWithOffer = [];
       let i = 0;
@@ -31,20 +29,15 @@ function MyCars({contracts}) {
         let tmpCars = await carBlocksContract.getCarblocks();
         for (let h in tmpCars) {
           let tmpCar = tmpCars[h];
-          console.log(tmpCar);
-          // console.log((parseInt(h)+1));
           const tokenURI = await carBlocksContract.tokenURI(
             tmpCar.tokenId.toNumber()
           );
-          // console.log(tokenURI);
           const response = await fetch(tokenURI);
           const json = await response.json();
 
           let offers = [];
           offers = await carBlocksContract.getOffers(tmpCar.tokenId.toNumber());
           const hasOffer = offers.length > 0;
-          console.log(offers);
-          // console.log(json.image);
           let tmpFinalCar = {
             brand: tmpCar.car.brand,
             model: tmpCar.car.model,
@@ -56,9 +49,9 @@ function MyCars({contracts}) {
             hasOffer: hasOffer,
             isForSale: tmpCar.isForSale,
             price: tmpCar.price.toNumber(),
-            key: i
-          }
-          if(hasOffer) {
+            key: i,
+          };
+          if (hasOffer) {
             myCarsWithOffer.push(tmpFinalCar);
           } else {
             myCars.push(tmpFinalCar);
@@ -66,8 +59,6 @@ function MyCars({contracts}) {
           i++;
         }
       }
-      console.log(myCarsWithOffer);
-      console.log(myCars);
       setMyCars(myCarsWithOffer.concat(myCars));
       backdrop.hideLoader();
     },
@@ -80,18 +71,6 @@ function MyCars({contracts}) {
       initMyCars(contracts);
     }
   }, [contracts]);
-
-  const cards = [1, 2, 3, 4, 5, 6];
-
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Box>
@@ -133,8 +112,8 @@ function MyCars({contracts}) {
                   </Typography>
                   {car.isForSale && (
                     <Typography variant="h6">
-                    En vente: {car.price} €
-                  </Typography>
+                      En vente: {car.price} €
+                    </Typography>
                   )}
                 </CardContent>
                 <CardActions>
@@ -165,7 +144,7 @@ function MyCars({contracts}) {
               </Card>
             </Grid>
           ))}
-          {Object.entries(myCars) == 0 && (
+          {Object.entries(myCars) === 0 && (
             <Grid item key={-1} xs={12} sm={12} md={12}>
               <Typography>Aucune voiture</Typography>
             </Grid>

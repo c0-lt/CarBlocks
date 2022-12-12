@@ -12,30 +12,17 @@ import ButtonBase from "@mui/material/ButtonBase";
 import {useAccount} from "wagmi";
 
 import Account from "./Account";
-import {useSnackbar} from "notistack";
 import {Link as RouterLink} from "react-router-dom";
 
 function TopBar({handleChild}) {
-  const {address, isConnected} = useAccount();
-  const open = true;
+  const {isConnected} = useAccount();
   const [notification, setNotifications] = React.useState(0);
-  let notifCount = 0; // Lack of react knowledge
 
   React.useEffect(() => {
-    console.log("child is connect" + isConnected);
-
     if (isConnected === true) {
       handleChild(true);
     }
   });
-
-  const {enqueueSnackbar} = useSnackbar();
-
-  const addNotif = React.useCallback(() => {
-    console.log("From notif " + notifCount);
-    // let _notification = notification + 1;
-    setNotifications(++notifCount);
-  }, [notifCount]);
 
   return (
     <Box sx={{flexGrow: 1}}>

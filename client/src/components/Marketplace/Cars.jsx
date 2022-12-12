@@ -16,13 +16,11 @@ import dayjs from "dayjs";
 import {Divider} from "@mui/material";
 
 function Cars({contracts}) {
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   const [cars, setCars] = React.useState([]);
   const backdrop = useBackdrop();
 
   const initCars = React.useCallback(
     async (contracts) => {
-      console.log("Init marketplace cars");
       let myCars = [];
       let myCarsWithOffer = [];
       let i = 0;
@@ -32,9 +30,6 @@ function Cars({contracts}) {
         let tmpCars = await carBlocksContract.getCarblocksForSale();
         for (let h in tmpCars) {
           let tmpCar = tmpCars[h];
-          console.log(tmpCar);
-          // console.log((parseInt(h)+1));
-          // console.log(json.image);
           if (tmpCar.isForSale) {
             // TODO waiting for Quentin to solve issue on getCarblocksForSale
             const tokenURI = await carBlocksContract.tokenURI(
@@ -42,7 +37,6 @@ function Cars({contracts}) {
               tmpCar.tokenId.toNumber()
               // 1
             );
-            console.log(tokenURI);
             const response = await fetch(tokenURI);
             const json = await response.json();
             const hasMadeOffer = await carBlocksContract.hasMadeOffer(
@@ -69,8 +63,6 @@ function Cars({contracts}) {
           }
         }
       }
-      console.log(myCarsWithOffer);
-      console.log(myCars);
       setCars(myCarsWithOffer.concat(myCars));
       backdrop.hideLoader();
     },
@@ -78,7 +70,6 @@ function Cars({contracts}) {
   );
 
   React.useEffect(() => {
-    console.log("Marketplace useEffect");
     if (contracts) {
       backdrop.showLoader();
       initCars(contracts);
@@ -124,7 +115,8 @@ function Cars({contracts}) {
                       size="small"
                       component={RouterLink}
                       to={{
-                        pathname: "/marketplace/" + car.energy + "/" + car.tokenId,
+                        pathname:
+                          "/marketplace/" + car.energy + "/" + car.tokenId,
                       }}
                     >
                       Voir

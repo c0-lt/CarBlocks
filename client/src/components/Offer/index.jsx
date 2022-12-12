@@ -20,7 +20,6 @@ import {useParams} from "react-router-dom";
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
 import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -29,12 +28,10 @@ import {Link as RouterLink} from "react-router-dom";
 
 function Offer({contracts}) {
   const {id, energy} = useParams();
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
   const [marketplaceCar, setMarketplaceCar] = React.useState();
-  const [contract, setContract] = React.useState();
-  const {address, isConnected} = useAccount();
+  const {address} = useAccount();
 
   const handleCancel = () => {
     backdrop.showLoader();
@@ -44,19 +41,21 @@ function Offer({contracts}) {
 
   const handleAccept = () => {
     backdrop.showLoader();
-    enqueueSnackbar("Accepter offre en cours de construction.", {variant: "info"});
+    enqueueSnackbar("Accepter offre en cours de construction.", {
+      variant: "info",
+    });
     backdrop.hideLoader();
   };
 
   const handleReject = () => {
     backdrop.showLoader();
-    enqueueSnackbar("Rejeter offre en cours de construction.", {variant: "info"});
+    enqueueSnackbar("Rejeter offre en cours de construction.", {
+      variant: "info",
+    });
     backdrop.hideLoader();
   };
 
   const getOffer = (offer) => {
-    console.log("offre");
-    console.log(offer);
     if (offer) {
       return {
         price: offer.price.toNumber(),
@@ -70,43 +69,37 @@ function Offer({contracts}) {
 
   const initCars = React.useCallback(
     async (contracts) => {
-      console.log("Init marketplace cars");
-      console.log(contracts);
       let myCars = {};
       const carBlocksContract = contracts.carblocks[energy];
       myCars = {};
       let tmpCars = await carBlocksContract.getCarblocksForSale();
       for (let h in tmpCars) {
         let tmpCar = tmpCars[h];
-        console.log(tmpCar);
-        // console.log((parseInt(h)+1));
-        // console.log(json.image);
-        if (tmpCar.isForSale && tmpCar.tokenId == id) {
+        if (tmpCar.isForSale && tmpCar.tokenId === id) {
           // TODO waiting for Quentin to solve issue on getCarblocksForSale
           const tokenURI = await carBlocksContract.tokenURI(
             tmpCar.tokenId.toNumber()
           );
-          console.log(tokenURI);
           const owner = await carBlocksContract.ownerOf(
             tmpCar.tokenId.toNumber()
           );
-          console.log(owner);
           const hasMadeOffer = await carBlocksContract.hasMadeOffer(
             tmpCar.tokenId.toNumber()
           );
           let offers = [];
           let offer = getOffer();
-          const isOwner = address == owner;
+          const isOwner = (address === owner);
           if (isOwner) {
             offers = await carBlocksContract.getOffers(
               tmpCar.tokenId.toNumber()
             );
-            console.log(offers);
             // TODO Improve, retrieves only the first offer
             offer = getOffer(offers[0]);
           }
           if (hasMadeOffer) {
-            offer = getOffer(await carBlocksContract.getOffer(tmpCar.tokenId.toNumber()));
+            offer = getOffer(
+              await carBlocksContract.getOffer(tmpCar.tokenId.toNumber())
+            );
           }
           const response = await fetch(tokenURI);
           const json = await response.json();
@@ -128,14 +121,8 @@ function Offer({contracts}) {
           break;
         }
       }
-      console.log(myCars);
-      // setCars(myCars);
       const myCar = myCars[id];
       setMarketplaceCar(myCar);
-      setContract(contracts.carblocks[energy]);
-      console.log(contracts.carblocks[energy]);
-      console.log(myCar);
-      console.log(myCar.offer);
       backdrop.hideLoader();
     },
     [contracts]
@@ -144,7 +131,6 @@ function Offer({contracts}) {
   React.useEffect(() => {
     if (contracts) {
       backdrop.showLoader();
-      // setContract(contracts.carblocks[energy]);
       initCars(contracts);
     }
   }, [contracts]);
@@ -152,14 +138,14 @@ function Offer({contracts}) {
   return (
     <Box>
       {(!marketplaceCar || marketplaceCar.hasMadeOffer) && (
-      <Typography variant="h3" gutterBottom>
-        Mon offre
-      </Typography>
+        <Typography variant="h3" gutterBottom>
+          Mon offre
+        </Typography>
       )}
       {marketplaceCar && marketplaceCar.isOwner && (
-      <Typography variant="h3" gutterBottom>
-        Ma vente
-      </Typography>
+        <Typography variant="h3" gutterBottom>
+          Ma vente
+        </Typography>
       )}
       <Container sx={{py: 2}} maxWidth="md">
         <Grid container spacing={4}>
@@ -201,7 +187,8 @@ function Offer({contracts}) {
                       >
                         Prix: <strong>{marketplaceCar.price}</strong> €
                       </Typography>
-                      <Typography sx={{mb: 1.5}}
+                      <Typography
+                        sx={{mb: 1.5}}
                         component="h2"
                         variant="h4"
                         color="text.primary"

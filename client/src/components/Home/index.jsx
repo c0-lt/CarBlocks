@@ -1,6 +1,3 @@
-import {useState} from "react";
-import Contract from "../Demo/Contract";
-import ContractBtns from "../Demo/ContractBtns";
 import Menu from "./Menu";
 
 import Box from "@mui/material/Box";
@@ -17,8 +14,6 @@ function Home() {
     connector: new InjectedConnector(),
   });
   const {disconnect} = useDisconnect();
-
-  const [value, setValue] = useState("?");
 
   return (
     <>
@@ -71,40 +66,6 @@ function Home() {
       {isConnected && <Menu />}
     </>
   );
-
-  /*   return (
-    <div className="demo">
-    <Intro />
-          <hr />
-          <WagmiConfig client={client}>
-            <Profile />
-          </WagmiConfig>
-          <hr />
-          <Demo />
-          </div>
-  ); */
-
-  /* return (
-    <div className="demo">
-      <Title />
-      {!state.artifact ? (
-        <NoticeNoArtifact />
-      ) : !state.contract ? (
-        <NoticeWrongNetwork />
-      ) : (
-        demo
-      )}
-
-      <Intro />
-          <hr />
-          <WagmiConfig client={client}>
-            <Profile />
-          </WagmiConfig>
-          <hr />
-          <Demo />
-    </div>
-  );
-  */
 }
 
 export default Home;

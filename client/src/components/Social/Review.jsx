@@ -14,16 +14,20 @@ function Review({axis, review, key}) {
     for (let i = start; i < start + nb; i++) {
       content.push(
         <Grid container direction="row" alignItems="center" spacing="4">
-          <Grid key={key+"feedback"+i} item>
+          <Grid key={key + "feedback" + i} item>
             <Rating
               name="text-feedback"
-              value={review.notes[i].toNumber()/10}
+              value={review.notes[i].toNumber() / 10}
               readOnly
               precision={0.5}
-              emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}
+              emptyIcon={
+                <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+              }
             />
           </Grid>
-          <Grid key={key+"axis"+i} item>{axis[i]}</Grid>
+          <Grid key={key + "axis" + i} item>
+            {axis[i]}
+          </Grid>
         </Grid>
       );
     }
@@ -32,64 +36,68 @@ function Review({axis, review, key}) {
 
   return (
     <>
-        <Grid key={key+"Avantages"} item md={6}>
-          Avantages
-          <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#c8e6c9"}}>
-            { review.pros.split("|").map( pro => (
+      <Grid key={key + "Avantages"} item md={6}>
+        Avantages
+        <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#c8e6c9"}}>
+          {review.pros.split("|").map((pro) => (
             <Grid container direction="row" alignItems="center" spacing="4">
-              <Grid key={key+pro+"pro"} item>
+              <Grid key={key + pro + "pro"} item>
                 <AddBoxOutlinedIcon />
               </Grid>
-              <Grid key={key+pro+"prodescription"} item>{pro}</Grid>
+              <Grid key={key + pro + "prodescription"} item>
+                {pro}
+              </Grid>
             </Grid>
-            ))}
-          </Paper>
-        </Grid>
-        <Grid key={key+"Inconvénients"} item md={6}>
-          Inconvénients
-          <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#ffcdd2"}}>
-          { review.cons.split("|").map( con => (
+          ))}
+        </Paper>
+      </Grid>
+      <Grid key={key + "Inconvénients"} item md={6}>
+        Inconvénients
+        <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#ffcdd2"}}>
+          {review.cons.split("|").map((con) => (
             <Grid container direction="row" alignItems="center" spacing="4">
-              <Grid key={key+con+"con"} item>
+              <Grid key={key + con + "con"} item>
                 <IndeterminateCheckBoxOutlinedIcon />
               </Grid>
-              <Grid key={key+con+"condescription"} item>{con}</Grid>
+              <Grid key={key + con + "condescription"} item>
+                {con}
+              </Grid>
             </Grid>
-            ))}
-          </Paper>
-        </Grid>
-        <Grid key={key+"details"} item md={12}>
-          Détails de la note
-          <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#fff9c4"}}>
-            <Grid container spacing="4">
-              {review.notes && (
-                <>
-              <Grid key={key+"details1"} item md={6}>
-                {getAxisContent(0, 4)}
-              </Grid>
-              <Grid key={key+"details2"} item md={6}>
-                {getAxisContent(4, 4)}
-              </Grid>
+          ))}
+        </Paper>
+      </Grid>
+      <Grid key={key + "details"} item md={12}>
+        Détails de la note
+        <Paper elevation={0} sx={{p: 2, mt: 1, bgcolor: "#fff9c4"}}>
+          <Grid container spacing="4">
+            {review.notes && (
+              <>
+                <Grid key={key + "details1"} item md={6}>
+                  {getAxisContent(0, 4)}
+                </Grid>
+                <Grid key={key + "details2"} item md={6}>
+                  {getAxisContent(4, 4)}
+                </Grid>
               </>
-              )}
-              {!review.notes && (
-                <Typography>Aucune note</Typography>
-              )}
-            </Grid>
-          </Paper>
-        </Grid>
-        <Grid key={key+"comment"} item md={12}>
-          Commentaire
-          <Paper elevation={0} sx={{p: 2, mt: 1}}>
-            <Typography>{review.comment} </Typography>
-          </Paper>
-        </Grid>
-        <Grid key={key+"date"} item md={12}>
-          Date avis
-          <Paper elevation={0} sx={{p: 2, mt: 1}}>
-            <Typography>{dayjs.unix(review.date.toNumber()).format("DD-MM-YYYY")} </Typography>
-          </Paper>
-        </Grid>
+            )}
+            {!review.notes && <Typography>Aucune note</Typography>}
+          </Grid>
+        </Paper>
+      </Grid>
+      <Grid key={key + "comment"} item md={12}>
+        Commentaire
+        <Paper elevation={0} sx={{p: 2, mt: 1}}>
+          <Typography>{review.comment} </Typography>
+        </Paper>
+      </Grid>
+      <Grid key={key + "date"} item md={12}>
+        Date avis
+        <Paper elevation={0} sx={{p: 2, mt: 1}}>
+          <Typography>
+            {dayjs.unix(review.date.toNumber()).format("DD-MM-YYYY")}{" "}
+          </Typography>
+        </Paper>
+      </Grid>
     </>
   );
 }

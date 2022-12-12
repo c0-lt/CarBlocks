@@ -3,7 +3,6 @@ import axios from "axios";
 const Pinata = {
   sendFile: async (file, obj, callbackSuccess, callbackError) => {
     if (file) {
-      // const FormData = require('form-data');
       const formData = new FormData();
       formData.append("file", file);
 
@@ -17,8 +16,6 @@ const Pinata = {
       });
       formData.append("pinataOptions", options);
 
-      console.log(`multipart/form-data; boundary=${formData._boundary}`);
-
       try {
         const resFile = await axios.post(
           "https://api.pinata.cloud/pinning/pinFileToIPFS",
@@ -27,32 +24,21 @@ const Pinata = {
             maxBodyLength: "Infinity",
             headers: {
               "Content-Type": `multipart/form-data; boundary=${formData._boundary}`,
-              // pinata_api_key: `${process.env.REACT_APP_PINATA_API_KEY}`,
-              // pinata_secret_api_key: `${process.env.REACT_APP_PINATA_API_SECRET}`,
               Authorization:
-                "Bearer " + `${process.env.REACT_APP_PINATA_API_JWT}`,
+                `Bearer ${process.env.REACT_APP_PINATA_API_JWT}`,
             },
           }
         );
 
         callbackSuccess(resFile.data, obj);
-        // const ImgHash = `ipfs://${resFile.data.IpfsHash}`;
-        // console.log(ImgHash);
-        // const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${resFile.data.IpfsHash}`;
-        // console.log(ImgHashGW);
-        // backdrop.hideLoader();
-        //Take a look at your Pinata Pinned section, you will see a new file added to you list.
       } catch (error) {
         callbackError(error, "Error sending File to IPFS");
-        // console.log("Error sending File to IPFS: ");
-        // console.log(error);
       }
     }
   },
 
-  sendJSON: async (json, obj,callbackSuccess, callbackError) => {
+  sendJSON: async (json, obj, callbackSuccess, callbackError) => {
     if (json) {
-      console.log(json);
       try {
         var data = JSON.stringify({
           pinataOptions: {
@@ -73,19 +59,16 @@ const Pinata = {
           headers: {
             "Content-Type": "application/json",
             Authorization:
-              "Bearer " + `${process.env.REACT_APP_PINATA_API_JWT}`,
+              `Bearer ${process.env.REACT_APP_PINATA_API_JWT}`,
           },
           data: data,
         };
 
         const res = await axios(config);
 
-        console.log(res.data);
         callbackSuccess(res.data, obj);
       } catch (error) {
         callbackError(error, "Error sending File to IPFS");
-        // console.log("Error sending File to IPFS: ");
-        // console.log(error);
       }
     }
   },
@@ -104,12 +87,10 @@ const Pinata = {
         {trait_type: "Kilometers", value: carblock.kilometers},
       ],
     };
-    // console.log(metadata);
     return metadata;
   },
 
   convertCarblockFromMetadata: (metadata) => {
-    // console.log(metadata);
     let mapping = {
       Brand: "brand",
       Model: "model",
