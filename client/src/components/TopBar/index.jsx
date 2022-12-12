@@ -74,31 +74,34 @@ function TopBar({handleChild}) {
             >
               Accueil
             </Button> */}
-            <Button
-              variant="text"
-              className="LinkAppBar"
-              component={RouterLink}
-              to="/social"
-            >
-              Réseau social
-            </Button>
-            <Button
-              variant="text"
-              className="LinkAppBar"
-              component={RouterLink}
-              to="/marketplace"
-            >
-              Marketplace
-            </Button>
             {isConnected && (
-              <Button
-                variant="text"
-                className="LinkAppBar"
-                component={RouterLink}
-                to="/account"
-              >
-                Mon compte
-              </Button>
+              <>
+                <Button
+                  variant="text"
+                  className="LinkAppBar"
+                  component={RouterLink}
+                  to="/social"
+                >
+                  Réseau social
+                </Button>
+                <Button
+                  variant="text"
+                  className="LinkAppBar"
+                  component={RouterLink}
+                  to="/marketplace"
+                >
+                  Marketplace
+                </Button>
+
+                <Button
+                  variant="text"
+                  className="LinkAppBar"
+                  component={RouterLink}
+                  to="/account"
+                >
+                  Mon compte
+                </Button>
+              </>
             )}
             <Button
               variant="text"
