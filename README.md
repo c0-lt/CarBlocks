@@ -12,9 +12,9 @@ This DApp is an attempt to build an application that implements both an NFT Mark
   The `CarBlocksFactory.sol` as its name suggests, allows us to deploy multiple instance of `CarBlocks.sol`, and decline NFT Collection upon the type of energy (gasoline, diesel, hybrid...)
 - **Social Network** : users can browse through the various car cards, in order to consult opinions of the community about specific car. To add a new opinion, the user must own an NFT with the same brand & model. If a user makes an offer, he will be able to chat directly to the NFT owner. Unfortunately, this last chat feature has not been implemented on the frontend side of the DApp, but unit tests for message management in `SocialNetwork.sol` are working.
 
-## Demo - Video
+## DApp deployed on Goerli
 
-TODO
+[CarBlocks DApp](https://carblocks.vercel.app/)
 
 ## Setup
 
