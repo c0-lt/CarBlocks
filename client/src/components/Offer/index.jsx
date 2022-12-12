@@ -75,7 +75,7 @@ function Offer({contracts}) {
       let tmpCars = await carBlocksContract.getCarblocksForSale();
       for (let h in tmpCars) {
         let tmpCar = tmpCars[h];
-        if (tmpCar.isForSale && tmpCar.tokenId === id) {
+        if (tmpCar.isForSale && parseInt(tmpCar.tokenId) === parseInt(id)) {
           // TODO waiting for Quentin to solve issue on getCarblocksForSale
           const tokenURI = await carBlocksContract.tokenURI(
             tmpCar.tokenId.toNumber()
