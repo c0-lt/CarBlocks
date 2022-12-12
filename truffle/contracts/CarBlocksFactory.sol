@@ -6,9 +6,9 @@ import "./CarBlocks.sol";
 /// @title The CarBlocksFactory Smart Contract
 /// @author Quentin COLLETTE & Maxime LESBROS
 /// @notice Smart Contract allowing to create & manage Carblocks NFT collections
-/// @dev Stay away from this or you're facing sleep deprivation
-//TODO : nat spec
+/// @dev This contract allows to deploy multiple collection of CarBlocks, based on vehicle energy type
 contract CarBlocksFactory {
+    /// @notice track the adresses of deployed CarBlock instance
     CarBlocks[] private _carblocksCollection;
 
     event CarblocksCollectionCreated(
@@ -16,6 +16,8 @@ contract CarBlocksFactory {
         string energyType
     );
 
+    /// @notice Deploy a new collection of CarBlock
+    /// @param _energyType define the energy type of vehicle collection
     function createCarblocksCollection(string calldata _energyType) external {
         CarBlocks carblocks = new CarBlocks(_energyType);
         _carblocksCollection.push(carblocks);
@@ -23,6 +25,8 @@ contract CarBlocksFactory {
         emit CarblocksCollectionCreated(address(carblocks), _energyType);
     }
 
+    /// @notice Get the various collection deployed
+    /// @return array of CarBlocks
     function getCarblocksCollection()
         external
         view
