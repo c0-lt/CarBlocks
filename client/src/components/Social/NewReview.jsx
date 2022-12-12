@@ -14,8 +14,12 @@ import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import StarIcon from "@mui/icons-material/Star";
 import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/IndeterminateCheckBoxOutlined";
 
+import {useBackdrop} from "../../contexts/Loader";
+import {useSnackbar} from "notistack";
+import {useAccount} from "wagmi";
+import {useNavigate} from "react-router-dom";
 
-function NewReview({id, handleClose, open, car}) {
+function NewReview({id, handleClose, open, car, contract}) {
   const [valueSecurity, setValueSecurity] = React.useState(0);
   const [valueBudget, setValueBudget] = React.useState(0);
   const [valueComfort, setValueComfort] = React.useState(0);
@@ -24,14 +28,50 @@ function NewReview({id, handleClose, open, car}) {
   const [valueQuality, setValueQuality] = React.useState(0);
   const [valueReliability, setValueReliability] = React.useState(0);
   const [valueEcology, setValueEcology] = React.useState(0);
+  const navigate = useNavigate();
+  const backdrop = useBackdrop();
+  const {enqueueSnackbar} = useSnackbar();
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
+    backdrop.showLoader();
     const data = new FormData(event.currentTarget);
     console.log({
-      email: data.get("email"),
-      password: data.get("password"),
+      pros: data.get("pros").replaceAll("\n", "|"),
+      cons: data.get("cons").replaceAll("\n", "|"),
+      comment: data.get("comment"),
     });
+
+    try {
+      await contract.createOpinion(
+        car.card.cardId.toNumber(),
+        data.get("comment"),
+        data.get("pros").replaceAll("\n", "|"),
+        data.get("cons").replaceAll("\n", "|"),
+        [
+          valueSecurity * 10,
+          valueBudget * 10,
+          valueComfort * 10,
+          valueDriving * 10,
+          valueEquipment * 10,
+          valueQuality*10,
+          valueReliability*10,
+          valueEcology*10
+        ]
+      );
+      enqueueSnackbar(
+        "Avis ajouté! Veuillez rafraichir dans quelques secondes.",
+        {variant: "success"}
+      );
+      backdrop.hideLoader();
+      handleClose();
+    } catch (e) {
+      console.error(e);
+      enqueueSnackbar("Erreur lors de la transaction", {variant: "error"});
+      backdrop.hideLoader();
+      handleClose();
+    }
+    backdrop.hideLoader();
   };
 
   return (
@@ -48,7 +88,9 @@ function NewReview({id, handleClose, open, car}) {
       >
         <DialogTitle>Ajout d'avis</DialogTitle>
         <DialogContent>
-          <DialogContentText>{car}</DialogContentText>
+          <DialogContentText>
+            {car.card.brand} {car.card.model}
+          </DialogContentText>
           <Grid container spacing={2} sx={{mt: 2}}>
             <Grid item xs={12}>
               <TextField
@@ -92,83 +134,131 @@ function NewReview({id, handleClose, open, car}) {
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Sécurité</Grid>
                 <Grid item>
-                  <Rating name="rating-security" value={valueSecurity}
-                  onChange={(event, newValue) => {
-                    setValueSecurity(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-security"
+                    value={valueSecurity}
+                    onChange={(event, newValue) => {
+                      setValueSecurity(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Budget</Grid>
                 <Grid item>
-                  <Rating name="rating-budget" value={valueBudget}
-                  onChange={(event, newValue) => {
-                    setValueBudget(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-budget"
+                    value={valueBudget}
+                    onChange={(event, newValue) => {
+                      setValueBudget(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Confort</Grid>
                 <Grid item>
-                  <Rating name="rating-comfort" value={valueComfort}
-                  onChange={(event, newValue) => {
-                    setValueComfort(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-comfort"
+                    value={valueComfort}
+                    onChange={(event, newValue) => {
+                      setValueComfort(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Conduite</Grid>
                 <Grid item>
-                  <Rating name="rating-driving" value={valueDriving}
-                  onChange={(event, newValue) => {
-                    setValueDriving(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-driving"
+                    value={valueDriving}
+                    onChange={(event, newValue) => {
+                      setValueDriving(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={12} sm={6}>
-            <Grid container direction="row" alignItems="center" spacing="6">
+              <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Equipement de série</Grid>
                 <Grid item>
-                  <Rating name="rating-equipment" value={valueEquipment}
-                  onChange={(event, newValue) => {
-                    setValueEquipment(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-equipment"
+                    value={valueEquipment}
+                    onChange={(event, newValue) => {
+                      setValueEquipment(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Qualité</Grid>
                 <Grid item>
-                  <Rating name="rating-quality" value={valueQuality}
-                  onChange={(event, newValue) => {
-                    setValueQuality(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-quality"
+                    value={valueQuality}
+                    onChange={(event, newValue) => {
+                      setValueQuality(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Fiabilité</Grid>
                 <Grid item>
-                  <Rating name="rating-reliability" value={valueReliability}
-                  onChange={(event, newValue) => {
-                    setValueReliability(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-reliability"
+                    value={valueReliability}
+                    onChange={(event, newValue) => {
+                      setValueReliability(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
               <Grid container direction="row" alignItems="center" spacing="6">
                 <Grid item>Ecologie</Grid>
                 <Grid item>
-                  <Rating name="rating-ecology" value={valueEcology}
-                  onChange={(event, newValue) => {
-                    setValueEcology(newValue);
-                  }}
-                  precision={0.5} emptyIcon={<StarIcon style={{opacity: 0.55}} fontSize="inherit" />}/>
+                  <Rating
+                    name="rating-ecology"
+                    value={valueEcology}
+                    onChange={(event, newValue) => {
+                      setValueEcology(newValue);
+                    }}
+                    precision={0.5}
+                    emptyIcon={
+                      <StarIcon style={{opacity: 0.55}} fontSize="inherit" />
+                    }
+                  />
                 </Grid>
               </Grid>
             </Grid>
