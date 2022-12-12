@@ -95,7 +95,7 @@ function Offer({contracts}) {
             tmpCar.tokenId.toNumber()
           );
           let offers = [];
-          let offer = {price: 0, user: "", recipient: ""};
+          let offer = getOffer();
           const isOwner = address == owner;
           if (isOwner) {
             offers = await carBlocksContract.getOffers(
@@ -106,8 +106,7 @@ function Offer({contracts}) {
             offer = getOffer(offers[0]);
           }
           if (hasMadeOffer) {
-            // TODO
-            // offer = getOffer(await carBlocksContract.getOffer(tmpCar.tokenId.toNumber()));
+            offer = getOffer(await carBlocksContract.getOffer(tmpCar.tokenId.toNumber()));
           }
           const response = await fetch(tokenURI);
           const json = await response.json();
@@ -200,10 +199,14 @@ function Offer({contracts}) {
                         variant="h4"
                         color="text.primary"
                       >
-                        {marketplaceCar.offer.price} €
+                        Prix: <strong>{marketplaceCar.price}</strong> €
                       </Typography>
-                      <Typography sx={{mb: 1.5}} color="text.secondary">
-                        Offre
+                      <Typography sx={{mb: 1.5}}
+                        component="h2"
+                        variant="h4"
+                        color="text.primary"
+                      >
+                        Offre: <strong>{marketplaceCar.offer.price}</strong> €
                       </Typography>
                       <Typography gutterBottom variant="h5" component="h2">
                         {marketplaceCar.brand} {marketplaceCar.model}

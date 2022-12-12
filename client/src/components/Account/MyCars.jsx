@@ -55,6 +55,7 @@ function MyCars({contracts}) {
             offers: offers,
             hasOffer: hasOffer,
             isForSale: tmpCar.isForSale,
+            price: tmpCar.price.toNumber(),
             key: i
           }
           if(hasOffer) {
@@ -130,6 +131,11 @@ function MyCars({contracts}) {
                   <Typography>
                     Kilométrage: {car.metadata.kilometers} kms
                   </Typography>
+                  {car.isForSale && (
+                    <Typography variant="h6">
+                    En vente: {car.price} €
+                  </Typography>
+                  )}
                 </CardContent>
                 <CardActions>
                   <Button

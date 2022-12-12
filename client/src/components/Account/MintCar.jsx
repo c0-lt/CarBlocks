@@ -22,7 +22,7 @@ import {useAccount} from "wagmi";
 import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 
-function MintCar({contracts}) {
+function MintCar({contracts, setTabIndex}) {
   const energyList = [
     "Essence",
     "Diesel",
@@ -96,9 +96,9 @@ function MintCar({contracts}) {
         0,
         false
       );
-      enqueueSnackbar("CarBlock minted! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
       backdrop.hideLoader();
-      navigate(0);
+      enqueueSnackbar("CarBlock minted! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
+      setTabIndex(0);
     } catch (error) {
       callbackError(error, "Error minting Carblock");
       // console.log("Error sending File to IPFS: ");
@@ -113,8 +113,9 @@ function MintCar({contracts}) {
     const data = {
       name: form.get("brand")+" "+form.get("model"),
     };
-    console.log(data);
-    if(picture && data.name) {
+    const test = !(!(form.get("brand")) || !(form.get("model")) || !(date) || !(form.get("registrationNumber")) || !(form.get("kilometers")) || !(form.get("VIN")));
+    console.log(test);
+    if(picture && data.name && test) {
       Pinata.sendFile(picture, data, callbackPictureSent, callbackError);
     } else {
       callbackError("Something is missing in form!", "Formulaire incomplet!");
@@ -122,7 +123,6 @@ function MintCar({contracts}) {
   };
 
   const handleChangeDate = (newValue) => {
-    console.log(newValue);
     setDate(newValue);
   };
 

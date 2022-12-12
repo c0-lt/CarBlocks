@@ -60,6 +60,11 @@ function MyOffers({contracts}) {
             const hasMadeOffer = await carBlocksContract.hasMadeOffer(
               tmpCar.tokenId.toNumber()
             );
+            let offer = getOffer();
+            if(hasMadeOffer) {
+              console.log("made offer");
+              offer = getOffer(await carBlocksContract.getOffer(tmpCar.tokenId.toNumber()));
+            }
             const owner = await carBlocksContract.ownerOf(
               tmpCar.tokenId.toNumber()
             );
@@ -76,6 +81,7 @@ function MyOffers({contracts}) {
               hasMadeOffer: hasMadeOffer,
               isOwner: isOwner,
               key: i,
+              offer: offer
             };
             if (hasMadeOffer && !isOwner) {
               carsWithOffer.push(tmpFinalCar);
@@ -123,7 +129,7 @@ function MyOffers({contracts}) {
                 />
                 <CardContent sx={{flexGrow: 1}}>
                   <Typography component="h2" variant="h4" color="text.primary">
-                    //TODO €
+                  {car.offer.price} €
                   </Typography>
                   <Typography sx={{mb: 1.5}} color="text.secondary">
                     Offre
