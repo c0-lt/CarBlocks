@@ -11,9 +11,32 @@ import Container from "@mui/material/Container";
 import Rating from "@mui/material/Rating";
 
 import {Link as RouterLink} from "react-router-dom";
+import Pinata from "../../utils/Pinata";
+import {useBackdrop} from "../../contexts/Loader";
+import dayjs from "dayjs";
+import {Divider} from "@mui/material";
+import Utils from "../../utils/Social";
 
-function Cars() {
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+function Cars({contracts}) {
+  const [cards, setCards] = React.useState([]);
+  const backdrop = useBackdrop();
+
+  const initCards = React.useCallback(
+    async (contracts) => {
+      console.log("Init social network cards");
+      setCards(await Utils.getSocialCards(contracts.socialNetwork));
+      backdrop.hideLoader();
+    },
+    [contracts]
+  );
+
+  React.useEffect(() => {
+    console.log("Social useEffect");
+    if (contracts) {
+      backdrop.showLoader();
+      initCards(contracts);
+    }
+  }, [contracts]);
 
   return (
     <Box>
@@ -24,18 +47,18 @@ function Cars() {
         {/* End hero unit */}
         <Grid container spacing={4}>
           {cards.map((card) => (
-            <Grid item key={card} xs={12} sm={6} md={6}>
+            <Grid item key={card.cardId.toNumber()} xs={12} sm={6} md={6}>
               <Card
                 sx={{height: "100%", display: "flex", flexDirection: "column"}}
               >
                 <CardMedia
                   component="img"
-                  image="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
-                  alt="random"
+                  image={card.photoURI}
+                  alt={card.brand+ " "+card.model}
                 />
                 <CardContent sx={{flexGrow: 1}}>
                   <Typography gutterBottom variant="h5" component="h2">
-                    Mclaren 720s
+                    {card.brand} {card.model}
                   </Typography>
                   <Rating
                     name="half-rating-read"
@@ -49,7 +72,7 @@ function Cars() {
                     size="small"
                     component={RouterLink}
                     to={{
-                      pathname: "/social/" + card,
+                      pathname: "/social/" + card.cardId.toNumber(),
                     }}
                   >
                     Voir

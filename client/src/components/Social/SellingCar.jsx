@@ -8,15 +8,17 @@ import CardMedia from "@mui/material/CardMedia";
 
 import {Link as RouterLink} from "react-router-dom";
 
-function SellingCar({car}) {
+function SellingCar({card}) {
 
   return (
-      <Grid item key={car} md={12}>
+    <>
+    {card && card.cardId && (
+      <Grid item key={card.cardId.toNumber()} md={12}>
         <Card sx={{height: "100%", display: "flex", flexDirection: "column"}}>
           <CardActionArea
             component={RouterLink}
             to={{
-              pathname: "/marketplace/" + car,
+              pathname: "/marketplace/" // + car,
             }}
           >
             <Card
@@ -29,12 +31,12 @@ function SellingCar({car}) {
               <CardMedia
                 component="img"
                 height="200"
-                image="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
+                image={card.photoURI}
                 alt="random"
               />
               <CardContent sx={{flexGrow: 1}}>
                 <Typography gutterBottom variant="h5" component="h2">
-                  Mclaren 720s
+                  Démo {card.cardId.toNumber()}
                 </Typography>
                 <Typography>2022 | 12 256 kms</Typography>
               </CardContent>
@@ -42,6 +44,8 @@ function SellingCar({car}) {
           </CardActionArea>
         </Card>
       </Grid>
+      )}
+      </>
   );
 }
 

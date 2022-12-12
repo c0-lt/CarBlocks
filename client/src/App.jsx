@@ -24,6 +24,7 @@ function App() {
   const [isWalletConnected, setIsWalletConnected] = React.useState(false);
   const carBlocksArtifact = require("./contracts/CarBlocks.json");
   const carBlocksFactoryArtifact = require("./contracts/CarBlocksFactory.json");
+  const carBlocksSocialNetworkArtifact = require("./contracts/SocialNetwork.json");
 
   const handleChild = (status) => {
     console.log("handle status "+status);
@@ -79,12 +80,11 @@ function App() {
     console.log("Init contracts");
     if (factoryContract) {
       let contractsObject = {factory: [], carblocks: {}};
-      console.log(factoryContract);
       const carBlocksContracts = await factoryContract.getCarblocksCollection();
-      console.log(carBlocksContracts); // TODO 
       const provider = new ethers.providers.Web3Provider(window.ethereum);
       const signer = provider.getSigner();
-
+      const networkID = await signer.getChainId();
+      console.log("NetworkID: "+networkID);
       for(let c in carBlocksContracts) {
         const cAddress = carBlocksContracts[c];
         const carBlocksContract = new ethers.Contract(
@@ -96,6 +96,14 @@ function App() {
         contractsObject.carblocks[energy] = carBlocksContract;
         contractsObject.factory.push(energy);
       }
+
+      const carBlocksSocialNetworkContract = new ethers.Contract(
+        carBlocksSocialNetworkArtifact.networks[networkID].address,
+        carBlocksSocialNetworkArtifact.abi,
+        signer
+      );
+      contractsObject.socialNetwork = carBlocksSocialNetworkContract;
+
       console.log(contractsObject);
       setContracts(contractsObject);
     }
@@ -132,8 +140,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout handleChild={handleChild}/>}>
           <Route index element={<Home />} />
-          <Route path="social" element={<Social />} />
-          <Route path="social/:id" element={<SocialCar />} />
+          <Route path="social" element={<Social contracts={contracts}/>} />
+          <Route path="social/:id" element={<SocialCar contracts={contracts}/>} />
           <Route path="marketplace" element={<Marketplace contracts={contracts} />} />
           <Route path="marketplace/:energy/:id" element={<MarketplaceCar contracts={contracts} />} />
           <Route path="account" element={<Account contracts={contracts}/>} />
