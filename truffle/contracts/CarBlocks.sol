@@ -7,7 +7,7 @@ import "../node_modules/@openzeppelin/contracts/utils/Counters.sol";
 /// @title The CarBlocks Smart Contract
 /// @author Quentin COLLETTE & Maxime LESBROS
 /// @notice Smart Contract allowing to manage NFT associated with cars
-/// @dev Stay away from this or you're facing sleep deprivation
+/// @dev This contract is deployed thanks to CarBlocksFactory
 contract CarBlocks is ERC721URIStorage {
     using Counters for Counters.Counter;
 
@@ -74,13 +74,20 @@ contract CarBlocks is ERC721URIStorage {
         _;
     }
 
+    /// @notice emit this event when new maintenance is added
+    event MaintenanceAdded(uint256 tokenId, uint256 date, uint256 kilometers);
+
     /// @notice This array holds all the minted NFTs
     Carblock[] private carblocksNFT;
 
-    //TODO : qui peut appeler _users ?
-    mapping(address => uint256[]) private _users; // address => [tokenID]
-    mapping(uint256 => Maintenance[]) private _allMaintenances; // tokenID => [Maintenance1, Maintenance2]
-    mapping(uint256 => Offer[]) private _allOffers; // tokenId => [{price, user}]
+    /// @notice address => [tokenID]
+    mapping(address => uint256[]) private _users;
+
+    /// @notice tokenID => Maintenance[]
+    mapping(uint256 => Maintenance[]) private _allMaintenances;
+
+    /// @notice tokenId => Offer[]
+    mapping(uint256 => Offer[]) private _allOffers;
 
     constructor(string memory _energyType) ERC721(_NAME, _SYMBOL) {
         energyType = _energyType;
@@ -99,7 +106,6 @@ contract CarBlocks is ERC721URIStorage {
         return carblocksNFT[_tokenId - 1];
     }
 
-    //TODO: accessible only to NFT owner ?
     /// @notice Retrieve all NFTs of contract caller
     /// @dev Get an array of Carblock struct with the NFT token ID
     /// @return carblocks an array of carblock NFT
@@ -130,7 +136,6 @@ contract CarBlocks is ERC721URIStorage {
     }
 
     /// @notice Allow NFT Owner to set a price for his car
-    /// @dev _
     /// @param _tokenId NFT token ID
     /// @param _price expected price
     function setPrice(uint256 _tokenId, uint256 _price)
@@ -158,6 +163,7 @@ contract CarBlocks is ERC721URIStorage {
         _allMaintenances[_tokenId].push(
             Maintenance(_date, _kilometers, _mType, _maintenanceURI)
         );
+        emit MaintenanceAdded(_tokenId, _date, _kilometers);
     }
 
     /// @notice Get list of all maintenances done on a car from a NFT token ID
@@ -173,8 +179,6 @@ contract CarBlocks is ERC721URIStorage {
         return _allMaintenances[_tokenId];
     }
 
-    //TODO : check memory vs calldata
-    //TODO : payable
     /// @notice Allow user to mint a new Carblock NFT
     /// @dev We use _mint instead of _safeMint as we don't need to check if _user is a contract
     /// @param _user address of the future owner of minted NFT
@@ -200,8 +204,6 @@ contract CarBlocks is ERC721URIStorage {
                 _isForSale
             )
         );
-
-        //uint256 newTokenId = _tokenIds.current();
         _mint(_user, _tokenIds.current());
         _setTokenURI(_tokenIds.current(), _vInfo[3]);
         _users[_user].push(_tokenIds.current());
@@ -288,6 +290,7 @@ contract CarBlocks is ERC721URIStorage {
         return false;
     }
 
+    //TODO v2: payable function to collect fees before transferring ETH back to NFT saler
     /// @notice Accept an offer and transfer NFT to bider
     /// @dev Delete all offers in _allOffers and call transfertCarblockNFT
     /// @param _tokenId NFT token ID
@@ -299,7 +302,6 @@ contract CarBlocks is ERC721URIStorage {
 
     /** - OFFERS MANAGEMENT - */
 
-    //TODO : check visibility
     /// @notice Transfer a NFT when an owner is selling his vehicle to new owner
     /// @dev Uses _transfer to update owner and update the '_users' mapping (don't need _safeTransfer for same reason as _safeMint)
     /// @param _to address of the new NFT owner
@@ -345,4 +347,6 @@ contract CarBlocks is ERC721URIStorage {
         }
         return false;
     }
+
+    //TODO v2: withdraw function to collect fees when transferring NFT
 }

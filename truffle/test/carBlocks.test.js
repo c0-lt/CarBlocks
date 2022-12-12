@@ -127,6 +127,24 @@ contract("Test cases for CarBlocks smart contract", (accounts) => {
       expect(maintenance.length.toString()).to.be.bignumber.equal(BN(1));
     });
 
+    it.only("should emit MaintenanceAdded event when new maintenance is added", async () => {
+      let eventEmitted = await cb.addMaintenance(
+        1,
+        1670177428,
+        0,
+        10000,
+        "ipfs://billUrl",
+        {
+          from: user1,
+        }
+      );
+      await expectEvent(eventEmitted, "MaintenanceAdded", {
+        tokenId: BN(1),
+        date: BN(1670177428),
+        kilometers: BN(10000),
+      });
+    });
+
     it("should get a maintenances for 10000 kilometers", async () => {
       let maintenances = await cb.getMaintenances(1, {from: user1});
       expect(maintenances[0].kilometers.toString()).to.be.bignumber.equal(
