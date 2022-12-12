@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
 
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 
 import {useParams} from "react-router-dom";
 import {useBackdrop} from "../../contexts/Loader";
@@ -172,13 +173,29 @@ function MarketplaceCar({contracts}) {
                   </Grid>
                 </Grid>
                 <Box display="flex" justifyContent="center" sx={{mt: 4}}>
-                  {!marketplaceCar.hasMadeOffer && (
+                  {!marketplaceCar.hasMadeOffer && !marketplaceCar.isOwner && (
                     <Button
                       variant="contained"
                       onClick={handleClickOpen}
                       startIcon={<ShoppingCartIcon />}
                     >
                       Faire une offre
+                    </Button>
+                  )}
+                  {marketplaceCar.isOwner && (
+                    <Button
+                      variant="contained"
+                      component={RouterLink}
+                      startIcon={<DirectionsCarIcon />}
+                      to={{
+                        pathname:
+                          "/car/" +
+                          marketplaceCar.energy +
+                          "/" +
+                          marketplaceCar.tokenId,
+                      }}
+                    >
+                      Voir ma voiture
                     </Button>
                   )}
                   {marketplaceCar.hasMadeOffer && (

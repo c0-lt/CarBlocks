@@ -115,7 +115,7 @@ function MyCars({contracts}) {
                   <Typography>
                     Kilométrage: {car.metadata.kilometers} kms
                   </Typography>
-                  {car.isForSale && (
+                  {car.isForSale  && (
                     <Typography variant="h6">
                       En vente: {car.price} €
                     </Typography>
