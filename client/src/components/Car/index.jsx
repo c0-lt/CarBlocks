@@ -14,9 +14,7 @@ import StepContent from "@mui/material/StepContent";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 import SellIcon from "@mui/icons-material/Sell";
 import BuildIcon from "@mui/icons-material/Build";
-import HomeIcon from '@mui/icons-material/Home';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import {Link as RouterLink} from "react-router-dom";
 
 import dayjs from "dayjs";
@@ -26,8 +24,6 @@ import MaintenanceDialog from "./MaintenanceDialog";
 import SellDialog from "./SellDialog";
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
-import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 
 function Car({contracts}) {
@@ -53,7 +49,6 @@ function Car({contracts}) {
     "Remplacement pièces",
     "Remplacement pneus",
   ];
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
   const [myCar, setMyCar] = React.useState(null);
@@ -78,12 +73,7 @@ function Car({contracts}) {
     setOpenMaintenance(false);
   };
 
-  const handleSellClick = () => {
-    console.log("sell");
-  };
-
   const handleCancelSell = async () => {
-    console.log("cancel sell");
     await contract.setPrice(id, 0);
     enqueueSnackbar(
       "Vente annulée! Veuillez rafraichir dans quelques secondes.",
@@ -94,39 +84,20 @@ function Car({contracts}) {
 
   const [activeStep, setActiveStep] = React.useState(0);
 
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
-
-  const handleReset = () => {
-    setActiveStep(0);
-  };
-
   const initMyCar = React.useCallback(async (carBlocksContract) => {
     if (Number.isInteger(parseInt(id))) {
-      console.log("Init my car");
       let myCar = {};
-      console.log(carBlocksContract);
       try {
         let tmpCar = await carBlocksContract.getCarblock(id);
-        console.log(tmpCar);
-        // console.log((parseInt(h)+1));
         const tokenURI = await carBlocksContract.tokenURI(
           tmpCar.tokenId.toNumber()
         ); // TODO use tokenId
-        // console.log(tokenURI);
         const response = await fetch(tokenURI);
         const json = await response.json();
 
         let offers = [];
         offers = await carBlocksContract.getOffers(tmpCar.tokenId.toNumber());
         const hasOffer = offers.length > 0;
-        console.log(offers);
-        // console.log(json.image);
         myCar = {
           VIN: tmpCar.car.VIN,
           brand: tmpCar.car.brand,
@@ -138,41 +109,36 @@ function Car({contracts}) {
           price: tmpCar.price.toNumber(),
           id: tmpCar.tokenId.toNumber(),
           hasOffer: hasOffer,
-          isForSale: tmpCar.isForSale
         };
         // TODO waiting for contract to allow setPrice 0 to cancel sell
-        if (myCar.isForSale && myCar.price == 0) {
+        if (myCar.isForSale && myCar.price === 0) {
           myCar.isForSale = false;
         }
 
         const maintenancesFromContract =
-        await carBlocksContract.getMaintenances(id);
-        console.log(maintenancesFromContract);
+          await carBlocksContract.getMaintenances(id);
         maintenancesFromContract.map((m, key) => {
           servicing[key] = {
-            label: m.kilometers.toNumber()+" Km - "+dayjs.unix(m.date).format("DD-MM-YYYY"),
+            label:
+              m.kilometers.toNumber() +
+              " Km - " +
+              dayjs.unix(m.date).format("DD-MM-YYYY"),
             description: maintenanceType[m.mType],
             active: true,
-            URI: m.maintenanceURI
+            URI: m.maintenanceURI,
           };
           setActiveStep(1);
         });
         setMaintenances(servicing);
 
-        console.log(myCar);
         setMyCar(myCar);
         backdrop.hideLoader();
       } catch (e) {
-        console.log(e);
-        enqueueSnackbar(
-          "Vous n'êtes pas propriétaire.",
-          {variant: "error"}
-        );
+        enqueueSnackbar("Vous n'êtes pas propriétaire.", {variant: "error"});
         setMyCar(null);
         backdrop.hideLoader();
       }
     } else {
-      console.log("Not a valid ID");
       setMyCar(null);
     }
     backdrop.hideLoader();
@@ -201,32 +167,34 @@ function Car({contracts}) {
           {!myCar && (
             <Grid item key={-1} xs={12} sm={12} md={12}>
               <Typography>Non autorisé</Typography>
-              <br/>
+              <br />
               <Button
-                      variant="contained" component={RouterLink} to="/account"
-                      startIcon={<DirectionsCarIcon />}
-                    >
-                      Vos voitures
-                    </Button>
+                variant="contained"
+                component={RouterLink}
+                to="/account"
+                startIcon={<DirectionsCarIcon />}
+              >
+                Vos voitures
+              </Button>
             </Grid>
           )}
           {myCar && myCar.id && (
             <>
               <MaintenanceDialog
-        id={id}
-        handleClose={handleCloseMaintenance}
-        open={openMaintenance}
-        car={myCar}
-        contract={contract}
-        maintenanceType={maintenanceType}
-      />
-      <SellDialog
-        id={id}
-        handleClose={handleCloseSell}
-        open={openSell}
-        car={myCar}
-        contract={contract}
-      />
+                id={id}
+                handleClose={handleCloseMaintenance}
+                open={openMaintenance}
+                car={myCar}
+                contract={contract}
+                maintenanceType={maintenanceType}
+              />
+              <SellDialog
+                id={id}
+                handleClose={handleCloseSell}
+                open={openSell}
+                car={myCar}
+                contract={contract}
+              />
               <Grid item xs={12} sm={7} md={7}>
                 <Grid container spacing={1}>
                   <Grid item md={8}>
@@ -280,7 +248,6 @@ function Car({contracts}) {
                     {myCar.isForSale && (
                       <Typography> En vente: {myCar.price} €</Typography>
                     )}
-                    
                   </Grid>
                 </Grid>
                 <Box display="flex" justifyContent="center" sx={{mt: 4}}>
@@ -311,7 +278,8 @@ function Car({contracts}) {
                       variant="contained"
                       startIcon={<SellIcon />}
                       to={{
-                        pathname: "/offer/" + myCar.metadata.energy + "/" + myCar.id,
+                        pathname:
+                          "/offer/" + myCar.metadata.energy + "/" + myCar.id,
                       }}
                       sx={{ml: 5}}
                     >
@@ -340,11 +308,7 @@ function Car({contracts}) {
                       <StepLabel>{step.label}</StepLabel>
                       <StepContent>
                         <Typography>{step.description}</Typography>
-                        <Link
-                          href={step.URI}
-                          underline="none"
-                          target="_blank"
-                        >
+                        <Link href={step.URI} underline="none" target="_blank">
                           <Button
                             startIcon={<RequestQuoteIcon />}
                             variant="outlined"

@@ -21,12 +21,17 @@ import {DesktopDatePicker} from "@mui/x-date-pickers/DesktopDatePicker";
 import IconButton from "@mui/material/IconButton";
 import RequestQuoteIcon from "@mui/icons-material/RequestQuote";
 
-import axios from "axios";
 import {useBackdrop} from "../../contexts/Loader";
 import Pinata from "../../utils/Pinata";
 import {useSnackbar} from "notistack";
 
-function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) {
+function MaintenanceDialog({
+  handleClose,
+  open,
+  car,
+  contract,
+  maintenanceType,
+}) {
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
 
@@ -37,14 +42,8 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
   };
 
   const handleBillSent = async (data, form) => {
-    console.log("picture sent");
-    // console.log(carblock);
-    const ImgHash = `ipfs://${data.IpfsHash}`;
-    console.log(ImgHash);
     const URI = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
-    console.log(URI);
     enqueueSnackbar("Bill uploaded", {variant: "success"});
-    // console.log([car.id, form.serviceDate, maintenanceType.indexOf(form.type),form.kilometers, URI]);
     try {
       await contract.addMaintenance(
         car.id,
@@ -61,8 +60,6 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
       handleClose();
     } catch (error) {
       callbackError(error, "Error minting Carblock");
-      // console.log("Error sending File to IPFS: ");
-      // console.log(error);
     }
   };
 
@@ -75,9 +72,7 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
       kilometers: data.get("kilometers"),
       type: type,
     };
-    console.log(file.name);
-    console.log(form);
-    if(file && form.serviceDate && form.kilometers && form.type) {
+    if (file && form.serviceDate && form.kilometers && form.type) {
       Pinata.sendFile(file, form, handleBillSent, callbackError);
     } else {
       callbackError("Something is missing in form!", "Formulaire incomplet!");
@@ -90,12 +85,11 @@ function MaintenanceDialog({handleClose, open, car, contract, maintenanceType}) 
   const [type, setType] = React.useState("");
 
   const handleChangeDate = (newValue) => {
-    console.log(newValue);
     setDate(newValue);
   };
 
   const handleChangeFile = (e) => {
-    if(e.target.files[0]) {
+    if (e.target.files[0]) {
       setFile(e.target.files[0]);
       setFilePath(e.target.files[0].name);
     } else {

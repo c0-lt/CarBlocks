@@ -8,9 +8,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 import {useParams} from "react-router-dom";
 import {useBackdrop} from "../../contexts/Loader";
-import {useSnackbar} from "notistack";
 import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 
 import NewOffer from "./NewOffer";
@@ -22,12 +20,10 @@ import {Link as RouterLink} from "react-router-dom";
 function MarketplaceCar({contracts}) {
   const {id, energy} = useParams();
   const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
-  const {enqueueSnackbar} = useSnackbar();
   const [marketplaceCar, setMarketplaceCar] = React.useState();
   const [contract, setContract] = React.useState();
-  const {address, isConnected} = useAccount();
+  const {address} = useAccount();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -38,36 +34,30 @@ function MarketplaceCar({contracts}) {
   };
 
   const getOffers = (offers) => {
-    console.log(offers);
     return offers;
   };
 
   const initCars = React.useCallback(
     async (contracts) => {
-      console.log("Init marketplace cars");
-      console.log(contracts);
       let myCars = {};
       const carBlocksContract = contracts.carblocks[energy];
       myCars = {};
       let tmpCars = await carBlocksContract.getCarblocksForSale();
       for (let h in tmpCars) {
         let tmpCar = tmpCars[h];
-        console.log(tmpCar);
-        if (tmpCar.isForSale && tmpCar.tokenId == id) {
+        if (tmpCar.isForSale && tmpCar.tokenId === id) {
           // TODO waiting for Quentin to solve issue on getCarblocksForSale
           const tokenURI = await carBlocksContract.tokenURI(
             tmpCar.tokenId.toNumber()
           );
-          console.log(tokenURI);
           const owner = await carBlocksContract.ownerOf(
             tmpCar.tokenId.toNumber()
           );
-          console.log(owner);
           const hasMadeOffer = await carBlocksContract.hasMadeOffer(
             tmpCar.tokenId.toNumber()
           );
           let offers = [];
-          const isOwner = address == owner;
+          const isOwner = address === owner;
           if (isOwner) {
             offers = getOffers(
               await carBlocksContract.getOffers(tmpCar.tokenId.toNumber())
@@ -92,13 +82,9 @@ function MarketplaceCar({contracts}) {
           break;
         }
       }
-      console.log(myCars);
-      // setCars(myCars);
       const myCar = myCars[id];
       setMarketplaceCar(myCar);
       setContract(contracts.carblocks[energy]);
-      console.log(contracts.carblocks[energy]);
-      console.log(myCar);
       backdrop.hideLoader();
     },
     [contracts]

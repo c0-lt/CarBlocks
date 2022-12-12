@@ -10,14 +10,6 @@ import {BackdropProvider} from "../../contexts/Loader";
 // import {AlertProvider} from "../../contexts/Alert";
 
 function Layout({handleChild}) {
-  // React.useEffect(() => {
-  //   console.log(isConnected);
-
-  //   if (isConnected === true) {
-  //     handleChild(true);
-  //   }
-  // });
-
   return (
     <BackdropProvider>
       <SnackbarProvider
@@ -25,7 +17,7 @@ function Layout({handleChild}) {
         anchorOrigin={{vertical: "top", horizontal: "right"}}
         autoHideDuration={6000}
       >
-        <TopBar handleChild={handleChild}/>
+        <TopBar handleChild={handleChild} />
         <main>
           <Container
             sx={{

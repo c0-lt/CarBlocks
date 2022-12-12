@@ -16,8 +16,6 @@ import IndeterminateCheckBoxOutlinedIcon from "@mui/icons-material/Indeterminate
 
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
-import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 
 function NewReview({id, handleClose, open, car, contract}) {
   const [valueSecurity, setValueSecurity] = React.useState(0);
@@ -28,7 +26,6 @@ function NewReview({id, handleClose, open, car, contract}) {
   const [valueQuality, setValueQuality] = React.useState(0);
   const [valueReliability, setValueReliability] = React.useState(0);
   const [valueEcology, setValueEcology] = React.useState(0);
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
 
@@ -36,11 +33,6 @@ function NewReview({id, handleClose, open, car, contract}) {
     event.preventDefault();
     backdrop.showLoader();
     const data = new FormData(event.currentTarget);
-    console.log({
-      pros: data.get("pros").replaceAll("\n", "|"),
-      cons: data.get("cons").replaceAll("\n", "|"),
-      comment: data.get("comment"),
-    });
 
     try {
       await contract.createOpinion(
@@ -54,9 +46,9 @@ function NewReview({id, handleClose, open, car, contract}) {
           valueComfort * 10,
           valueDriving * 10,
           valueEquipment * 10,
-          valueQuality*10,
-          valueReliability*10,
-          valueEcology*10
+          valueQuality * 10,
+          valueReliability * 10,
+          valueEcology * 10,
         ]
       );
       enqueueSnackbar(

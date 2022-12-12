@@ -13,13 +13,12 @@ import {Link as RouterLink} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 import {useBackdrop} from "../../contexts/Loader";
 import dayjs from "dayjs";
-import {Divider} from "@mui/material";
 import {useAccount} from "wagmi";
 
 function OffersReceived({contracts}) {
   const [cars, setCars] = React.useState([]);
   const backdrop = useBackdrop();
-  const {address, isConnected} = useAccount();
+  const {address} = useAccount();
 
   const getOffer = (offer) => {
     if (offer) {
@@ -35,7 +34,6 @@ function OffersReceived({contracts}) {
 
   const initCars = React.useCallback(
     async (contracts) => {
-      console.log("Init marketplace cars");
       let myCarsWithOffer = [];
       let i = 0;
       for (let c in contracts.factory) {
@@ -44,9 +42,6 @@ function OffersReceived({contracts}) {
         let tmpCars = await carBlocksContract.getCarblocksForSale();
         for (let h in tmpCars) {
           let tmpCar = tmpCars[h];
-          console.log(tmpCar);
-          // console.log((parseInt(h)+1));
-          // console.log(json.image);
           if (tmpCar.isForSale) {
             // TODO waiting for Quentin to solve issue on getCarblocksForSale
             const tokenURI = await carBlocksContract.tokenURI(
@@ -54,29 +49,25 @@ function OffersReceived({contracts}) {
               tmpCar.tokenId.toNumber()
               // 1
             );
-            console.log(tokenURI);
             const response = await fetch(tokenURI);
             const json = await response.json();
             const hasMadeOffer = await carBlocksContract.hasMadeOffer(
               tmpCar.tokenId.toNumber()
             );
-            let hasReceivedOffer=false;
+            let hasReceivedOffer = false;
             let offers = [];
             let offer = {price: 0, user: "", recipient: ""};
             const owner = await carBlocksContract.ownerOf(
               tmpCar.tokenId.toNumber()
             );
-            const isOwner = (address == owner);
+            const isOwner = (address === owner);
             if (isOwner) {
-              console.log("owner");
               offers = await carBlocksContract.getOffers(
                 tmpCar.tokenId.toNumber()
               );
-              console.log(offers);
               // TODO Improve, retrieves only the first offer
               offer = getOffer(offers[0]);
-              console.log(offer);
-              hasReceivedOffer = (offers.length>0);
+              hasReceivedOffer = offers.length > 0;
             }
             let tmpFinalCar = {
               brand: tmpCar.car.brand,
@@ -100,7 +91,6 @@ function OffersReceived({contracts}) {
           }
         }
       }
-      console.log(myCarsWithOffer);
       setCars(myCarsWithOffer);
       backdrop.hideLoader();
     },
@@ -108,7 +98,6 @@ function OffersReceived({contracts}) {
   );
 
   React.useEffect(() => {
-    console.log("Offers received useEffect");
     if (contracts) {
       backdrop.showLoader();
       initCars(contracts);
@@ -121,7 +110,7 @@ function OffersReceived({contracts}) {
         Offres reçues
       </Typography>
       <Container sx={{py: 2}} maxWidth="md">
-        {cars && cars.length == 0 && (
+        {cars && cars.length === 0 && (
           <Typography variant="h5" gutterBottom>
             Aucune offre en cours
           </Typography>
@@ -146,22 +135,20 @@ function OffersReceived({contracts}) {
                     Offre
                   </Typography>
                   <Typography gutterBottom variant="h5" component="h2">
-                  {car.brand} {car.model}
+                    {car.brand} {car.model}
                   </Typography>
-                  <Typography>{dayjs
-                        .unix(car.circulationStartDate)
-                        .format("YYYY")}{" "}
-                      | {car.metadata.kilometers} Kms</Typography>
+                  <Typography>
+                    {dayjs.unix(car.circulationStartDate).format("YYYY")} |{" "}
+                    {car.metadata.kilometers} Kms
+                  </Typography>
                 </CardContent>
                 <CardActions>
                   <Button
                     size="small"
                     component={RouterLink}
                     to={{
-                      pathname: "/offer/" +
-                      car.metadata.energy +
-                      "/" +
-                      car.tokenId,
+                      pathname:
+                        "/offer/" + car.metadata.energy + "/" + car.tokenId,
                     }}
                   >
                     Suivre offre

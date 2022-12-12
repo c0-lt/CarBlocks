@@ -11,10 +11,7 @@ import Container from "@mui/material/Container";
 import Rating from "@mui/material/Rating";
 
 import {Link as RouterLink} from "react-router-dom";
-import Pinata from "../../utils/Pinata";
 import {useBackdrop} from "../../contexts/Loader";
-import dayjs from "dayjs";
-import {Divider} from "@mui/material";
 import Utils from "../../utils/Social";
 
 function Cars({contracts}) {
@@ -23,7 +20,6 @@ function Cars({contracts}) {
 
   const initCards = React.useCallback(
     async (contracts) => {
-      console.log("Init social network cards");
       setCards(await Utils.getSocialCards(contracts.socialNetwork));
       backdrop.hideLoader();
     },
@@ -31,7 +27,6 @@ function Cars({contracts}) {
   );
 
   React.useEffect(() => {
-    console.log("Social useEffect");
     if (contracts) {
       backdrop.showLoader();
       initCards(contracts);
@@ -54,7 +49,7 @@ function Cars({contracts}) {
                 <CardMedia
                   component="img"
                   image={card.photoURI}
-                  alt={card.brand+ " "+card.model}
+                  alt={card.brand + " " + card.model}
                 />
                 <CardContent sx={{flexGrow: 1}}>
                   <Typography gutterBottom variant="h5" component="h2">

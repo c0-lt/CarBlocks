@@ -19,10 +19,9 @@ import {InputAdornment} from "@mui/material";
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
 import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 import Pinata from "../../utils/Pinata";
 
-function MintCar({contracts}) {
+function MintCar({contracts, setTabIndex}) {
   const energyList = [
     "Essence",
     "Diesel",
@@ -32,7 +31,6 @@ function MintCar({contracts}) {
     "Hybride diesel",
   ];
   const formId = "formMintCar";
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
   const [date, setDate] = React.useState();
@@ -48,12 +46,7 @@ function MintCar({contracts}) {
   };
 
   const callbackPictureSent = (data) => {
-    console.log("picture sent");
-    // console.log(carblock);
-    const ImgHash = `ipfs://${data.IpfsHash}`;
-    console.log(ImgHash);
     const ImgHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
-    console.log(ImgHashGW);
     enqueueSnackbar("Picture uploaded", {variant: "success"});
     const form = new FormData(document.getElementById(formId));
     let carblock = {
@@ -66,8 +59,6 @@ function MintCar({contracts}) {
       image: ImgHashGW,
       VIN: form.get("VIN"),
     };
-    console.log(carblock);
-    console.log(Pinata.convertToIPFSJSON(carblock));
     Pinata.sendJSON(
       Pinata.convertToIPFSJSON(carblock),
       carblock,
@@ -77,10 +68,7 @@ function MintCar({contracts}) {
   };
 
   const callbackSendJSON = (data, carblock) => {
-    const IpfsHash = `ipfs://${data.IpfsHash}`;
-    console.log(IpfsHash);
     const IpfsHashGW = `https://gateway.pinata.cloud/ipfs/${data.IpfsHash}`;
-    console.log(IpfsHashGW);
     enqueueSnackbar("JSON Metadata uploaded", {variant: "success"});
     // Mint
     mintCarblock(carblock, IpfsHashGW);
@@ -96,13 +84,14 @@ function MintCar({contracts}) {
         0,
         false
       );
-      enqueueSnackbar("CarBlock minted! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
       backdrop.hideLoader();
-      navigate(0);
+      enqueueSnackbar(
+        "CarBlock minted! Veuillez rafraichir dans quelques secondes.",
+        {variant: "success"}
+      );
+      setTabIndex(0);
     } catch (error) {
       callbackError(error, "Error minting Carblock");
-      // console.log("Error sending File to IPFS: ");
-      // console.log(error);
     }
   };
 
@@ -111,10 +100,17 @@ function MintCar({contracts}) {
     backdrop.showLoader();
     const form = new FormData(event.currentTarget);
     const data = {
-      name: form.get("brand")+" "+form.get("model"),
+      name: form.get("brand") + " " + form.get("model"),
     };
-    console.log(data);
-    if(picture && data.name) {
+    const test = !(
+      !form.get("brand") ||
+      !form.get("model") ||
+      !date ||
+      !form.get("registrationNumber") ||
+      !form.get("kilometers") ||
+      !form.get("VIN")
+    );
+    if (picture && data.name && test) {
       Pinata.sendFile(picture, data, callbackPictureSent, callbackError);
     } else {
       callbackError("Something is missing in form!", "Formulaire incomplet!");
@@ -122,14 +118,13 @@ function MintCar({contracts}) {
   };
 
   const handleChangeDate = (newValue) => {
-    console.log(newValue);
     setDate(newValue);
   };
 
   const handleChangePicture = (e) => {
-    if(e.target.files[0]) {
-    setPicture(e.target.files[0]);
-    setPicturePath(e.target.files[0].name);
+    if (e.target.files[0]) {
+      setPicture(e.target.files[0]);
+      setPicturePath(e.target.files[0].name);
     } else {
       setPicture("");
       setPicturePath("");

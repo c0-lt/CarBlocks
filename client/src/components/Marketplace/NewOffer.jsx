@@ -11,14 +11,10 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
-import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
 
 function NewOffer({id, handleClose, open, car, contract}) {
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -26,13 +22,13 @@ function NewOffer({id, handleClose, open, car, contract}) {
     const data = new FormData(event.currentTarget);
     const price = parseInt(data.get("offer"));
     const minimumPrice = car.price;
-    console.log({
-      offer: price
-    });
-    if(Number.isInteger(price) && price>=minimumPrice) {
+    if (Number.isInteger(price) && price >= minimumPrice) {
       try {
-        await contract.makeOffer(car.tokenId,price,car.owner);
-        enqueueSnackbar("Offre émise! Veuillez rafraichir dans quelques secondes.", {variant: "success"});
+        await contract.makeOffer(car.tokenId, price, car.owner);
+        enqueueSnackbar(
+          "Offre émise! Veuillez rafraichir dans quelques secondes.",
+          {variant: "success"}
+        );
         backdrop.hideLoader();
         handleClose();
       } catch (e) {
@@ -42,7 +38,10 @@ function NewOffer({id, handleClose, open, car, contract}) {
         handleClose();
       }
     } else {
-      enqueueSnackbar("L'offre n'est pas un nombre entier ou inférieur au prix fixé.", {variant: "error"});
+      enqueueSnackbar(
+        "L'offre n'est pas un nombre entier ou inférieur au prix fixé.",
+        {variant: "error"}
+      );
       backdrop.hideLoader();
     }
     backdrop.hideLoader();
@@ -62,12 +61,15 @@ function NewOffer({id, handleClose, open, car, contract}) {
       >
         <DialogTitle>Faire une offre</DialogTitle>
         <DialogContent>
-          <DialogContentText>{car.brand} {car.model}
-          <br/>Price: {car.price} €</DialogContentText>
+          <DialogContentText>
+            {car.brand} {car.model}
+            <br />
+            Price: {car.price} €
+          </DialogContentText>
           <Grid container spacing={2} sx={{mt: 2}} justifyContent="center">
             <Grid item xs={6}>
               <TextField
-                helperText={"Doit être >= "+car.price}
+                helperText={"Doit être >= " + car.price}
                 id="offer"
                 name="offer"
                 required

@@ -11,12 +11,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 
 import {useBackdrop} from "../../contexts/Loader";
 import {useSnackbar} from "notistack";
-import {useAccount} from "wagmi";
-import {useNavigate} from "react-router-dom";
-import Pinata from "../../utils/Pinata";
 
 function SellDialog({handleClose, open, car, contract}) {
-  const navigate = useNavigate();
   const backdrop = useBackdrop();
   const {enqueueSnackbar} = useSnackbar();
 
