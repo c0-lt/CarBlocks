@@ -13,9 +13,16 @@ import Review from './Review';
 import SellingCar from './SellingCar';
 import NewReview from './NewReview';
 
-function SocialCar() {
+import {Link as RouterLink} from "react-router-dom";
+import Pinata from "../../utils/Pinata";
+import {useBackdrop} from "../../contexts/Loader";
+import dayjs from "dayjs";
+import {Divider} from "@mui/material";
+import Utils from "../../utils/Social";
+
+function SocialCar({contracts}) {
   const {id} = useParams();
-  const cards = [1, 2, 3];
+  const cards = [1];
   const axis = ["Sécurité", "Budget", "Confort", "Conduite", "Equipements de série", "Qualité de la finition", "Fiabilité", "Ecologie"];
 
   const [open, setOpen] = React.useState(false);
@@ -28,10 +35,50 @@ function SocialCar() {
     setOpen(false);
   };
 
+  const [card, setCard] = React.useState();
+  const backdrop = useBackdrop();
+
+  const initCard = React.useCallback(
+    async (contracts) => {
+      const cards = await Utils.getSocialCards(contracts.socialNetwork);
+      // console.log(cards);
+      let card = {};
+      card.card = cards[id-1];
+      if(card && card.card.cardId) {
+        card.opinions = await Utils.getSocialOpinions(contracts.socialNetwork, card.card.cardId.toNumber());
+        card.hasOpinions = (card.opinions.length > 0)
+      }
+      console.log(card);
+      setCard(card);
+      backdrop.hideLoader();
+    },
+    [contracts]
+  );
+
+  React.useEffect(() => {
+    console.log("Social car useEffect");
+    if (contracts) {
+      backdrop.showLoader();
+      initCard(contracts);
+    }
+  }, [contracts]);
+
   return (
     <>
-    <NewReview id={id} handleClose={handleClose} open={open} car={"Mclaren 720s"}/>
-    <Box maxWidth="lg" container spacing={2}>
+    {!card && (
+      <Typography
+      component="h3"
+      variant="h4"
+      color="inherit"
+      gutterBottom
+    >
+      Fiche introuvable
+    </Typography>
+    )}
+    {card && (
+      <>
+    <NewReview contract={contracts.socialNetwork} id={id} handleClose={handleClose} open={open} car={card}/>
+    <Box maxWidth="lg" spacing={2}>
       <Paper
         sx={{
           minHeight: "200px",
@@ -42,15 +89,15 @@ function SocialCar() {
           backgroundSize: "cover",
           backgroundRepeat: "no-repeat",
           backgroundPosition: "center",
-          backgroundImage: `url("https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG")`,
+          backgroundImage: `url(`+card.card.photoURI+`)`,
         }}
       >
         {/* Increase the priority of the hero background image */}
         {
           <img
             style={{display: "none"}}
-            src="https://gateway.pinata.cloud/ipfs/QmdDdTf4YgDFFsKr6VJGjV8hzcPqBfre7DYNdHDXLm43aG"
-            alt="Mclaren 720s"
+            src={card.card.photoURI}
+            alt={card.card.brand+" "+card.card.model}
           />
         }
         <Box
@@ -64,7 +111,7 @@ function SocialCar() {
           }}
         />
         <Grid container>
-          <Grid item md={6}>
+          <Grid item key="car" md={6}>
             <Box
               sx={{
                 position: "relative",
@@ -78,14 +125,14 @@ function SocialCar() {
                 color="inherit"
                 gutterBottom
               >
-                Mclaren 720s
+                {card.card.brand+" "+card.card.model}
               </Typography>
             </Box>
           </Grid>
         </Grid>
       </Paper>
       <Grid container spacing={2}>
-        <Grid item md={8}>
+        <Grid item key="review" md={8}>
           <Box>
             <Box display="flex" justifyContent="space-between">
               <Typography
@@ -99,12 +146,17 @@ function SocialCar() {
               <Button variant="contained" onClick={handleClickOpen} startIcon={<AddCommentIcon />}>Ajouter un avis</Button>
             </Box>
           </Box>
+          {card && !card.hasOpinions && (
+            <Typography>Aucun avis pour le moment</Typography>
+          )}
+          {card && card.hasOpinions && (
+            card.opinions.map(opinion => (
           <Grid container spacing={2} sx={{mt: 2, p: 1, border: 1, borderColor: 'divider'}}>
-              {/* @TODO MAP */}
-              <Review axis={axis}/>
+                <Review review={opinion} axis={axis}/>
           </Grid>
+          )))}
         </Grid>
-        <Grid item md={4}>
+        <Grid item key="sellingCar" md={4}>
           <Box>
             <Typography
               component="h3"
@@ -116,13 +168,13 @@ function SocialCar() {
             </Typography>
           </Box>
           <Grid container spacing={4}>
-            {cards.map((card) => (
-              <SellingCar car={card}/>
-            ))}
+              <SellingCar card={card}/>
           </Grid>
         </Grid>
       </Grid>
     </Box>
+    </>
+    )}
     </>
   );
 }
