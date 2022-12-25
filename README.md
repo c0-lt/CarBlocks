@@ -4,17 +4,48 @@
 
 <em>This decentralized application leverages the power of the Ethereum blockchain technology and IPFS to bring back trust and traceability into the automotive ecosystem.</em>
 
+<p align="center">
+ <img src="https://github.com/c0-lt/CarBlocks/raw/main/client/public/website-demo.png">
+</p>
+
 ## Details
 
-This DApp is an attempt to build an application that implements both an NFT Marketplace, and a social network.
+This DApp is an attempt to build an application that implements both an NFT Marketplace, and a social network. It was developed in 10 days as part of the final Web3 project of the blockchain training provided by the blockchain school [Alyra](https://alyra.fr/), class Rinkeby 2022
 
-- **Marketplace** : users can convert their car into an NFT so that they can keep track of all the maintenance operations and upload important assets regarding those operations, such as bills and reports. This is also the place where they will be able to sell their car, hence their NFT. If they choose to do so, they will receive offers directly from other users, and transfer the NFT if they accept one of them.
+- **Marketplace**: users can convert their car into an NFT so that they can keep track of all the maintenance operations and upload important assets regarding those operations, such as bills and reports. This is also the place where they will be able to sell their car, hence their NFT. If they choose to do so, they will receive offers directly from other users, and transfer the NFT if they accept one of them.
   The `CarBlocksFactory.sol` as its name suggests, allows us to deploy multiple instance of `CarBlocks.sol`, and decline NFT Collection upon the type of energy (gasoline, diesel, hybrid...)
-- **Social Network** : users can browse through the various car cards, in order to consult opinions of the community about specific car. To add a new opinion, the user must own an NFT with the same brand & model. If a user makes an offer, he will be able to chat directly to the NFT owner. Unfortunately, this last chat feature has not been implemented on the frontend side of the DApp, but unit tests for message management in `SocialNetwork.sol` are working.
+- **Social Network**: users can browse through the various car cards, in order to consult opinions of the community about specific car. To add a new opinion, the user must own an NFT with the same brand & model. If a user makes an offer, he will be able to chat directly to the NFT owner. Unfortunately, this last chat feature has not been implemented on the frontend side of the DApp, but unit tests for message management in `SocialNetwork.sol` are working.
 
-## DApp deployed on Goerli
+## Project team
 
-[CarBlocks DApp](https://carblocks.vercel.app/)
+The project team is composed of 4 consultants and 2 developers from the Rinkeby 2022 class by the blockchain school [Alyra](https://alyra.fr/). The project was ranked 1st 🏆 out of 45, with a score of 18.4/20.
+
+Role | Name | Social
+------------ | ------------- | -------------
+Consultant | François Berlier | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/francois-berlier-73b810/) 
+Consultant | Murielle Colart | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/murielle-colart-42b4a4/) 
+Consultant | Frédéric Pagotto | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-pagotto/) 
+Consultant | Gaël Saint-Luc | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/ga%C3%ABl-saint-luc-689b025/) 
+Developer | Maxime Lesbros | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/mlazzje/) 
+Developer | Quentin Collette | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/quentincollette/) 
+
+## DApp deployed for demonstration
+
+Website [CarBlocks DApp](https://carblocks.vercel.app/)
+
+Type | Link
+------------ | -------------
+React front | [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://carblocks.vercel.app/) 
+Smart Contract CarBlocksFactory NFTs | [![Ethereum Goerli](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://goerli.etherscan.io/address/0x71c076B2d25a2a7F02fa698CfE394917d04d72b7)
+Smart Contract CarBlocks gasoline NFTs collection | [![CarBlocks gasoline](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://goerli.etherscan.io/address/0xA500Cbe99200F7D291336C2e2cEd26a77f3A5c92)
+Smart Contract CarBlocks diesel NFTs collection | [![CarBlocks diesel](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://goerli.etherscan.io/address/0x17D359f8042eb9adCA5dcbC5Ac6071A205a991Fa) 
+Smart Contract SocialNetwork | [![SocialNetwork](https://img.shields.io/badge/Ethereum-3C3C3D?style=for-the-badge&logo=Ethereum&logoColor=white)](https://goerli.etherscan.io/address/0x6CfD18525edE3A6182Fc3702c174b9a48960A5de) 
+
+## Demo
+
+A video demonstration is available [here](https://drive.google.com/file/d/1MkjkflvXWbBdwVfkFQnh3M-8tGR3Wi_7/view).
+
+# Technical documentation
 
 ## Setup
 
@@ -129,14 +160,14 @@ $ truffle test
     |  SocialNetwork                                   ·          -  ·          -  ·    1289294  ·      19.2 %  ·      20.02  │
     ·--------------------------------------------------|-------------|-------------|-------------|--------------|-------------·
 
-## Tech - Fixtures import
+## Fixtures import
 
 ```sh
 truffle migrate --f 5
 truffle exec scripts/import_fixtures.js
 ```
 
-## Tech - Security
+## Security
 
 ### Mythril report
 
