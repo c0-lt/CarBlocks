@@ -2,7 +2,7 @@
 
 ## Welcome to the home of the now famous Carblocks DApp !
 
-<em>This decentralized application leverages the power of the Ethereum blockchain technology and IPFS to bring back trust and traceability into the automotive ecosystem.</em>
+<em>This decentralized application leverages the power of the Ethereum blockchain technology and IPFS to bring back trust and traceability into the automotive ecosystem. <br/>🏆 1st / 45 decentralized apps - Alyra 2022 class Rinkeby</em>
 
 <p align="center">
  <a href="https://carblocks.vercel.app/" target="_blank">
@@ -12,7 +12,7 @@
 
 ## Details
 
-This DApp is an attempt to build an application that implements both an NFT Marketplace, and a social network. It was developed in 10 days as part of the final Web3 project of the blockchain training provided by the blockchain school [Alyra](https://alyra.fr/), class Rinkeby 2022
+This DApp is an attempt to build an application that implements both an NFT Marketplace, and a social network. It was developed in 10 days as part of the final Web3 project of the blockchain training provided by the blockchain school [Alyra](https://alyra.fr/), class Rinkeby 2022. The project was ranked 1st 🏆 out of 45, with a score of 18.4/20.
 
 - **Marketplace**: users can convert their car into an NFT so that they can keep track of all the maintenance operations and upload important assets regarding those operations, such as bills and reports. This is also the place where they will be able to sell their car, hence their NFT. If they choose to do so, they will receive offers directly from other users, and transfer the NFT if they accept one of them.
   The `CarBlocksFactory.sol` as its name suggests, allows us to deploy multiple instance of `CarBlocks.sol`, and decline NFT Collection upon the type of energy (gasoline, diesel, hybrid...)
@@ -20,7 +20,7 @@ This DApp is an attempt to build an application that implements both an NFT Mark
 
 ## Project team
 
-The project team is composed of 4 consultants and 2 developers from the Rinkeby 2022 class by the blockchain school [Alyra](https://alyra.fr/). The project was ranked 1st 🏆 out of 45, with a score of 18.4/20.
+The project team is composed of 4 consultants and 2 developers from the Rinkeby 2022 class by the blockchain school [Alyra](https://alyra.fr/).
 
 Role | Name | Social
 ------------ | ------------- | -------------
