@@ -5,7 +5,9 @@
 <em>This decentralized application leverages the power of the Ethereum blockchain technology and IPFS to bring back trust and traceability into the automotive ecosystem.</em>
 
 <p align="center">
- <img src="https://github.com/c0-lt/CarBlocks/raw/main/client/public/website-demo.png">
+ <a href="https://carblocks.vercel.app/" target="_blank">
+  <img src="https://github.com/c0-lt/CarBlocks/raw/main/client/public/website-demo.png">
+ </a>
 </p>
 
 ## Details
@@ -43,7 +45,13 @@ Smart Contract SocialNetwork | [![SocialNetwork](https://img.shields.io/badge/Et
 
 ## Demo
 
-A video demonstration is available [here](https://drive.google.com/file/d/1MkjkflvXWbBdwVfkFQnh3M-8tGR3Wi_7/view).
+<p align="center">
+ <a href="https://drive.google.com/file/d/1MkjkflvXWbBdwVfkFQnh3M-8tGR3Wi_7/view" target="_blank">
+  <img height="200" src="https://github.com/c0-lt/CarBlocks/raw/main/client/public/video-demo.png">
+ </a>
+ <br/>
+ A video demonstration is available  <a href="https://drive.google.com/file/d/1MkjkflvXWbBdwVfkFQnh3M-8tGR3Wi_7/view" target="_blank">here</a>.
+</p>
 
 # Technical documentation
 
